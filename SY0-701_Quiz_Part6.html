@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA Security+ SY0-701 Quiz — Part 6</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--card:#222636;--border:#2e3348;
+  --primary:#6c63ff;--primary-hover:#5a52e0;--success:#22c55e;--danger:#ef4444;--warning:#f59e0b;
+  --text:#e8e6f0;--text-dim:#9390a8;--text-muted:#6b6880;
+  --radius:10px;--shadow:0 4px 24px rgba(0,0,0,.4);
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:16px}
+
+/* Header */
+.header{text-align:center;padding:32px 0 16px}
+.header h1{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--primary),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .subtitle{color:var(--text-dim);font-size:.85rem;margin-top:4px}
+.badge{display:inline-block;background:var(--card);border:1px solid var(--border);padding:3px 10px;border-radius:20px;font-size:.75rem;color:var(--text-dim);margin-top:8px}
+
+/* Screens */
+.screen{display:none}.screen.active{display:block}
+
+/* Start Screen */
+.start-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;margin-top:24px}
+.start-card h2{font-size:1.2rem;margin-bottom:16px}
+.mode-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.mode-btn{padding:14px 28px;border:2px solid var(--primary);border-radius:var(--radius);background:transparent;color:var(--primary);font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.mode-btn:hover{background:var(--primary);color:#fff}
+.mode-btn.filled{background:var(--primary);color:#fff}
+.mode-btn.filled:hover{background:var(--primary-hover)}
+.stat-row{display:flex;gap:24px;justify-content:center;margin-top:20px;color:var(--text-dim);font-size:.85rem}
+
+/* Progress */
+.progress-bar-wrap{background:var(--surface);border-radius:20px;height:6px;margin:16px 0;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),#a78bfa);border-radius:20px;transition:width .4s ease}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--text-dim);margin-bottom:8px}
+
+/* Question Card */
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.q-num{font-size:.75rem;color:var(--primary);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.q-text{font-size:.95rem;margin-bottom:6px;font-weight:500}
+.q-text-th{font-size:.88rem;color:var(--text-dim);margin-bottom:16px;padding-left:12px;border-left:2px solid var(--border)}
+
+/* Options */
+.options{display:flex;flex-direction:column;gap:8px}
+.opt-btn{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.2s;font-size:.9rem;text-align:left;color:var(--text)}
+.opt-btn:hover:not(.disabled){border-color:var(--primary);background:#1e2235}
+.opt-btn.selected{border-color:var(--primary);background:rgba(108,99,255,.12)}
+.opt-btn.correct{border-color:var(--success);background:rgba(34,197,94,.1)}
+.opt-btn.incorrect{border-color:var(--danger);background:rgba(239,68,68,.1)}
+.opt-btn.disabled{cursor:default;opacity:.85}
+.opt-letter{min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--card);border:1px solid var(--border);font-size:.8rem;font-weight:600;flex-shrink:0}
+.opt-btn.selected .opt-letter{background:var(--primary);border-color:var(--primary);color:#fff}
+.opt-btn.correct .opt-letter{background:var(--success);border-color:var(--success);color:#fff}
+.opt-btn.incorrect .opt-letter{background:var(--danger);border-color:var(--danger);color:#fff}
+
+/* Explanation */
+.explanation{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px;display:none}
+.explanation.show{display:block}
+.explanation h4{font-size:.8rem;color:var(--success);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.explanation p{font-size:.85rem;color:var(--text-dim);margin-bottom:6px}
+.explanation .th-label{color:var(--warning);font-weight:600}
+
+/* Navigation */
+.nav-row{display:flex;gap:10px;justify-content:space-between;margin-top:16px}
+.nav-btn{padding:10px 20px;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+.nav-btn.prev{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.nav-btn.prev:hover{background:var(--card)}
+.nav-btn.next{background:var(--primary);color:#fff}
+.nav-btn.next:hover{background:var(--primary-hover)}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.nav-btn.submit{background:var(--success);color:#fff}
+
+/* Question Navigator */
+.q-nav-toggle{text-align:center;margin:12px 0}
+.q-nav-toggle button{background:none;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:.78rem}
+.q-nav-grid{display:none;grid-template-columns:repeat(auto-fill,36px);gap:6px;justify-content:center;padding:12px 0}
+.q-nav-grid.show{display:grid}
+.q-nav-dot{width:36px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.q-nav-dot.answered{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-nav-dot.current{border-color:var(--warning);box-shadow:0 0 0 2px rgba(245,158,11,.3)}
+.q-nav-dot.right{background:var(--success);color:#fff;border-color:var(--success)}
+.q-nav-dot.wrong{background:var(--danger);color:#fff;border-color:var(--danger)}
+
+/* Results */
+.results-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;margin-top:16px}
+.score-circle{width:140px;height:140px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:20px auto;font-size:2rem;font-weight:700}
+.score-circle.pass{border:4px solid var(--success);color:var(--success)}
+.score-circle.fail{border:4px solid var(--danger);color:var(--danger)}
+.score-circle small{font-size:.75rem;font-weight:400;color:var(--text-dim)}
+.result-label{font-size:1.3rem;font-weight:700;margin:12px 0}
+.result-label.pass{color:var(--success)}
+.result-label.fail{color:var(--danger)}
+.result-stats{display:flex;gap:20px;justify-content:center;margin:16px 0;font-size:.85rem;color:var(--text-dim)}
+.result-stats span{display:flex;align-items:center;gap:4px}
+.dot-g{width:8px;height:8px;border-radius:50%;background:var(--success)}
+.dot-r{width:8px;height:8px;border-radius:50%;background:var(--danger)}
+.dot-s{width:8px;height:8px;border-radius:50%;background:var(--text-muted)}
+.review-btn{margin-top:16px;padding:10px 24px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.9rem}
+.review-btn:hover{background:var(--primary-hover)}
+.restart-btn{margin-top:10px;padding:10px 24px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:600;font-size:.9rem}
+
+/* Review */
+.review-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.review-item.wrong-review{border-left:3px solid var(--danger)}
+.review-item.right-review{border-left:3px solid var(--success)}
+.review-label{font-size:.75rem;font-weight:600;margin-bottom:4px}
+.your-ans{color:var(--danger)}.correct-ans{color:var(--success)}
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:.78rem}
+.filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.back-top{margin-bottom:12px}
+.back-top button{background:none;border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:.82rem}
+
+/* Multi-select note */
+.multi-note{font-size:.78rem;color:var(--warning);margin-bottom:8px;font-style:italic}
+
+@media(max-width:600px){
+  .container{padding:10px}
+  .q-card{padding:16px}
+  .start-card{padding:20px}
+  .mode-buttons{flex-direction:column}
+  .mode-btn{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>CompTIA Security+ SY0-701</h1>
+    <div class="subtitle">Practice Quiz — Part 6</div>
+    <div class="badge">111 Questions • EN/TH</div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div class="screen active" id="startScreen">
+    <div class="start-card">
+      <h2>เลือกโหมดการทำข้อสอบ</h2>
+      <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:8px">เกณฑ์ผ่าน: 70% (78/111 ข้อ)</p>
+      <div class="stat-row">
+        <span>📝 111 ข้อ</span>
+        <span>⏱ ไม่จำกัดเวลา</span>
+        <span>🌐 EN + TH</span>
+      </div>
+      <div class="mode-buttons">
+        <button class="mode-btn filled" onclick="startQuiz('practice')">🎯 Practice Mode<br><small style="font-weight:400;font-size:.75rem">เฉลยทันทีทุกข้อ</small></button>
+        <button class="mode-btn" onclick="startQuiz('exam')">📋 Exam Mode<br><small style="font-weight:400;font-size:.75rem">เฉลยตอนจบ</small></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="quizScreen">
+    <div class="quiz-meta">
+      <span id="qCounter">ข้อ 1 / 111</span>
+      <span id="scoreDisplay">✓ 0 ✗ 0</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+    
+    <div class="q-card" id="questionCard"></div>
+    
+    <div class="nav-row">
+      <button class="nav-btn prev" id="prevBtn" onclick="navigate(-1)">← ก่อนหน้า</button>
+      <button class="nav-btn next" id="nextBtn" onclick="navigate(1)">ถัดไป →</button>
+    </div>
+    
+    <div class="q-nav-toggle">
+      <button onclick="toggleNav()">📍 เลือกข้อ</button>
+    </div>
+    <div class="q-nav-grid" id="qNavGrid"></div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="resultScreen"></div>
+
+  <!-- REVIEW SCREEN -->
+  <div class="screen" id="reviewScreen"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+{
+  id:1, topic:"Exam Topic 1",
+  en:"If a current private key is compromised, which of the following would ensure it cannot be used to decrypt all historical data?",
+  th:"หาก private key ปัจจุบันถูก compromise ข้อใดจะทำให้ไม่สามารถใช้ถอดรหัสข้อมูลในอดีตทั้งหมดได้?",
+  options:["A. Perfect forward secrecy","B. Elliptic-curve cryptography","C. Key stretching","D. Homomorphic encryption"],
+  answer:"A",
+  explainEN:"Perfect forward secrecy (PFS) generates a unique session key for each session. Even if one key is compromised, it cannot decrypt other sessions' data.",
+  explainTH:"Perfect forward secrecy (PFS) สร้าง session key เฉพาะสำหรับแต่ละ session ดังนั้นแม้ key หนึ่งถูก compromise ก็ไม่สามารถถอดรหัส session อื่นได้"
+},
+{
+  id:2, topic:"Exam Topic 1",
+  en:"Which of the following would produce the closest experience of responding to an actual incident response scenario?",
+  th:"ข้อใดจะให้ประสบการณ์ใกล้เคียงกับการตอบสนองต่อเหตุการณ์จริงมากที่สุด?",
+  options:["A. Lessons learned","B. Simulation","C. Walk-through","D. Tabletop"],
+  answer:"B",
+  explainEN:"A simulation exercise creates an experience as close as possible to a real-world incident response scenario by simulating an attack and having personnel respond as they would in a real incident.",
+  explainTH:"การฝึก Simulation สร้างประสบการณ์ใกล้เคียงเหตุการณ์จริงมากที่สุด โดยจำลองการโจมตีและให้บุคลากรตอบสนองเหมือนเหตุการณ์จริง"
+},
+{
+  id:3, topic:"Exam Topic 1",
+  en:"Developers are writing code and merging it into shared repositories several times a day, where it is tested automatically. Which concept does this BEST represent?",
+  th:"นักพัฒนาเขียนโค้ดและ merge เข้า shared repository หลายครั้งต่อวัน โดยมีการทดสอบอัตโนมัติ ข้อใดอธิบายแนวคิดนี้ได้ดีที่สุด?",
+  options:["A. Functional testing","B. Stored procedures","C. Elasticity","D. Continuous integration"],
+  answer:"D",
+  explainEN:"Continuous integration (CI) is a practice where developers merge code into a shared repository frequently, and it is tested automatically to reduce errors and conflicts.",
+  explainTH:"Continuous integration (CI) คือการที่นักพัฒนา merge โค้ดเข้า shared repository บ่อยครั้ง และมีการทดสอบอัตโนมัติเพื่อลดข้อผิดพลาดและความขัดแย้ง"
+},
+{
+  id:4, topic:"Exam Topic 1",
+  en:"The CEO announced a new partnership and asked the CISO to federate user digital identities using SAML-based protocols. Which of the following will this enable?",
+  th:"CEO ประกาศ partnership ใหม่ และขอให้ CISO ทำ federate digital identities ผ่าน SAML ข้อใดที่จะเปิดใช้งานได้?",
+  options:["A. SSO","B. MFA","C. PKI","D. OLP"],
+  answer:"A",
+  explainEN:"Federating user digital identities using SAML enables Single Sign-On (SSO), allowing users to log in once and access multiple applications.",
+  explainTH:"การ federate digital identities ผ่าน SAML ทำให้ใช้ Single Sign-On (SSO) ได้ ผู้ใช้ล็อกอินครั้งเดียวเข้าถึงหลายแอปพลิเคชัน"
+},
+{
+  id:5, topic:"Exam Topic 1",
+  en:"A company reduced datacenter area by creating virtual networking through automation and provisioning routes/rules through scripting. Which does this describe?",
+  th:"บริษัทลดพื้นที่ datacenter โดยสร้าง virtual networking ผ่าน automation และ provisioning routes/rules ผ่าน scripting ข้อใดอธิบายสิ่งนี้?",
+  options:["A. IaC","B. MSSP","C. Containers","D. SaaS"],
+  answer:"A",
+  explainEN:"Infrastructure as Code (IaC) allows creation of virtual networks, automation, and scripting to reduce datacenter footprint.",
+  explainTH:"Infrastructure as Code (IaC) ช่วยให้สร้าง virtual networks, automation และ scripting เพื่อลดพื้นที่ datacenter"
+},
+{
+  id:6, topic:"Exam Topic 1",
+  en:"A security researcher alerted an organization that its sensitive user data was found for sale on a website. Which should the organization use to inform affected parties?",
+  th:"นักวิจัยความปลอดภัยแจ้งว่าข้อมูลผู้ใช้ขององค์กรถูกนำไปขายบนเว็บไซต์ องค์กรควรใช้อะไรแจ้งผู้ที่ได้รับผลกระทบ?",
+  options:["A. An incident response plan","B. A communications plan","C. A business continuity plan","D. A disaster recovery plan"],
+  answer:"B",
+  explainEN:"A communications plan outlines how an organization communicates with stakeholders during a crisis, including who communicates, what channels, and what messages.",
+  explainTH:"Communications plan ระบุวิธีสื่อสารกับผู้มีส่วนได้ส่วนเสียในช่วงวิกฤต รวมถึงผู้รับผิดชอบ ช่องทาง และข้อความที่จะสื่อสาร"
+},
+{
+  id:7, topic:"Exam Topic 1",
+  en:"Several embedded systems run unsecure protocols. The developing company is no longer in business. Which constraint BEST describes why findings cannot be remediated?",
+  th:"ระบบ embedded หลายตัวใช้ protocol ไม่ปลอดภัย บริษัทผู้พัฒนาเลิกกิจการแล้ว ข้อจำกัดใดอธิบายเหตุผลที่แก้ไขไม่ได้?",
+  options:["A. Inability to authenticate","B. Implied trust","C. Lack of computing power","D. Unavailable patch"],
+  answer:"D",
+  explainEN:"Since the developing company is no longer in business, there are no patches available to fix the unsecure protocols on the embedded systems.",
+  explainTH:"เนื่องจากบริษัทผู้พัฒนาเลิกกิจการแล้ว จึงไม่มี patch สำหรับแก้ไข protocol ที่ไม่ปลอดภัยบนระบบ embedded"
+},
+{
+  id:8, topic:"Exam Topic 1",
+  en:"Which of the following is a physical security control that ensures only the authorized user is present when gaining access to a secured area?",
+  th:"ข้อใดเป็น physical security control ที่ทำให้มั่นใจว่ามีเฉพาะผู้ที่ได้รับอนุญาตเท่านั้นเมื่อเข้าพื้นที่ปลอดภัย?",
+  options:["A. A biometric scanner","B. A smart card reader","C. A PKI token","D. A PIN pad"],
+  answer:"A",
+  explainEN:"A biometric scanner uses physical characteristics like fingerprints to identify an individual, ensuring only the authorized user is present.",
+  explainTH:"Biometric scanner ใช้ลักษณะทางกายภาพ เช่น ลายนิ้วมือ เพื่อยืนยันตัวตน ทำให้มั่นใจว่ามีเฉพาะผู้ที่ได้รับอนุญาต"
+},
+{
+  id:9, topic:"Exam Topic 1",
+  en:"An organization discovered a disgruntled employee exfiltrated PII data by uploading files. Which control should mitigate this risk?",
+  th:"องค์กรพบว่าพนักงานที่ไม่พอใจ exfiltrate ข้อมูล PII โดยอัปโหลดไฟล์ ควรใช้ control ใดเพื่อลดความเสี่ยงนี้?",
+  options:["A. EDR","B. Firewall","C. HIPS","D. DLP"],
+  answer:"D",
+  explainEN:"Data Loss Prevention (DLP) monitors and controls data flows to prevent unauthorized transfer of sensitive data like PII.",
+  explainTH:"Data Loss Prevention (DLP) ตรวจสอบและควบคุมการไหลของข้อมูลเพื่อป้องกันการถ่ายโอนข้อมูลที่ไม่ได้รับอนุญาต เช่น PII"
+},
+{
+  id:10, topic:"Exam Topic 1",
+  en:"A bad actor tries to persuade someone to provide financial information over the phone. Which attack type does this describe?",
+  th:"ผู้ไม่หวังดีพยายามหลอกลวงให้เหยื่อให้ข้อมูลทางการเงินผ่านโทรศัพท์ ข้อใดอธิบายการโจมตีนี้?",
+  options:["A. Vishing","B. Phishing","C. Spear phishing","D. Whaling"],
+  answer:"A",
+  explainEN:"Vishing is a social engineering attack using phone calls or voicemail to trick people into divulging sensitive information.",
+  explainTH:"Vishing คือการโจมตีแบบ social engineering ผ่านโทรศัพท์หรือข้อความเสียงเพื่อหลอกให้เปิดเผยข้อมูลสำคัญ"
+},
+{
+  id:11, topic:"Exam Topic 1",
+  en:"A company installed crosscut shredders as part of increased information security practices. Which risk will this practice reduce?",
+  th:"บริษัทติดตั้งเครื่องทำลายเอกสารแบบ crosscut เพื่อเพิ่มความปลอดภัยข้อมูล ข้อใดจะลดความเสี่ยงได้?",
+  options:["A. Dumpster diving","B. Shoulder surfing","C. Information elicitation","D. Credential harvesting"],
+  answer:"A",
+  explainEN:"Crosscut shredders destroy paper documents, reducing the risk of dumpster diving — retrieving sensitive information from discarded documents.",
+  explainTH:"เครื่องทำลายเอกสารแบบ crosscut ช่วยลดความเสี่ยงจาก dumpster diving คือการค้นหาข้อมูลสำคัญจากเอกสารที่ถูกทิ้ง"
+},
+{
+  id:12, topic:"Exam Topic 1",
+  en:"An enterprise needs to keep cryptographic keys in a safe manner. Which network appliance can achieve this?",
+  th:"องค์กรต้องเก็บ cryptographic keys อย่างปลอดภัย อุปกรณ์เครือข่ายใดทำได้?",
+  options:["A. HSM","B. CASB","C. TPM","D. DLP"],
+  answer:"A",
+  explainEN:"Hardware Security Module (HSM) is a network appliance designed to securely store cryptographic keys and perform cryptographic operations.",
+  explainTH:"Hardware Security Module (HSM) เป็นอุปกรณ์เครือข่ายที่ออกแบบมาเพื่อเก็บ cryptographic keys อย่างปลอดภัยและดำเนินการ cryptographic"
+},
+{
+  id:13, topic:"Exam Topic 1",
+  en:"Which method would a security analyst use to confirm a downloaded file is not altered in transit using a verified checksum?",
+  th:"วิธีใดที่ security analyst ใช้ยืนยันว่าไฟล์ที่ดาวน์โหลดไม่ถูกเปลี่ยนแปลงระหว่างทางโดยใช้ checksum?",
+  options:["A. Hashing","B. Salting","C. Integrity","D. Digital signature"],
+  answer:"A",
+  explainEN:"Hashing produces a unique fixed-size output from input data. By comparing hash values, the analyst can verify file integrity.",
+  explainTH:"Hashing สร้างผลลัพธ์ขนาดคงที่จากข้อมูล เปรียบเทียบ hash values เพื่อตรวจสอบความสมบูรณ์ของไฟล์"
+},
+{
+  id:14, topic:"Exam Topic 1",
+  en:"An information security manager is completing a PCI DSS self-assessment for the first time. What is the MOST likely reason?",
+  th:"ผู้จัดการความปลอดภัยข้อมูลทำ PCI DSS self-assessment ครั้งแรก เหตุผลที่เป็นไปได้มากที่สุดคืออะไร?",
+  options:["A. An international expansion project is underway","B. Outside consultants measure security maturity","C. The organization expects to process credit card information","D. A government regulator requested this audit"],
+  answer:"C",
+  explainEN:"PCI DSS is required for any organization that accepts, processes, stores, or transmits credit card information.",
+  explainTH:"PCI DSS จำเป็นสำหรับองค์กรใดก็ตามที่รับ ประมวลผล จัดเก็บ หรือส่งข้อมูลบัตรเครดิต"
+},
+{
+  id:15, topic:"Exam Topic 1",
+  en:"During a forensic investigation, a security analyst found 'crackmapexec smb' with a hash was run on a compromised host. Which attack occurred?",
+  th:"ในการสืบสวนทางนิติวิทยาศาสตร์ พบว่ามีการรัน crackmapexec smb พร้อม hash บนเครื่องที่ถูก compromise ข้อใดเกิดขึ้น?",
+  options:["A. Buffer overflow","B. Pass the hash","C. SQL injection","D. Replay attack"],
+  answer:"B",
+  explainEN:"Pass the hash uses a hashed password to authenticate to a remote server without needing the plaintext password.",
+  explainTH:"Pass the hash ใช้ password ที่ถูก hash เพื่อ authenticate กับเซิร์ฟเวอร์โดยไม่ต้องใช้ password แบบ plaintext"
+},
+{
+  id:16, topic:"Exam Topic 1",
+  en:"A security engineer is installing a WAF to protect from malicious web requests over SSL. What is needed?",
+  th:"วิศวกรความปลอดภัยติดตั้ง WAF เพื่อป้องกัน web requests ที่เป็นอันตรายผ่าน SSL ต้องใช้อะไร?",
+  options:["A. A reverse proxy","B. A decryption certificate","C. A split-tunnel VPN","D. Load-balanced servers"],
+  answer:"B",
+  explainEN:"A decryption certificate is needed to decrypt SSL traffic so the WAF can inspect and filter malicious requests.",
+  explainTH:"ต้องใช้ decryption certificate เพื่อถอดรหัส SSL traffic ให้ WAF สามารถตรวจสอบและกรอง request ที่เป็นอันตราย"
+},
+{
+  id:17, topic:"Exam Topic 1",
+  en:"Ann received a notification from her mortgage company stating her PII may be shared with partners. Which document did she receive?",
+  th:"Ann ได้รับแจ้งจากบริษัทสินเชื่อว่า PII ของเธออาจถูกแชร์กับพันธมิตร เธอได้รับเอกสารใด?",
+  options:["A. An annual privacy notice","B. A non-disclosure agreement","C. A privileged-user agreement","D. A memorandum of understanding"],
+  answer:"A",
+  explainEN:"An annual privacy notice outlines how a financial institution collects, uses, and shares customers' personal information under GLBA.",
+  explainTH:"Annual privacy notice ระบุวิธีที่สถาบันการเงินเก็บ ใช้ และแชร์ข้อมูลส่วนบุคคลของลูกค้าตาม GLBA"
+},
+{
+  id:18, topic:"Exam Topic 1",
+  en:"Which risk is specifically associated with hosting applications in the public cloud?",
+  th:"ความเสี่ยงใดเกี่ยวข้องโดยเฉพาะกับการ host แอปพลิเคชันใน public cloud?",
+  options:["A. Unsecured root accounts","B. Zero day","C. Shared tenancy","D. Insider threat"],
+  answer:"C",
+  explainEN:"Shared tenancy means multiple organizations share the same infrastructure, potentially allowing one tenant to access another's data.",
+  explainTH:"Shared tenancy หมายความว่าหลายองค์กรใช้โครงสร้างพื้นฐานเดียวกัน อาจทำให้ tenant หนึ่งเข้าถึงข้อมูลของอีก tenant ได้"
+},
+{
+  id:19, topic:"Exam Topic 1",
+  en:"A security engineer is hardening solutions to reduce application vulnerabilities. Which TWO should be implemented FIRST?",
+  th:"วิศวกรความปลอดภัยกำลัง harden solutions เพื่อลดช่องโหว่ ควรทำ 2 อย่างใดก่อน?",
+  options:["A. Auto-update","B. HTTP headers","C. Secure cookies","D. Third-party updates","E. Full disk encryption","F. Sandboxing","G. Hardware encryption"],
+  answer:"AF",
+  explainEN:"Auto-update keeps apps patched with latest fixes. Sandboxing isolates apps from other processes, limiting damage from breaches.",
+  explainTH:"Auto-update ช่วยให้แอปได้รับ patch ล่าสุด Sandboxing แยกแอปจาก process อื่นเพื่อจำกัดความเสียหายจากการ breach"
+},
+{
+  id:20, topic:"Exam Topic 1",
+  en:"A financial institution wants to store data in cloud but manipulate it while encrypted, preventing the CSP from deciphering it. Which cryptographic technique?",
+  th:"สถาบันการเงินต้องการเก็บข้อมูลในคลาวด์แต่จัดการได้ขณะเข้ารหัส ป้องกัน CSP อ่านข้อมูล ใช้เทคนิค cryptographic ใด?",
+  options:["A. Asymmetric","B. Symmetric","C. Homomorphic","D. Ephemeral"],
+  answer:"C",
+  explainEN:"Homomorphic encryption allows data to be accessed and manipulated while still encrypted, preventing the cloud provider from deciphering it.",
+  explainTH:"Homomorphic encryption ให้เข้าถึงและจัดการข้อมูลได้ขณะยังเข้ารหัสอยู่ ป้องกันผู้ให้บริการคลาวด์อ่านข้อมูล"
+},
+{
+  id:21, topic:"Exam Topic 1",
+  en:"Which technology is used to actively monitor for specific file types being transmitted on the network?",
+  th:"เทคโนโลยีใดใช้ตรวจสอบประเภทไฟล์เฉพาะที่ส่งผ่านเครือข่ายอย่าง active?",
+  options:["A. File integrity monitoring","B. Honeynets","C. Tcpreplay","D. Data loss prevention"],
+  answer:"D",
+  explainEN:"DLP actively monitors for specific file types on the network to prevent unauthorized transfer of sensitive information.",
+  explainTH:"DLP ตรวจสอบประเภทไฟล์เฉพาะบนเครือข่ายอย่าง active เพื่อป้องกันการถ่ายโอนข้อมูลที่ไม่ได้รับอนุญาต"
+},
+{
+  id:22, topic:"Exam Topic 1",
+  en:"Which environment utilizes dummy data and is MOST likely installed locally, allowing direct assessment and easy modification with each build?",
+  th:"environment ใดใช้ dummy data และมักติดตั้งในเครื่องเพื่อประเมินและแก้ไขได้ง่ายในแต่ละ build?",
+  options:["A. Production","B. Test","C. Staging","D. Development"],
+  answer:"D",
+  explainEN:"The development environment uses dummy data and is typically installed locally for easy access and modification with each build.",
+  explainTH:"Development environment ใช้ dummy data และมักติดตั้งในเครื่องเพื่อให้เข้าถึงและแก้ไขได้ง่ายในแต่ละ build"
+},
+{
+  id:23, topic:"Exam Topic 1",
+  en:"An employee receives an email saying he won the lottery with a link requesting personal details. Which type of email is this?",
+  th:"พนักงานได้รับอีเมลว่าถูกลอตเตอรี่ มีลิงก์ขอข้อมูลส่วนตัว นี่คืออีเมลประเภทใด?",
+  options:["A. Spear phishing","B. Whaling","C. Phishing","D. Vishing"],
+  answer:"C",
+  explainEN:"Phishing uses fraudulent emails to trick users into revealing sensitive information, targeting a large number of users indiscriminately.",
+  explainTH:"Phishing ใช้อีเมลปลอมเพื่อหลอกผู้ใช้ให้เปิดเผยข้อมูลสำคัญ โดยกำหนดเป้าหมายไปที่ผู้ใช้จำนวนมากแบบไม่เจาะจง"
+},
+{
+  id:24, topic:"Exam Topic 1",
+  en:"A company discovered unauthorized devices on its WiFi. Which TWO configurations should be enabled to improve security?",
+  th:"บริษัทพบอุปกรณ์ที่ไม่ได้รับอนุญาตบน WiFi ควรเปิดใช้การตั้งค่า 2 อย่างใดเพื่อเพิ่มความปลอดภัย?",
+  options:["A. RADIUS","B. PEAP","C. WPS","D. WEP-EKIP","E. SSL","F. WPA2-PSK"],
+  answer:"AF",
+  explainEN:"RADIUS provides strong authentication and authorization. WPA2-PSK uses stronger encryption and requires a pre-shared key for network access.",
+  explainTH:"RADIUS ให้การ authentication ที่แข็งแกร่ง WPA2-PSK ใช้การเข้ารหัสที่แรงกว่าและต้องใช้ pre-shared key"
+},
+{
+  id:25, topic:"Exam Topic 1",
+  en:"Logs show 'User account tomcat wrong password' — attacker learned service account name. What would have prevented this?",
+  th:"Log แสดง 'User account tomcat wrong password' — attacker รู้ชื่อ service account ข้อใดจะป้องกันสิ่งนี้ได้?",
+  options:["A. Race condition testing","B. Proper error handling","C. Forward web server logs to a SIEM","D. Input sanitization"],
+  answer:"D",
+  explainEN:"Input sanitization removes potentially harmful characters from user input, reducing the likelihood of injection attacks revealing account names.",
+  explainTH:"Input sanitization ลบอักขระที่อาจเป็นอันตรายจาก user input ลดโอกาสที่ injection attacks จะเปิดเผยชื่อ account"
+},
+{
+  id:26, topic:"Exam Topic 1",
+  en:"Multiple authentication failures from different usernames sharing the same source IP. Which password attack is happening?",
+  th:"พบ authentication failures หลายครั้งจาก username ต่างๆ ที่มี source IP เดียวกัน เป็นการโจมตี password แบบใด?",
+  options:["A. Dictionary","B. Rainbow table","C. Spraying","D. Brute-force"],
+  answer:"C",
+  explainEN:"Password spraying tries a few common passwords against many usernames from the same IP to avoid account lockouts.",
+  explainTH:"Password spraying ลองใช้ password ทั่วไปไม่กี่ตัวกับ username จำนวนมากจาก IP เดียวกัน เพื่อหลีกเลี่ยง account lockout"
+},
+{
+  id:27, topic:"Exam Topic 1",
+  en:"Web server log shows 'http://comptia.org/../../../../etc/passwd'. Which attack and mitigation?",
+  th:"Log เว็บเซิร์ฟเวอร์แสดง path traversal ไปยัง /etc/passwd เป็นการโจมตีแบบใดและป้องกันอย่างไร?",
+  options:["A. XSS","B. Implement a SIEM","C. Directory traversal, implement a WAF","D. Implement an IPS","E. Directory traversal, implement a WAF","F. SQL injection, implement an IDS"],
+  answer:"C",
+  explainEN:"Directory traversal allows accessing files outside the web root. A WAF can detect and block such attempts.",
+  explainTH:"Directory traversal ช่วยให้เข้าถึงไฟล์นอก web root ได้ WAF สามารถตรวจจับและบล็อกความพยายามดังกล่าว"
+},
+{
+  id:28, topic:"Exam Topic 1",
+  en:"An organization acquired ISO 27001 certification. What is MOST likely a benefit?",
+  th:"องค์กรได้รับการรับรอง ISO 27001 ประโยชน์ที่เป็นไปได้มากที่สุดคืออะไร?",
+  options:["A. Sharing of digital forensics data","B. Insurance in case of data breach","C. Complimentary training resources","D. Working with foreign entities needing security clearance","E. Assures customers the organization meets security standards"],
+  answer:"E",
+  explainEN:"ISO 27001 certification assures customers that the organization meets security standards and follows best practices for information security management.",
+  explainTH:"การรับรอง ISO 27001 รับประกันให้ลูกค้าว่าองค์กรปฏิบัติตามมาตรฐานความปลอดภัยและ best practices ด้านการจัดการความปลอดภัยข้อมูล"
+},
+{
+  id:29, topic:"Exam Topic 1",
+  en:"A laptop freezes, responds slowly, mouse pointer disappears. Task list shows 'Explorer.exe' at 99.7% CPU. What is MOST likely?",
+  th:"แล็ปท็อปค้าง ตอบสนองช้า เมาส์หาย Task list แสดง Explorer.exe ใช้ CPU 99.7% น่าจะเป็นอะไร?",
+  options:["A. RAT","B. PUP","C. Spyware","D. Keylogger"],
+  answer:"C",
+  explainEN:"Spyware can cause slow performance, freezing, and mouse pointer disappearance. The suspicious process indicates spyware activity.",
+  explainTH:"Spyware ทำให้ประสิทธิภาพลดลง ค้าง และเมาส์หาย process ที่น่าสงสัยบ่งบอกถึงกิจกรรมของ Spyware"
+},
+{
+  id:30, topic:"Exam Topic 1",
+  en:"Which TWO are the MOST likely vectors for unauthorized inclusion of vulnerable code in final software releases?",
+  th:"ข้อใด 2 ข้อเป็นช่องทางที่เป็นไปได้มากที่สุดสำหรับการรวมโค้ดที่มีช่องโหว่ใน software release สุดท้าย?",
+  options:["A. Unsecure protocols","B. Penetration-testing utilities","C. Weak passwords","D. Included third-party libraries","E. Vendors/supply chain","F. Outdated anti-malware software"],
+  answer:"DE",
+  explainEN:"Third-party libraries and vendor/supply chain are the most likely vectors for introducing vulnerable code into software releases.",
+  explainTH:"Third-party libraries และ vendor/supply chain เป็นช่องทางที่เป็นไปได้มากที่สุดในการนำโค้ดที่มีช่องโหว่เข้ามาใน software release"
+},
+{
+  id:31, topic:"Exam Topic 1",
+  en:"Which is required for an IDS and WAF to be effective on HTTPS traffic?",
+  th:"อะไรจำเป็นเพื่อให้ IDS และ WAF ทำงานได้ผลกับ HTTPS traffic?",
+  options:["A. Hashing","B. DNS sinkhole","C. TLS inspection","D. Data masking"],
+  answer:"C",
+  explainEN:"TLS inspection decrypts HTTPS traffic so the IDS and WAF can inspect the content and apply security rules.",
+  explainTH:"TLS inspection ถอดรหัส HTTPS traffic เพื่อให้ IDS และ WAF ตรวจสอบเนื้อหาและใช้กฎความปลอดภัย"
+},
+{
+  id:32, topic:"Exam Topic 1",
+  en:"A security manager needs to assess a vendor's security posture but cannot audit them. What should be requested?",
+  th:"ผู้จัดการความปลอดภัยต้องประเมินความปลอดภัยของ vendor แต่ไม่สามารถ audit ได้ ควรขออะไร?",
+  options:["A. A service-level agreement","B. A business partnership agreement","C. A SOC 2 Type 2 report","D. A memorandum of understanding"],
+  answer:"C",
+  explainEN:"SOC 2 Type 2 report evaluates vendor controls over time for security, availability, processing integrity, confidentiality, and privacy.",
+  explainTH:"SOC 2 Type 2 report ประเมิน controls ของ vendor ตลอดระยะเวลาด้านความปลอดภัย ความพร้อมใช้งาน ความสมบูรณ์ ความลับ และความเป็นส่วนตัว"
+},
+{
+  id:33, topic:"Exam Topic 1",
+  en:"A file has overly permissive permissions. Which tool reduces permissions and removes set-user-ID?",
+  th:"ไฟล์มี permissions เปิดมากเกินไป เครื่องมือใดลด permissions และลบ set-user-ID?",
+  options:["A. ls","B. chflags","C. chmod","D. lsof","E. setuid"],
+  answer:"C",
+  explainEN:"The chmod command changes file permissions and can remove the set-user-ID bit from files.",
+  explainTH:"คำสั่ง chmod เปลี่ยน permissions ของไฟล์และสามารถลบ set-user-ID bit ได้"
+},
+{
+  id:34, topic:"Exam Topic 1",
+  en:"In lessons-learned phase, the SOC needs to detect if a previous incident reoccurs. What allows alerting?",
+  th:"ในขั้น lessons-learned SOC ต้องตรวจจับว่าเหตุการณ์ก่อนหน้าเกิดซ้ำหรือไม่ ข้อใดช่วยแจ้งเตือน?",
+  options:["A. Creating a playbook within the SOAR","B. Implementing rules in the NGFW","C. Updating the DLP hash database","D. Publishing a new CRL with revoked certificates"],
+  answer:"A",
+  explainEN:"A SOAR playbook automates detection and response actions based on previous incident characteristics.",
+  explainTH:"SOAR playbook ทำให้การตรวจจับและตอบสนองเป็นอัตโนมัติตามลักษณะของเหตุการณ์ก่อนหน้า"
+},
+{
+  id:35, topic:"Exam Topic 1",
+  en:"A backdoor was found in containerized environment from a public registry image. BEST prevention?",
+  th:"พบ backdoor ในสภาพแวดล้อม container จาก image ใน public registry วิธีป้องกันที่ดีที่สุด?",
+  options:["A. Enforce use of a controlled trusted source of container images","B. Deploy an IPS for containers","C. Vulnerability scan before introduction","D. Create a dedicated VPC"],
+  answer:"A",
+  explainEN:"Enforcing a controlled trusted source of container images prevents untrusted or compromised images from being used.",
+  explainTH:"การบังคับใช้แหล่ง container images ที่เชื่อถือได้ป้องกัน images ที่ไม่น่าเชื่อถือหรือถูก compromise"
+},
+{
+  id:36, topic:"Exam Topic 1",
+  en:"A company uses legacy software for a critical service. What BEST explains the risk?",
+  th:"บริษัทใช้ legacy software สำหรับบริการสำคัญ ข้อใดอธิบายความเสี่ยงได้ดีที่สุด?",
+  options:["A. Default system configuration","B. Unsecure protocols","C. Lack of vendor support","D. Weak encryption"],
+  answer:"C",
+  explainEN:"Legacy software often lacks vendor support, meaning no security patches or upgrades, leaving the system vulnerable.",
+  explainTH:"Legacy software มักไม่ได้รับการ support จาก vendor หมายความว่าไม่มี security patches ทำให้ระบบมีช่องโหว่"
+},
+{
+  id:37, topic:"Exam Topic 1",
+  en:"A vulnerability scan found code injection via a web form. BEST remediation?",
+  th:"การสแกนช่องโหว่พบ code injection ผ่าน web form วิธีแก้ไขที่ดีที่สุด?",
+  options:["A. Implement input validations","B. Deploy MFA","C. Utilize a WAF","D. Configure HIPS"],
+  answer:"A",
+  explainEN:"Input validations verify the type and format of user input, preventing code injection attacks.",
+  explainTH:"Input validations ตรวจสอบประเภทและรูปแบบของ user input ป้องกัน code injection attacks"
+},
+{
+  id:38, topic:"Exam Topic 1",
+  en:"An organization wants seamless authentication to its applications. What should be employed?",
+  th:"องค์กรต้องการ authentication แบบไร้รอยต่อกับแอปพลิเคชัน ควรใช้อะไร?",
+  options:["A. SOAP","B. SAML","C. SSO","D. Kerberos"],
+  answer:"C",
+  explainEN:"Single Sign-On (SSO) allows users to access multiple applications with a single set of login credentials.",
+  explainTH:"Single Sign-On (SSO) ให้ผู้ใช้เข้าถึงหลายแอปพลิเคชันด้วย credentials ชุดเดียว"
+},
+{
+  id:39, topic:"Exam Topic 1",
+  en:"A website IP is 166.18.75.6 but nslookup shows 151.191.122.115. What is occurring?",
+  th:"เว็บไซต์มี IP 166.18.75.6 แต่ nslookup แสดง 151.191.122.115 เกิดอะไรขึ้น?",
+  options:["A. DoS attack","B. ARP poisoning","C. DNS spoofing","D. NXDOMAIN attack"],
+  answer:"C",
+  explainEN:"DNS spoofing compromises DNS resolution, pointing the domain to a malicious IP address.",
+  explainTH:"DNS spoofing ทำให้ DNS resolution ถูก compromise ชี้ domain ไปยัง IP address ที่เป็นอันตราย"
+},
+{
+  id:40, topic:"Exam Topic 1",
+  en:"After segmenting the network, the manager wants to control traffic between segments. What should be used?",
+  th:"หลังจากแบ่ง segment เครือข่าย ผู้จัดการต้องการควบคุม traffic ระหว่าง segment ควรใช้อะไร?",
+  options:["A. A DMZ","B. A VPN","C. A VLAN","D. An ACL"],
+  answer:"D",
+  explainEN:"An ACL (Access Control List) is a set of rules that permit or deny traffic based on characteristics like IP addresses, protocol type, and port number.",
+  explainTH:"ACL (Access Control List) คือชุดกฎที่อนุญาตหรือปฏิเสธ traffic ตามลักษณะเช่น IP addresses, protocol และ port number"
+},
+{
+  id:41, topic:"Exam Topic 1",
+  en:"Which condition impacts data sovereignty?",
+  th:"เงื่อนไขใดส่งผลต่อ data sovereignty?",
+  options:["A. Rights management","B. Criminal investigations","C. Healthcare data","D. International operations"],
+  answer:"D",
+  explainEN:"International operations impact data sovereignty because companies operating in multiple countries must comply with different local laws.",
+  explainTH:"International operations ส่งผลต่อ data sovereignty เพราะบริษัทที่ดำเนินงานในหลายประเทศต้องปฏิบัติตามกฎหมายท้องถิ่นที่แตกต่างกัน"
+},
+{
+  id:42, topic:"Exam Topic 1",
+  en:"A phishing email with a malicious document targets the CEO. What should the analyst do to understand the threat and retrieve IoCs?",
+  th:"อีเมล phishing มีเอกสารอันตรายส่งถึง CEO analyst ควรทำอะไรเพื่อเข้าใจภัยคุกคามและดึง IoCs?",
+  options:["A. Vulnerability scan against CEO's computer","B. Install a sandbox to run the malicious payload","C. Perform a traceroute","D. Use netstat to check communication"],
+  answer:"B",
+  explainEN:"A sandbox safely executes the malicious payload to understand the threat and retrieve IoCs without risking the real environment.",
+  explainTH:"Sandbox รันโปรแกรมอันตรายอย่างปลอดภัยเพื่อเข้าใจภัยคุกคามและดึง IoCs โดยไม่เสี่ยงต่อสภาพแวดล้อมจริง"
+},
+{
+  id:43, topic:"Exam Topic 1",
+  en:"Which is BEST for a technician to review to determine total risk an organization can bear for a 'cloud-first' strategy?",
+  th:"อะไรดีที่สุดที่ช่างเทคนิคควรตรวจสอบเพื่อกำหนดความเสี่ยงรวมที่องค์กรรับได้สำหรับกลยุทธ์ 'cloud-first'?",
+  options:["A. Risk matrix","B. Risk tolerance","C. Risk register","D. Risk appetite"],
+  answer:"B",
+  explainEN:"Risk tolerance defines the amount of risk an organization is willing to accept, which determines the cloud-first adoption strategy.",
+  explainTH:"Risk tolerance กำหนดปริมาณความเสี่ยงที่องค์กรยอมรับได้ ซึ่งกำหนดกลยุทธ์การนำ cloud-first มาใช้"
+},
+{
+  id:44, topic:"Exam Topic 1",
+  en:"The CISO wants to outsource URL filtering and provide protection even when devices are away from the office. What to choose?",
+  th:"CISO ต้องการ outsource URL filtering และให้การป้องกันแม้อุปกรณ์อยู่นอกสำนักงาน ควรเลือกอะไร?",
+  options:["A. CASB","B. Next-generation SWG","C. NGFW","D. Web-application firewall"],
+  answer:"B",
+  explainEN:"Next-generation Secure Web Gateway (SWG) provides cloud-based URL filtering and categorization, protecting devices anywhere.",
+  explainTH:"Next-generation SWG ให้บริการ URL filtering แบบ cloud-based ป้องกันอุปกรณ์ได้ทุกที่"
+},
+{
+  id:45, topic:"Exam Topic 1",
+  en:"SIEM alert says malware on a host was not automatically deleted. BEST action for the analyst?",
+  th:"SIEM แจ้งเตือนว่า malware บน host ไม่ได้ถูกลบอัตโนมัติ analyst ควรทำอะไร?",
+  options:["A. Add deny-all rule in network ACL","B. Network-wide scan for other instances","C. Quarantine the host from the network","D. Revoke client's network access certificates"],
+  answer:"C",
+  explainEN:"Quarantining the host prevents malware from spreading to other parts of the network.",
+  explainTH:"การ quarantine host ป้องกัน malware จากการแพร่กระจายไปยังส่วนอื่นของเครือข่าย"
+},
+{
+  id:46, topic:"Exam Topic 1",
+  en:"Multiple admin accounts compromised via brute-force then suspicious logins from unfamiliar locations. BEST data source to assess?",
+  th:"หลาย admin accounts ถูก compromise ผ่าน brute-force แล้วมี login ที่น่าสงสัยจากที่ไม่คุ้นเคย แหล่งข้อมูลใดดีที่สุดในการประเมิน?",
+  options:["A. User behavior analytics","B. Dump files","C. Bandwidth monitors","D. Protocol analyzer output"],
+  answer:"A",
+  explainEN:"User behavior analytics (UBA) can identify abnormal activity like repeated brute-force attacks and logins from unfamiliar locations.",
+  explainTH:"User behavior analytics (UBA) สามารถระบุกิจกรรมผิดปกติ เช่น brute-force attacks ซ้ำๆ และ login จากสถานที่ไม่คุ้นเคย"
+},
+{
+  id:47, topic:"Exam Topic 1",
+  en:"Hackers obtained unfavorable pictures from the CEO's workstation and threaten to release them. What is impacted MOST?",
+  th:"แฮกเกอร์ได้ภาพที่ไม่ดีจากเครื่องของ CEO และขู่จะเผยแพร่ สิ่งใดได้รับผลกระทบมากที่สุด?",
+  options:["A. Identity theft","B. Data loss","C. Data exfiltration","D. Reputation"],
+  answer:"D",
+  explainEN:"Releasing unfavorable pictures would damage the CEO's and company's reputation, affecting trust and business relationships.",
+  explainTH:"การเผยแพร่ภาพที่ไม่ดีจะทำลายชื่อเสียงของ CEO และบริษัท ส่งผลต่อความน่าเชื่อถือและความสัมพันธ์ทางธุรกิจ"
+},
+{
+  id:48, topic:"Exam Topic 1",
+  en:"A company's main website was redirected to an attacker's server to harvest credentials. What should prevent this?",
+  th:"เว็บไซต์หลักของบริษัทถูก redirect ไปยังเซิร์ฟเวอร์ของ attacker เพื่อขโมย credentials ควรป้องกันอย่างไร?",
+  options:["A. IPSec","B. SSL/TLS","C. DNSSEC","D. S/MIME"],
+  answer:"C",
+  explainEN:"DNSSEC adds digital signatures to DNS records, preventing DNS hijacking and ensuring records are not modified in transit.",
+  explainTH:"DNSSEC เพิ่ม digital signatures ให้กับ DNS records ป้องกัน DNS hijacking และรับประกันว่า records ไม่ถูกแก้ไขระหว่างทาง"
+},
+{
+  id:49, topic:"Exam Topic 1",
+  en:"A security engineer needs a network segment for servers requiring connections from untrusted networks. What to implement?",
+  th:"วิศวกรความปลอดภัยต้องการ network segment สำหรับเซิร์ฟเวอร์ที่ต้องรับ connection จากเครือข่ายที่ไม่น่าเชื่อถือ ควรใช้อะไร?",
+  options:["A. An air gap","B. A hot site","C. A VLAN","D. A screened subnet"],
+  answer:"D",
+  explainEN:"A screened subnet (DMZ) is placed between two firewalls, providing security screening for traffic between trusted and untrusted networks.",
+  explainTH:"Screened subnet (DMZ) วางระหว่าง firewall สองตัว กรอง traffic ระหว่างเครือข่ายที่น่าเชื่อถือและไม่น่าเชื่อถือ"
+},
+{
+  id:50, topic:"Exam Topic 1",
+  en:"Users who left 6 months ago still have access. What would have prevented this compliance violation?",
+  th:"ผู้ใช้ที่ลาออกไป 6 เดือนก่อนยังมีสิทธิ์เข้าถึง ข้อใดจะป้องกันการละเมิด compliance นี้?",
+  options:["A. Account audits","B. AUP","C. Password reuse","D. SSO"],
+  answer:"A",
+  explainEN:"Account audits periodically review user accounts to ensure access is granted and revoked properly according to policies.",
+  explainTH:"Account audits ตรวจสอบ user accounts เป็นระยะเพื่อให้แน่ใจว่าสิทธิ์เข้าถึงถูกให้และเพิกถอนอย่างถูกต้อง"
+},
+{
+  id:51, topic:"Exam Topic 1",
+  en:"An employee reused passwords and account was accessed from a hostile foreign nation. Which TWO prevent reoccurrence?",
+  th:"พนักงานใช้ password ซ้ำและ account ถูกเข้าถึงจากประเทศที่เป็นศัตรู ข้อใด 2 อย่างป้องกันการเกิดซ้ำ?",
+  options:["A. Geographic dispersal","B. Password complexity","C. Password history","D. Geotagging","E. Password lockout","F. Geofencing"],
+  answer:"CF",
+  explainEN:"Password history prevents reusing previous passwords. Geofencing restricts access based on geographic location.",
+  explainTH:"Password history ป้องกันการใช้ password เก่าซ้ำ Geofencing จำกัดการเข้าถึงตามตำแหน่งภูมิศาสตร์"
+},
+{
+  id:52, topic:"Exam Topic 1",
+  en:"SIEM detected suspicious traffic on a workstation with botnet malware and escalated privileges. Which group to report to?",
+  th:"SIEM ตรวจพบ traffic ที่น่าสงสัยบน workstation ที่มี botnet malware และ privileges ถูก escalate ควรรายงานกลุ่มใด?",
+  options:["A. The NOC team","B. The vulnerability management team","C. The CIRT","D. The red team"],
+  answer:"C",
+  explainEN:"The Computer Incident Response Team (CIRT) handles incidents and ensures the incident response plan is followed.",
+  explainTH:"Computer Incident Response Team (CIRT) จัดการเหตุการณ์และดูแลให้ incident response plan ถูกปฏิบัติตาม"
+},
+{
+  id:53, topic:"Exam Topic 1",
+  en:"A company wants to share cyberthreat intelligence data with outside security partners. Which to implement?",
+  th:"บริษัทต้องการแชร์ข้อมูล cyberthreat intelligence กับพันธมิตรด้านความปลอดภัยภายนอก ควรใช้อะไร?",
+  options:["A. TAXII","B. TLP","C. TTP","D. STIX"],
+  answer:"A",
+  explainEN:"TAXII (Trusted Automated Exchange of Intelligence Information) enables automated sharing of cyber threat intelligence between organizations.",
+  explainTH:"TAXII ช่วยให้แชร์ข้อมูล cyber threat intelligence ระหว่างองค์กรแบบอัตโนมัติ"
+},
+{
+  id:54, topic:"Exam Topic 1",
+  en:"Suspicious activity on financial app: irregular transactions, frequent password changes, compromised jump box, NTLM auth. Which attack?",
+  th:"กิจกรรมน่าสงสัยบนแอปการเงิน: ธุรกรรมผิดปกติ เปลี่ยน password บ่อย jump box ถูก compromise ใช้ NTLM auth เป็นการโจมตีแบบใด?",
+  options:["A. Pass-the-hash","B. Brute-force","C. Directory traversal","D. Replay"],
+  answer:"A",
+  explainEN:"Pass-the-hash steals hashed passwords from memory and uses them to authenticate without the plaintext password, common with NTLM.",
+  explainTH:"Pass-the-hash ขโมย hashed passwords จาก memory และใช้ authenticate โดยไม่ต้องใช้ plaintext password พบบ่อยกับ NTLM"
+},
+{
+  id:55, topic:"Exam Topic 1",
+  en:"A security analyst needs an overview of host vulnerabilities. BEST scan type to discover vulnerable services?",
+  th:"analyst ต้องการภาพรวมของช่องโหว่บน host ประเภทการสแกนใดดีที่สุดในการค้นหา service ที่มีช่องโหว่?",
+  options:["A. Non-credentialed","B. Web application","C. Privileged","D. Internal"],
+  answer:"C",
+  explainEN:"Privileged (credentialed) scanning logs in with valid credentials to examine vulnerabilities from a trusted user perspective, providing more comprehensive results.",
+  explainTH:"Privileged scanning ใช้ credentials ที่ถูกต้องเพื่อตรวจสอบช่องโหว่จากมุมมองผู้ใช้ที่เชื่อถือได้ ให้ผลลัพธ์ที่ครอบคลุมกว่า"
+},
+{
+  id:56, topic:"Exam Topic 2",
+  en:"A financial institution joined a bug bounty program. Who are they working with?",
+  th:"สถาบันการเงินเข้าร่วม bug bounty program พวกเขาทำงานร่วมกับใคร?",
+  options:["A. Script kiddie","B. Insider threats","C. Malicious actor","D. Authorized hacker"],
+  answer:"D",
+  explainEN:"An authorized hacker (ethical hacker/white hat) finds and reports security issues with the owner's permission following bug bounty rules.",
+  explainTH:"Authorized hacker (ethical hacker/white hat) ค้นหาและรายงานปัญหาความปลอดภัยโดยได้รับอนุญาตจากเจ้าของตาม bug bounty rules"
+},
+{
+  id:57, topic:"Exam Topic 2",
+  en:"Multiple beaconing activities to a malicious domain hosting malware. BEST technology to correlate activities between endpoints?",
+  th:"พบ beaconing activities หลายครั้งไปยัง domain อันตรายที่โฮสต์ malware เทคโนโลยีใดดีที่สุดในการ correlate กิจกรรมระหว่าง endpoints?",
+  options:["A. Firewall","B. SIEM","C. IPS","D. Protocol analyzer"],
+  answer:"B",
+  explainEN:"SIEM collects, analyzes, and correlates data from multiple sources to detect and alert on security events.",
+  explainTH:"SIEM เก็บ วิเคราะห์ และ correlate ข้อมูลจากหลายแหล่งเพื่อตรวจจับและแจ้งเตือนเหตุการณ์ด้านความปลอดภัย"
+},
+{
+  id:58, topic:"Exam Topic 2",
+  en:"A company upgraded authentication infrastructure with more computing power. What should they use for more secure credentials?",
+  th:"บริษัทอัปเกรดระบบ authentication มี computing power มากขึ้น ควรใช้อะไรเพื่อ credentials ที่ปลอดภัยกว่า?",
+  options:["A. Blockchain","B. Salting","C. Quantum","D. Digital signature"],
+  answer:"B",
+  explainEN:"Salting adds random data to credentials before hashing, making them more resistant to brute-force and rainbow table attacks.",
+  explainTH:"Salting เพิ่มข้อมูลสุ่มให้ credentials ก่อน hashing ทำให้ทนทานต่อ brute-force และ rainbow table attacks มากขึ้น"
+},
+{
+  id:59, topic:"Exam Topic 2",
+  en:"A security architect needs centralized key management across multicloud with reduced latency. BEST solution?",
+  th:"security architect ต้องการ key management แบบรวมศูนย์ข้าม multicloud ด้วย latency ต่ำ วิธีที่ดีที่สุด?",
+  options:["A. Trusted Platform Module","B. IaaS","C. HSMaaS","D. PaaS"],
+  answer:"C",
+  explainEN:"HSMaaS (Hardware Security Module as a Service) provides cloud-based, centralized key management across multiple cloud providers.",
+  explainTH:"HSMaaS ให้บริการ key management แบบรวมศูนย์บน cloud ข้ามผู้ให้บริการหลายราย"
+},
+{
+  id:60, topic:"Exam Topic 2",
+  en:"Application development teams asked about patches, open-source code, external access, password standards. These are part of?",
+  th:"ทีมพัฒนาถูกถามเกี่ยวกับ patches, open-source code, external access, password standards คำถามเหล่านี้เป็นส่วนของ?",
+  options:["A. Risk control self-assessment","B. Risk management strategy","C. Risk acceptance","D. Risk matrix"],
+  answer:"A",
+  explainEN:"Risk control self-assessment (RCSA) asks relevant questions to assess existing controls and identify gaps.",
+  explainTH:"Risk control self-assessment (RCSA) ถามคำถามที่เกี่ยวข้องเพื่อประเมิน controls ที่มีอยู่และระบุช่องว่าง"
+},
+{
+  id:61, topic:"Exam Topic 2",
+  en:"A security admin performs weekly vulnerability scans on cloud assets with detailed reports. What describes this activity?",
+  th:"admin สแกนช่องโหว่ cloud assets ทุกสัปดาห์พร้อมรายงานรายละเอียด กิจกรรมนี้คืออะไร?",
+  options:["A. Continuous deployment","B. Continuous integration","C. Continuous validation","D. Continuous monitoring"],
+  answer:"C",
+  explainEN:"Continuous validation involves regular automated tests to verify system security and functionality.",
+  explainTH:"Continuous validation ทำการทดสอบอัตโนมัติเป็นประจำเพื่อตรวจสอบความปลอดภัยและการทำงานของระบบ"
+},
+{
+  id:62, topic:"Exam Topic 2",
+  en:"Malicious software installed on a server using admin credentials. Admin used Telnet regularly. What most likely occurred?",
+  th:"มีการติดตั้ง malware บนเซิร์ฟเวอร์โดยใช้ admin credentials Admin ใช้ Telnet เป็นประจำ เกิดอะไรขึ้น?",
+  options:["A. Spraying attack","B. Packet capture tool stole the password","C. Remote-access Trojan","D. Directory attack"],
+  answer:"B",
+  explainEN:"Telnet transmits data in cleartext, allowing anyone intercepting traffic to read the password using a packet capture tool.",
+  explainTH:"Telnet ส่งข้อมูลแบบ cleartext ทำให้ใครก็ตามที่ดักจับ traffic สามารถอ่าน password ได้ด้วย packet capture tool"
+},
+{
+  id:63, topic:"Exam Topic 2",
+  en:"A company wants to deploy decoy systems to entice threat actors. Which BEST describes these systems?",
+  th:"บริษัทต้องการติดตั้งระบบล่อเพื่อดึงดูด threat actors ข้อใดอธิบายระบบเหล่านี้ได้ดีที่สุด?",
+  options:["A. DNS sinkholes","B. Honey pots","C. Virtual machines","D. Neural networks"],
+  answer:"B",
+  explainEN:"Honey pots are decoy systems designed to attract and deceive threat actors, collecting information about their motives and techniques.",
+  explainTH:"Honey pots เป็นระบบล่อที่ออกแบบมาเพื่อดึงดูดและหลอก threat actors เก็บข้อมูลเกี่ยวกับแรงจูงใจและเทคนิค"
+},
+{
+  id:64, topic:"Exam Topic 2",
+  en:"A network manager wants a high availability pair for the data center firewall. This is to:",
+  th:"ผู้จัดการเครือข่ายต้องการ high availability pair สำหรับ firewall ใน data center เพื่อ:",
+  options:["A. Decrease mean time between failures","B. Remove the single point of failure","C. Cut down mean time to repair","D. Reduce recovery time objective"],
+  answer:"B",
+  explainEN:"A high availability pair removes the single point of failure by providing redundancy and failover capabilities.",
+  explainTH:"High availability pair ขจัด single point of failure โดยให้ redundancy และความสามารถ failover"
+},
+{
+  id:65, topic:"Exam Topic 2",
+  en:"Company A needs a secure communication channel with Company B 3,000 miles away. Which concept helps?",
+  th:"บริษัท A ต้องการช่องทางสื่อสารที่ปลอดภัยกับบริษัท B ที่อยู่ห่าง 3,000 ไมล์ แนวคิดใดช่วยได้?",
+  options:["A. Digital signatures","B. Key exchange","C. Salting","D. PPTP"],
+  answer:"B",
+  explainEN:"Key exchange securely shares cryptographic keys between two parties over a public network to establish encrypted communication.",
+  explainTH:"Key exchange แชร์ cryptographic keys อย่างปลอดภัยระหว่างสองฝ่ายผ่านเครือข่ายสาธารณะเพื่อสร้างการสื่อสารที่เข้ารหัส"
+},
+{
+  id:66, topic:"Exam Topic 2",
+  en:"Which resource finds the most common web-application vulnerabilities?",
+  th:"แหล่งข้อมูลใดค้นหาช่องโหว่ web application ที่พบบ่อยที่สุด?",
+  options:["A. OWASP","B. MITRE ATT&CK","C. Cyber Kill Chain","D. SDLC"],
+  answer:"A",
+  explainEN:"OWASP publishes a list of the most common web application vulnerabilities with recommendations for prevention.",
+  explainTH:"OWASP เผยแพร่รายการช่องโหว่ web application ที่พบบ่อยที่สุดพร้อมคำแนะนำในการป้องกัน"
+},
+{
+  id:67, topic:"Exam Topic 2",
+  en:"Organization concerned about hackers entering facility and plugging in Kali Linux box. Which TWO first defenses?",
+  th:"องค์กรกังวลเรื่องแฮกเกอร์เข้ามาในอาคารและเสียบ Kali Linux box ข้อใด 2 อย่างเป็นแนวป้องกันแรก?",
+  options:["A. MAC filtering","B. Zero trust segmentation","C. Network access control","D. Access control vestibules","E. Guards","F. Bollards"],
+  answer:"AC",
+  explainEN:"MAC filtering allows/denies network access by MAC address. Network Access Control (NAC) restricts access based on device identity and security posture.",
+  explainTH:"MAC filtering อนุญาต/ปฏิเสธการเข้าถึงเครือข่ายตาม MAC address NAC จำกัดการเข้าถึงตามตัวตนและสถานะความปลอดภัยของอุปกรณ์"
+},
+{
+  id:68, topic:"Exam Topic 2",
+  en:"Primary security concern for setting up a BYOD program?",
+  th:"ข้อกังวลด้านความปลอดภัยหลักสำหรับโปรแกรม BYOD?",
+  options:["A. End of life","B. Buffer overflow","C. VM escape","D. Jailbreaking"],
+  answer:"D",
+  explainEN:"Jailbreaking bypasses manufacturer restrictions on mobile devices, exposing them to malware, vulnerabilities, and unauthorized access.",
+  explainTH:"Jailbreaking ข้ามข้อจำกัดของผู้ผลิตบนอุปกรณ์มือถือ ทำให้เสี่ยงต่อ malware ช่องโหว่ และการเข้าถึงที่ไม่ได้รับอนุญาต"
+},
+{
+  id:69, topic:"Exam Topic 2",
+  en:"Analyst captured 1Gb of inbound network traffic in pcap. Which tool to review it?",
+  th:"analyst จับ traffic ขาเข้า 1Gb ในรูปแบบ pcap เครื่องมือใดใช้ตรวจสอบ?",
+  options:["A. Nmap","B. CURL","C. Neat","D. Wireshark"],
+  answer:"D",
+  explainEN:"Wireshark can analyze pcap files, displaying packets, protocols, and traffic details in a graphical interface.",
+  explainTH:"Wireshark วิเคราะห์ไฟล์ pcap แสดง packets, protocols และรายละเอียด traffic ในอินเทอร์เฟซกราฟิก"
+},
+{
+  id:70, topic:"Exam Topic 2",
+  en:"A security admin provides secure access to internal networks for external partners using PSK. What is used?",
+  th:"admin ให้การเข้าถึงเครือข่ายภายในอย่างปลอดภัยสำหรับพันธมิตรภายนอกโดยใช้ PSK ใช้อะไร?",
+  options:["A. Kerberos","B. SSL/TLS","C. IPSec","D. SSH"],
+  answer:"C",
+  explainEN:"IPSec uses PSK and other parameters to create VPN connections, providing secure communication between external partners and internal networks.",
+  explainTH:"IPSec ใช้ PSK และพารามิเตอร์อื่นเพื่อสร้าง VPN connections ให้การสื่อสารที่ปลอดภัยระหว่างพันธมิตรภายนอกและเครือข่ายภายใน"
+},
+{
+  id:71, topic:"Exam Topic 2",
+  en:"OS-level configurations not in compliance with outdated hardening standards. BEST to update?",
+  th:"การตั้งค่า OS-level ไม่เป็นไปตามมาตรฐาน hardening ที่ล้าสมัย วิธีที่ดีที่สุดในการอัปเดต?",
+  options:["A. CIS benchmarks","B. GDPR guidance","C. Regional regulations","D. ISO 27001 standards"],
+  answer:"A",
+  explainEN:"CIS benchmarks are best practices for securing OS, applications, and cloud environments, updated regularly against latest threats.",
+  explainTH:"CIS benchmarks คือ best practices สำหรับรักษาความปลอดภัยของ OS, applications และ cloud environments อัปเดตสม่ำเสมอ"
+},
+{
+  id:72, topic:"Exam Topic 2",
+  en:"Company reducing risks from removable media but cannot prohibit entirely. Which approach?",
+  th:"บริษัทลดความเสี่ยงจากสื่อที่ถอดได้แต่ห้ามใช้ทั้งหมดไม่ได้ เป็นแนวทางแบบใด?",
+  options:["A. Compensating controls","B. Directive control","C. Mitigating controls","D. Physical security controls"],
+  answer:"C",
+  explainEN:"Mitigating controls reduce the impact of events that have occurred or are likely to occur, without completely preventing them.",
+  explainTH:"Mitigating controls ลดผลกระทบของเหตุการณ์ที่เกิดขึ้นแล้วหรือมีแนวโน้มจะเกิดขึ้น โดยไม่ได้ป้องกันทั้งหมด"
+},
+{
+  id:73, topic:"Exam Topic 2",
+  en:"Corporate offices destroyed by natural disaster. Setting up temporary workspace. Which plan to consult?",
+  th:"สำนักงานถูกทำลายจากภัยธรรมชาติ กำลังตั้งสำนักงานชั่วคราว ควรอ้างอิงแผนใด?",
+  options:["A. The business continuity plan","B. The risk management plan","C. The communication plan","D. The incident response plan"],
+  answer:"A",
+  explainEN:"A business continuity plan outlines how to continue critical operations during a disruption, including strategies for relocating resources.",
+  explainTH:"Business continuity plan ระบุวิธีดำเนินงานที่สำคัญต่อเนื่องระหว่างการหยุดชะงัก รวมถึงกลยุทธ์การย้ายทรัพยากร"
+},
+{
+  id:74, topic:"Exam Topic 2",
+  en:"VPN traffic goes through firewall then DLP then data center. Weakest design element?",
+  th:"VPN traffic ผ่าน firewall แล้ว DLP แล้ว data center จุดอ่อนของการออกแบบ?",
+  options:["A. DLP should integrate into NGFW","B. Split-tunnel impacts DLP","C. Encrypted VPN traffic won't be inspected","D. Two hops slow down connections"],
+  answer:"C",
+  explainEN:"Encrypted VPN traffic cannot be inspected by security devices unless decrypted first, creating a blind spot.",
+  explainTH:"Encrypted VPN traffic ไม่สามารถถูกตรวจสอบโดยอุปกรณ์ความปลอดภัยได้จนกว่าจะถอดรหัสก่อน ทำให้เกิดจุดบอด"
+},
+{
+  id:75, topic:"Exam Topic 2",
+  en:"Under-voltage events in data center from electrical grid maintenance. Most cost-effective solution?",
+  th:"เหตุการณ์ under-voltage ใน data center จากการบำรุงรักษาระบบไฟฟ้า วิธีแก้ที่คุ้มค่าที่สุด?",
+  options:["A. UPS with battery backup","B. Managed PDUs","C. A generator","D. Dual power supplies"],
+  answer:"A",
+  explainEN:"UPS with battery backup is the most cost-effective solution for under-voltage events, switching to battery power during voltage drops.",
+  explainTH:"UPS พร้อม battery backup เป็นวิธีที่คุ้มค่าที่สุดสำหรับเหตุการณ์ under-voltage สลับไปใช้พลังงานแบตเตอรี่เมื่อแรงดันตก"
+},
+{
+  id:76, topic:"Exam Topic 2",
+  en:"User credentials could be exfiltrated and users reuse credentials. Which policy prevents use of exfiltrated credentials?",
+  th:"credentials ของผู้ใช้อาจถูก exfiltrate และผู้ใช้ใช้ credentials ซ้ำ นโยบายใดป้องกันการใช้ credentials ที่ถูกขโมย?",
+  options:["A. MFA","B. Lockout","C. Time-based logins","D. Password history"],
+  answer:"A",
+  explainEN:"MFA requires an additional factor beyond username/password, preventing someone from using exfiltrated credentials alone.",
+  explainTH:"MFA ต้องการ factor เพิ่มเติมนอกเหนือจาก username/password ป้องกันการใช้ credentials ที่ถูกขโมยเพียงอย่างเดียว"
+},
+{
+  id:77, topic:"Exam Topic 2",
+  en:"Which security control prevents multiple people from using a unique card swipe to enter?",
+  th:"security control ใดป้องกันไม่ให้หลายคนใช้การรูด card ครั้งเดียวเพื่อเข้า?",
+  options:["A. Visitor logs","B. Faraday cages","C. Access control vestibules","D. Motion detection sensors"],
+  answer:"C",
+  explainEN:"Access control vestibules (mantraps) have two sets of doors where only one person can enter at a time, preventing tailgating.",
+  explainTH:"Access control vestibules (mantraps) มีประตูสองชุด ให้เข้าได้ทีละคน ป้องกัน tailgating"
+},
+{
+  id:78, topic:"Exam Topic 2",
+  en:"Admin uses UDP port 514 for syslog through unsecure network. Best way to improve?",
+  th:"Admin ใช้ UDP port 514 ส่ง syslog ผ่านเครือข่ายไม่ปลอดภัย วิธีปรับปรุงที่ดีที่สุด?",
+  options:["A. Change to TCP","B. Add LDAP authentication to SIEM","C. Use VPN and enable DLP","D. Add SSL/TLS encryption and use TCP 6514"],
+  answer:"D",
+  explainEN:"SSL/TLS encryption on TCP port 6514 encrypts syslog traffic, preventing eavesdropping and tampering per RFC 5425.",
+  explainTH:"SSL/TLS encryption บน TCP port 6514 เข้ารหัส syslog traffic ป้องกันการดักฟังและการปลอมแปลงตาม RFC 5425"
+},
+{
+  id:79, topic:"Exam Topic 2",
+  en:"Web server logs show sequential PIN attempts (admin&pin=0000, 0001, 0002...). Which password attack?",
+  th:"Log เว็บเซิร์ฟเวอร์แสดงการลอง PIN ต่อเนื่อง (0000, 0001, 0002...) เป็นการโจมตี password แบบใด?",
+  options:["A. Dictionary","B. Brute-force","C. Rainbow table","D. Spraying"],
+  answer:"D",
+  explainEN:"Spraying tries common passwords against multiple usernames, often used when lockout policies prevent brute-force on single accounts.",
+  explainTH:"Spraying ลอง password ทั่วไปกับ username หลายตัว มักใช้เมื่อ lockout policies ป้องกัน brute-force กับ account เดียว"
+},
+{
+  id:80, topic:"Exam Topic 2",
+  en:"An attacker hides data inside benign files to exfiltrate confidential data. What technique?",
+  th:"attacker ซ่อนข้อมูลในไฟล์ปกติเพื่อ exfiltrate ข้อมูลลับ ใช้เทคนิคใด?",
+  options:["A. Base64 encoding","B. Steganography","C. Data encryption","D. Perfect forward secrecy"],
+  answer:"B",
+  explainEN:"Steganography hides data inside benign files like images, audio, or video to exfiltrate data without raising suspicion.",
+  explainTH:"Steganography ซ่อนข้อมูลในไฟล์ปกติ เช่น ภาพ เสียง หรือวิดีโอ เพื่อ exfiltrate ข้อมูลโดยไม่สร้างความสงสัย"
+},
+{
+  id:81, topic:"Exam Topic 2",
+  en:"User cannot send images via SMS from corporate email on work phone. Which policy prevents this?",
+  th:"ผู้ใช้ไม่สามารถส่งภาพทาง SMS จากอีเมลองค์กรบนโทรศัพท์ทำงาน นโยบายใดป้องกัน?",
+  options:["A. Application management","B. Content management","C. Containerization","D. Full disk encryption"],
+  answer:"B",
+  explainEN:"Content management controls what data can be accessed, modified, shared, or transferred, preventing data leakage via SMS.",
+  explainTH:"Content management ควบคุมข้อมูลที่สามารถเข้าถึง แก้ไข แชร์ หรือถ่ายโอนได้ ป้องกันข้อมูลรั่วไหลผ่าน SMS"
+},
+{
+  id:82, topic:"Exam Topic 2",
+  en:"Air traffic controller receives false flight plan change over phone. Example of?",
+  th:"ผู้ควบคุมการจราจรทางอากาศได้รับแผนบินปลอมทางโทรศัพท์ เป็นตัวอย่างของ?",
+  options:["A. Mobile hijacking","B. Vishing","C. Unsecure VoIP protocols","D. SPIM attack"],
+  answer:"B",
+  explainEN:"Vishing uses voice calls to trick victims, in this case impersonating someone to change a flight plan.",
+  explainTH:"Vishing ใช้การโทรเสียงเพื่อหลอกเหยื่อ ในกรณีนี้แอบอ้างเป็นผู้มีอำนาจเปลี่ยนแผนบิน"
+},
+{
+  id:83, topic:"Exam Topic 2",
+  en:"Implement 802.1X with minimal interruption and mutual certificate validation. Which auth protocol?",
+  th:"ติดตั้ง 802.1X โดยรบกวนผู้ใช้น้อยที่สุดและตรวจสอบ certificate ทั้งสองฝ่าย ใช้ protocol auth ใด?",
+  options:["A. EAP-FAST","B. PSK","C. EAP-TTLS","D. EAP-TLS"],
+  answer:"D",
+  explainEN:"EAP-TLS uses certificates for mutual authentication between client and server, preferred for 802.1X wireless networks.",
+  explainTH:"EAP-TLS ใช้ certificates สำหรับ mutual authentication ระหว่าง client และ server เหมาะสำหรับ 802.1X wireless networks"
+},
+{
+  id:84, topic:"Exam Topic 2",
+  en:"CIO wants to move email to cloud. Which cloud service?",
+  th:"CIO ต้องการย้ายอีเมลไปคลาวด์ ใช้บริการคลาวด์ใด?",
+  options:["A. IaaS","B. PaaS","C. DaaS","D. SaaS"],
+  answer:"D",
+  explainEN:"SaaS provides applications hosted and managed by a cloud provider, including email services, without installing on own devices.",
+  explainTH:"SaaS ให้บริการแอปพลิเคชันที่โฮสต์และจัดการโดยผู้ให้บริการคลาวด์ รวมถึงอีเมล โดยไม่ต้องติดตั้งบนอุปกรณ์ของตัวเอง"
+},
+{
+  id:85, topic:"Exam Topic 2",
+  en:"Attacker accessed mail servers and posted email contents online. BEST prevention for future?",
+  th:"attacker เข้าถึงเซิร์ฟเวอร์อีเมลและเผยแพร่เนื้อหาอีเมลออนไลน์ วิธีป้องกันที่ดีที่สุดในอนาคต?",
+  options:["A. Implement S/MIME to encrypt emails at rest","B. Enable full disk encryption","C. Use digital certificates for web email","D. Configure web traffic to use TLS only"],
+  answer:"A",
+  explainEN:"S/MIME encrypts emails at rest, so even if servers are breached, the attacker cannot read encrypted emails without proper keys.",
+  explainTH:"S/MIME เข้ารหัสอีเมลที่จัดเก็บ ดังนั้นแม้เซิร์ฟเวอร์ถูก breach attacker ก็อ่านอีเมลที่เข้ารหัสไม่ได้หากไม่มี key ที่ถูกต้อง"
+},
+{
+  id:86, topic:"Exam Topic 2",
+  en:"Wireless network down near parking lot, all APs are up. Most likely reason?",
+  th:"เครือข่ายไร้สายใกล้ลานจอดรถใช้ไม่ได้ AP ทั้งหมดทำงานปกติ สาเหตุที่เป็นไปได้มากที่สุด?",
+  options:["A. Signal jamming","B. Rogue access point","C. Evil twin access point","D. APs unplugged"],
+  answer:"A",
+  explainEN:"Jamming interferes with or blocks wireless signals using a device emitting radio waves at the same frequency.",
+  explainTH:"Jamming รบกวนหรือบล็อกสัญญาณไร้สายโดยใช้อุปกรณ์ที่ปล่อยคลื่นวิทยุที่ความถี่เดียวกัน"
+},
+{
+  id:87, topic:"Exam Topic 2",
+  en:"Which helps accurately measure overall risk when a new vulnerability is disclosed?",
+  th:"อะไรช่วยวัดความเสี่ยงโดยรวมได้อย่างถูกต้องเมื่อมีการเปิดเผยช่องโหว่ใหม่?",
+  options:["A. Full inventory of all hardware and software","B. Documentation of system classifications","C. List of system owners","D. Third-party risk assessment documentation"],
+  answer:"A",
+  explainEN:"A full inventory helps identify which systems are affected by the vulnerability and prioritize remediation efforts.",
+  explainTH:"รายการ inventory ที่ครบถ้วนช่วยระบุว่าระบบใดได้รับผลกระทบจากช่องโหว่และจัดลำดับความสำคัญในการแก้ไข"
+},
+{
+  id:88, topic:"Exam Topic 2",
+  en:"Correct order of evidence volatility from most to least in forensic analysis?",
+  th:"ลำดับที่ถูกต้องของความเสี่ยงต่อการสูญหายของหลักฐานจากมากไปน้อยในการวิเคราะห์ forensic?",
+  options:["A. Memory, disk, temporary filesystems, CPU cache","B. CPU cache, memory, disk, temporary filesystems","C. CPU cache, memory, temporary filesystems, disk","D. CPU cache, temporary filesystems, memory, disk"],
+  answer:"C",
+  explainEN:"CPU cache > Memory > Temporary filesystems > Disk, from most to least volatile.",
+  explainTH:"CPU cache > Memory > Temporary filesystems > Disk จากที่สูญหายง่ายที่สุดไปน้อยที่สุด"
+},
+{
+  id:89, topic:"Exam Topic 2",
+  en:"Internal CA certificate causes 'Your connection is not private' for public app. Best fix?",
+  th:"certificate จาก CA ภายในทำให้เกิดข้อความ 'Your connection is not private' สำหรับแอปสาธารณะ วิธีแก้ที่ดีที่สุด?",
+  options:["A. Ignore the warning","B. Install cert on each endpoint","C. Send cert to users to install","D. Send CSR to known CA and install signed cert"],
+  answer:"D",
+  explainEN:"Sending a CSR to a well-known public CA and installing the signed certificate ensures it is trusted by all browsers and operating systems.",
+  explainTH:"การส่ง CSR ไปยัง public CA ที่มีชื่อเสียงและติดตั้ง signed certificate ทำให้ browsers และ OS ทั้งหมดเชื่อถือได้"
+},
+{
+  id:90, topic:"Exam Topic 2",
+  en:"Prevent vehicles from driving into a building to gain access. Best control?",
+  th:"ป้องกันรถยนต์ขับเข้าอาคารเพื่อเข้าถึง ควบคุมด้วยอะไร?",
+  options:["A. Bollard","B. Camera","C. Alarms","D. Signage","E. Access control vestibule"],
+  answer:"A",
+  explainEN:"Bollards are posts designed to prevent vehicles from entering an area, protecting buildings from ramming attacks.",
+  explainTH:"Bollards เป็นเสาที่ป้องกันรถยนต์จากการเข้าพื้นที่ ปกป้องอาคารจากการพุ่งชน"
+},
+{
+  id:91, topic:"Exam Topic 2",
+  en:"Adding 'deny any' to ACL bottom made servers unreachable. How to prevent?",
+  th:"การเพิ่ม 'deny any' ที่ด้านล่างของ ACL ทำให้เซิร์ฟเวอร์เข้าถึงไม่ได้ ป้องกันอย่างไร?",
+  options:["A. Document and submit change request","B. Test in non-production environment first","C. Disable IPS signatures first","D. Include 'allow any' above 'deny any'"],
+  answer:"B",
+  explainEN:"Testing in a non-production environment first allows verifying the policy's impact without affecting real network or users.",
+  explainTH:"การทดสอบใน non-production environment ก่อน ช่วยตรวจสอบผลกระทบของนโยบายโดยไม่ส่งผลต่อเครือข่ายจริง"
+},
+{
+  id:92, topic:"Exam Topic 2",
+  en:"50 users sharing one Internet connection, no social media or external email. Which TWO?",
+  th:"50 ผู้ใช้แชร์ internet connection เดียว ห้ามใช้ social media หรืออีเมลภายนอก ข้อใด 2 อย่าง?",
+  options:["A. DLP","B. MAC filtering","C. NAT","D. VPN","E. Content filter","F. WAF"],
+  answer:"CE",
+  explainEN:"NAT allows multiple devices to share one IP address. A content filter restricts access to social media and external email services.",
+  explainTH:"NAT ให้อุปกรณ์หลายตัวแชร์ IP address เดียว Content filter จำกัดการเข้าถึง social media และอีเมลภายนอก"
+},
+{
+  id:93, topic:"Exam Topic 2",
+  en:"MFA with phone call and what? Example of MFA factors?",
+  th:"MFA ที่ใช้โทรศัพท์ร่วมกับอะไร? ตัวอย่าง MFA factors?",
+  options:["A. A push notification","B. A password","C. An SMS message","D. An authentication application"],
+  answer:"D",
+  explainEN:"An authentication application generates time-based one-time passwords, doesn't rely on SMS which can be intercepted.",
+  explainTH:"Authentication application สร้าง one-time passwords แบบ time-based ไม่พึ่ง SMS ที่อาจถูกดักจับ"
+},
+{
+  id:94, topic:"Exam Topic 2",
+  en:"BEST reason to maintain effective asset management policy?",
+  th:"เหตุผลที่ดีที่สุดในการรักษานโยบาย asset management ที่มีประสิทธิภาพ?",
+  options:["A. To provide data to quantify risk","B. To keep all patched","C. To allow only approved devices","D. To standardize laptop models"],
+  answer:"A",
+  explainEN:"Effective asset management helps quantify risk by understanding all systems, their vulnerabilities, and how they are used.",
+  explainTH:"Asset management ที่มีประสิทธิภาพช่วยวัดความเสี่ยงโดยเข้าใจระบบทั้งหมด ช่องโหว่ และวิธีการใช้งาน"
+},
+{
+  id:95, topic:"Exam Topic 2",
+  en:"Which contract term helps monitor vendor's ongoing security maturity?",
+  th:"เงื่อนไขในสัญญาใดช่วยติดตาม vendor's security maturity อย่างต่อเนื่อง?",
+  options:["A. Right-to-audit clause for annual security audits","B. Event log retention 30 days","C. Threat intelligence integration","D. Data-breach disclosure clause"],
+  answer:"A",
+  explainEN:"A right-to-audit clause allows conducting annual security audits to monitor the vendor's ongoing security posture.",
+  explainTH:"Right-to-audit clause อนุญาตให้ทำ audit ด้านความปลอดภัยประจำปีเพื่อติดตามสถานะความปลอดภัยของ vendor"
+},
+{
+  id:96, topic:"Exam Topic 2",
+  en:"Dev team needs current PHI records for testing a healthcare app. Best way to safeguard?",
+  th:"ทีมพัฒนาต้องการข้อมูล PHI จริงสำหรับทดสอบแอปสุขภาพ วิธีที่ดีที่สุดในการปกป้อง?",
+  options:["A. Implementing a content filter","B. Anonymizing the data","C. Deploying DLP tools","D. Installing a FIM"],
+  answer:"B",
+  explainEN:"Anonymizing removes PII from data sets, protecting patient privacy while preserving data integrity for testing.",
+  explainTH:"Anonymizing ลบ PII ออกจาก data sets ปกป้องความเป็นส่วนตัวของผู้ป่วยในขณะที่รักษาความสมบูรณ์ของข้อมูลสำหรับการทดสอบ"
+},
+{
+  id:97, topic:"Exam Topic 2",
+  en:"Attack from many source IPs despite blocking one. What type of attack?",
+  th:"การโจมตีจากหลาย source IP แม้จะบล็อกไปแล้วหนึ่ง IP เป็นการโจมตีประเภทใด?",
+  options:["A. DDoS","B. Privilege escalation","C. DNS poisoning","D. Buffer overflow"],
+  answer:"A",
+  explainEN:"DDoS (Distributed Denial of Service) uses a flood of traffic from multiple sources to overwhelm the target.",
+  explainTH:"DDoS ใช้ traffic จำนวนมากจากหลายแหล่งเพื่อทำให้เป้าหมายล่ม"
+},
+{
+  id:98, topic:"Exam Topic 2",
+  en:"Which security feature helps a development team analyze deletion or editing of data sets without affecting the original?",
+  th:"คุณสมบัติความปลอดภัยใดช่วยทีมพัฒนาวิเคราะห์การลบหรือแก้ไข data sets โดยไม่กระทบต้นฉบับ?",
+  options:["A. Stored procedures","B. Code reuse","C. Version control","D. Continuous integration"],
+  answer:"C",
+  explainEN:"Version control records changes over time, allowing specific versions to be recalled without affecting the original.",
+  explainTH:"Version control บันทึกการเปลี่ยนแปลงตามเวลา ให้เรียกคืนเวอร์ชันเฉพาะได้โดยไม่กระทบต้นฉบับ"
+},
+{
+  id:99, topic:"Exam Topic 2",
+  en:"Testing security team preparedness in controlled, scripted manner. Which concept?",
+  th:"ทดสอบความพร้อมของทีมความปลอดภัยอย่างควบคุมและมี script ข้อใดอธิบายแนวคิดนี้?",
+  options:["A. Red-team exercise","B. Business continuity plan testing","C. Tabletop exercise","D. Functional exercise"],
+  answer:"C",
+  explainEN:"A tabletop exercise is a low-impact, scripted scenario discussion of how the security team would respond to an incident.",
+  explainTH:"Tabletop exercise เป็นการอภิปรายสถานการณ์จำลองแบบมี script ที่ผลกระทบต่ำ เกี่ยวกับวิธีตอบสนองของทีมความปลอดภัย"
+},
+{
+  id:100, topic:"Exam Topic 2",
+  en:"Malicious actor posted a script tag with document.cookie on a public website section. What was observed?",
+  th:"ผู้ไม่หวังดีโพสต์ script tag ที่มี document.cookie บนส่วนสาธารณะของเว็บไซต์ สิ่งที่สังเกตได้คือ?",
+  options:["A. DLL injection","B. Session replay","C. SQLi","D. XSS"],
+  answer:"D",
+  explainEN:"Cross-site scripting (XSS) injects malicious scripts into trusted websites to steal cookies, redirect users, or display fake content.",
+  explainTH:"Cross-site scripting (XSS) แทรก scripts อันตรายเข้าเว็บไซต์ที่เชื่อถือได้เพื่อขโมย cookies, redirect ผู้ใช้ หรือแสดงเนื้อหาปลอม"
+},
+{
+  id:101, topic:"Exam Topic 2",
+  en:"Defend against malicious actors misusing protocols through network defenses. What to recommend?",
+  th:"ป้องกัน attacker ที่ใช้ protocol ในทางที่ผิดผ่านแนวป้องกันเครือข่าย ควรแนะนำอะไร?",
+  options:["A. A content filter","B. A WAF","C. A next-generation firewall","D. An IDS"],
+  answer:"C",
+  explainEN:"NGFW performs deep packet inspection, application-level filtering, and uses threat intelligence to identify malicious protocol misuse.",
+  explainTH:"NGFW ทำ deep packet inspection, กรองระดับ application และใช้ threat intelligence เพื่อระบุการใช้ protocol ในทางที่ผิด"
+},
+{
+  id:102, topic:"Exam Topic 2",
+  en:"New remote office with 50 employees. Which VPN solution?",
+  th:"สำนักงานสาขาใหม่มีพนักงาน 50 คน ควรใช้ VPN แบบใด?",
+  options:["A. Always-on","B. Remote access","C. Site-to-site","D. Full tunnel"],
+  answer:"C",
+  explainEN:"Site-to-site VPN connects two networks securely without requiring individual VPN clients for each user.",
+  explainTH:"Site-to-site VPN เชื่อมต่อสองเครือข่ายอย่างปลอดภัยโดยไม่ต้องติดตั้ง VPN client สำหรับผู้ใช้แต่ละคน"
+},
+{
+  id:103, topic:"Exam Topic 2",
+  en:"Wireless issues near parking lot: slow speeds, can't connect to drives, asked to enter credentials on web pages. Cause?",
+  th:"ปัญหาไร้สายใกล้ลานจอดรถ: ความเร็วต่ำ เชื่อมต่อ drive ไม่ได้ ถูกขอ credentials บนเว็บ สาเหตุ?",
+  options:["A. Evil-Twin attack","B. WAP signal too low","C. Expired certificates","D. VLAN blocked by firewall"],
+  answer:"A",
+  explainEN:"An evil-twin attack sets up a rogue access point mimicking a legitimate one, intercepting traffic and stealing credentials.",
+  explainTH:"Evil-twin attack ตั้ง access point ปลอมเลียนแบบของจริง ดักจับ traffic และขโมย credentials"
+},
+{
+  id:104, topic:"Exam Topic 2",
+  en:"Secure LAN/WLAN to prevent on-path and evil twin attacks. Best solution?",
+  th:"รักษาความปลอดภัย LAN/WLAN เพื่อป้องกัน on-path และ evil twin attacks วิธีที่ดีที่สุด?",
+  options:["A. MFA","B. 802.1X","C. WPA2","D. TACACS"],
+  answer:"B",
+  explainEN:"802.1X provides authentication and encryption for LAN/WLAN devices, requiring valid credentials before network access.",
+  explainTH:"802.1X ให้ authentication และ encryption สำหรับอุปกรณ์ LAN/WLAN ต้องมี credentials ที่ถูกต้องก่อนเข้าถึงเครือข่าย"
+},
+{
+  id:105, topic:"Exam Topic 2",
+  en:"Router CPU at 99% busy (1-sec average). Web pages loading slowly. What is the router experiencing?",
+  th:"CPU ของ router ใช้งาน 99% (ค่าเฉลี่ย 1 วินาที) เว็บโหลดช้า router กำลังประสบปัญหาอะไร?",
+  options:["A. DDoS attack","B. Memory leak","C. Buffer overflow","D. Resource exhaustion"],
+  answer:"D",
+  explainEN:"Resource exhaustion occurs when the router's resources are overwhelmed and unable to meet demands, causing slow performance.",
+  explainTH:"Resource exhaustion เกิดขึ้นเมื่อทรัพยากรของ router ถูกใช้จนหมดและไม่สามารถรองรับความต้องการได้ ทำให้ประสิทธิภาพลดลง"
+},
+{
+  id:106, topic:"Exam Topic 2",
+  en:"Packet capture from compromised host shows large amounts of text. What is installed?",
+  th:"Packet capture จาก host ที่ถูก compromise แสดงข้อความจำนวนมาก มีอะไรถูกติดตั้ง?",
+  options:["A. Keylogger","B. Spyware","C. Trojan","D. Ransomware"],
+  answer:"A",
+  explainEN:"A keylogger records keystrokes and sends them to a remote attacker, generating packets with large amounts of text.",
+  explainTH:"Keylogger บันทึก keystrokes และส่งไปยัง attacker ทำให้เกิด packets ที่มีข้อความจำนวนมาก"
+},
+{
+  id:107, topic:"Exam Topic 2",
+  en:"Kiosk computer in open area, concerned about rootkit via removable media. Best protection?",
+  th:"คอมพิวเตอร์ kiosk ในพื้นที่เปิด กังวลเรื่อง rootkit จากสื่อที่ถอดได้ การป้องกันที่ดีที่สุด?",
+  options:["A. Measured boot","B. Boot attestation","C. UEFI","D. EDR"],
+  answer:"B",
+  explainEN:"Boot attestation verifies OS integrity before booting by comparing hash values, preventing rootkits from running.",
+  explainTH:"Boot attestation ตรวจสอบความสมบูรณ์ของ OS ก่อนบูตโดยเปรียบเทียบ hash values ป้องกัน rootkits จากการทำงาน"
+},
+{
+  id:108, topic:"Exam Topic 2",
+  en:"User enters password then authentication code. Which TWO MFA factors?",
+  th:"ผู้ใช้ใส่ password แล้วใส่รหัส authentication ใช้ MFA factors ใด 2 อย่าง?",
+  options:["A. Something you know","B. Something you have","C. Somewhere you are","D. Someone you know","E. Something you are","F. Something you can do"],
+  answer:"AB",
+  explainEN:"Password is 'something you know'. Authentication code (from a device/app) is 'something you have'.",
+  explainTH:"Password คือ 'something you know' รหัส authentication (จากอุปกรณ์/แอป) คือ 'something you have'"
+},
+{
+  id:109, topic:"Exam Topic 2",
+  en:"Server login while user was on 2-week vacation. Packet capture shows NTLM hash. What occurred?",
+  th:"มีการ login เซิร์ฟเวอร์ขณะผู้ใช้ลาพักผ่อน 2 สัปดาห์ Packet capture แสดง NTLM hash เกิดอะไรขึ้น?",
+  options:["A. Buffer overflow exploited","B. Account compromised and credentials changed","C. Pass-the-hash attack","D. Insider threat"],
+  answer:"C",
+  explainEN:"Pass-the-hash captures and uses the hash of a password. NTLM authentication is vulnerable to this attack.",
+  explainTH:"Pass-the-hash จับและใช้ hash ของ password NTLM authentication มีช่องโหว่ต่อการโจมตีนี้"
+},
+{
+  id:110, topic:"Exam Topic 2",
+  en:"Secondary data center design recommendations? (Select TWO)",
+  th:"คำแนะนำในการออกแบบ data center สำรอง? (เลือก 2 ข้อ)",
+  options:["A. Replicate web servers to offline storage","B. Geographically disperse location","C. Deploy load balancers at primary","D. Install generators","E. Differential backups at secondary","F. Hot and cold aisles at secondary"],
+  answer:"BD",
+  explainEN:"Geographically dispersed location protects against regional disasters. Generators provide backup power for availability.",
+  explainTH:"สถานที่ที่กระจายทางภูมิศาสตร์ป้องกันภัยพิบัติในภูมิภาค Generators ให้พลังงานสำรองเพื่อความพร้อมใช้งาน"
+},
+{
+  id:111, topic:"Exam Topic 2",
+  en:"Code scans on repository first night produced 2,000+ findings. MOST likely cause?",
+  th:"การสแกนโค้ดบน repository คืนแรกพบ 2,000+ รายการ สาเหตุที่เป็นไปได้มากที่สุด?",
+  options:["A. Scanner not properly configured — false positives","B. Third-party libraries should be removed","C. Memory leaks caused duplicates","D. Scanner not loaded with correct benchmarks"],
+  answer:"A",
+  explainEN:"A vulnerability scanner not properly configured generates a high number of false positives due to incorrect rules or outdated databases.",
+  explainTH:"Vulnerability scanner ที่ตั้งค่าไม่ถูกต้องสร้าง false positives จำนวนมากเนื่องจากกฎที่ไม่ถูกต้องหรือฐานข้อมูลล้าสมัย"
+}
+];
+
+</script>
+
+<script>
+let mode='practice', currentQ=0, answers={}, score={correct:0,wrong:0};
+const PASS_MARK=0.7;
+
+function startQuiz(m){
+  mode=m; currentQ=0; answers={}; score={correct:0,wrong:0};
+  show('quizScreen');
+  buildNavGrid();
+  renderQuestion();
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function renderQuestion(){
+  const q=QUESTIONS[currentQ];
+  const isMulti=q.answer.length>1;
+  const userAns=answers[currentQ];
+  const answered=userAns!==undefined;
+  const revealed=mode==='practice'&&answered;
+
+  let html=`<div class="q-num">Question ${q.id} — ${q.topic}</div>
+    <div class="q-text">${q.en}</div>
+    <div class="q-text-th">${q.th}</div>`;
+  
+  if(isMulti) html+=`<div class="multi-note">⚠ เลือกหลายคำตอบ (${q.answer.length} ข้อ)</div>`;
+  
+  html+=`<div class="options">`;
+  q.options.forEach((opt,i)=>{
+    const letter=opt.charAt(0);
+    let cls='opt-btn';
+    if(revealed){
+      cls+=' disabled';
+      if(q.answer.includes(letter)) cls+=' correct';
+      else if(userAns&&userAns.includes(letter)) cls+=' incorrect';
+    } else if(answered && mode==='exam'){
+      if(userAns.includes(letter)) cls+=' selected';
+    } else if(!answered){
+      // clickable
+    }
+    html+=`<div class="${cls}" onclick="selectAnswer(${currentQ},'${letter}',${isMulti})" data-letter="${letter}">
+      <span class="opt-letter">${letter}</span><span>${opt.substring(3)}</span></div>`;
+  });
+  html+=`</div>`;
+
+  if(revealed){
+    html+=`<div class="explanation show">
+      <h4>✔ คำตอบ: ${q.answer}</h4>
+      <p><strong>EN:</strong> ${q.explainEN}</p>
+      <p><span class="th-label">TH:</span> ${q.explainTH}</p>
+    </div>`;
+  }
+
+  document.getElementById('questionCard').innerHTML=html;
+  document.getElementById('qCounter').textContent=`ข้อ ${currentQ+1} / ${QUESTIONS.length}`;
+  document.getElementById('progressBar').style.width=((currentQ+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('scoreDisplay').textContent=`✓ ${score.correct}  ✗ ${score.wrong}`;
+  document.getElementById('prevBtn').disabled=currentQ===0;
+  
+  const allAnswered=Object.keys(answers).length===QUESTIONS.length;
+  const nb=document.getElementById('nextBtn');
+  if(currentQ===QUESTIONS.length-1){
+    if(mode==='exam'&&allAnswered){
+      nb.textContent='📊 ดูผลลัพธ์';nb.className='nav-btn submit';nb.onclick=()=>showResults();
+    } else if(mode==='practice'){
+      nb.textContent='📊 ดูผลลัพธ์';nb.className='nav-btn submit';nb.onclick=()=>showResults();
+    } else {
+      nb.textContent='ถัดไป →';nb.className='nav-btn next';nb.disabled=true;nb.onclick=()=>navigate(1);
+    }
+  } else {
+    nb.textContent='ถัดไป →';nb.className='nav-btn next';nb.disabled=false;nb.onclick=()=>navigate(1);
+  }
+  updateNavGrid();
+}
+
+function selectAnswer(qi,letter,isMulti){
+  const q=QUESTIONS[qi];
+  if(mode==='practice'&&answers[qi]!==undefined) return;
+  if(mode==='exam'&&Object.keys(answers).length===QUESTIONS.length) return;
+
+  if(isMulti){
+    if(!answers[qi]) answers[qi]=[];
+    else if(mode==='practice') return;
+    const idx=answers[qi].indexOf(letter);
+    if(idx>-1) answers[qi].splice(idx,1);
+    else answers[qi].push(letter);
+    
+    if(mode==='practice'&&answers[qi].length===q.answer.length){
+      checkAnswer(qi);
+    } else if(mode==='exam'){
+      renderQuestion();
+    } else {
+      // Highlight selected in practice before complete
+      renderQuestion();
+    }
+  } else {
+    answers[qi]=[letter];
+    if(mode==='practice') checkAnswer(qi);
+    else renderQuestion();
+  }
+}
+
+function checkAnswer(qi){
+  const q=QUESTIONS[qi];
+  const userSorted=[...answers[qi]].sort().join('');
+  const correctSorted=[...q.answer].sort().join('');
+  if(userSorted===correctSorted) score.correct++;
+  else score.wrong++;
+  renderQuestion();
+}
+
+function navigate(dir){
+  currentQ+=dir;
+  if(currentQ<0) currentQ=0;
+  if(currentQ>=QUESTIONS.length) currentQ=QUESTIONS.length-1;
+  renderQuestion();
+  window.scrollTo(0,0);
+}
+
+function toggleNav(){
+  document.getElementById('qNavGrid').classList.toggle('show');
+}
+
+function buildNavGrid(){
+  let html='';
+  QUESTIONS.forEach((_,i)=>{
+    html+=`<div class="q-nav-dot" data-i="${i}" onclick="jumpTo(${i})">${i+1}</div>`;
+  });
+  document.getElementById('qNavGrid').innerHTML=html;
+}
+
+function updateNavGrid(){
+  document.querySelectorAll('.q-nav-dot').forEach(dot=>{
+    const i=parseInt(dot.dataset.i);
+    dot.className='q-nav-dot';
+    if(i===currentQ) dot.classList.add('current');
+    if(answers[i]!==undefined){
+      if(mode==='practice'){
+        const q=QUESTIONS[i];
+        const userSorted=[...answers[i]].sort().join('');
+        const correctSorted=[...q.answer].sort().join('');
+        dot.classList.add(userSorted===correctSorted?'right':'wrong');
+      } else {
+        dot.classList.add('answered');
+      }
+    }
+  });
+}
+
+function jumpTo(i){
+  currentQ=i;
+  renderQuestion();
+  document.getElementById('qNavGrid').classList.remove('show');
+  window.scrollTo(0,0);
+}
+
+function showResults(){
+  // In exam mode, score all unanswered and answered
+  if(mode==='exam'){
+    score={correct:0,wrong:0};
+    QUESTIONS.forEach((q,i)=>{
+      if(answers[i]){
+        const userSorted=[...answers[i]].sort().join('');
+        const correctSorted=[...q.answer].sort().join('');
+        if(userSorted===correctSorted) score.correct++;
+        else score.wrong++;
+      } else {
+        score.wrong++;
+      }
+    });
+  }
+  
+  const total=QUESTIONS.length;
+  const pct=Math.round(score.correct/total*100);
+  const passed=pct>=PASS_MARK*100;
+  const skipped=total-score.correct-score.wrong;
+  
+  document.getElementById('resultScreen').innerHTML=`
+    <div class="results-card">
+      <h2>📊 ผลลัพธ์การสอบ</h2>
+      <div class="score-circle ${passed?'pass':'fail'}">
+        ${pct}%
+        <small>${score.correct}/${total}</small>
+      </div>
+      <div class="result-label ${passed?'pass':'fail'}">${passed?'✅ PASSED — ผ่าน!':'❌ FAILED — ไม่ผ่าน'}</div>
+      <p style="color:var(--text-dim);font-size:.85rem">เกณฑ์ผ่าน: 70% (${Math.ceil(total*PASS_MARK)} ข้อ)</p>
+      <div class="result-stats">
+        <span><span class="dot-g"></span> ถูก: ${score.correct}</span>
+        <span><span class="dot-r"></span> ผิด: ${score.wrong}</span>
+        ${skipped>0?`<span><span class="dot-s"></span> ข้าม: ${skipped}</span>`:''}
+      </div>
+      <button class="review-btn" onclick="showReview()">🔍 ทบทวนคำตอบ</button><br>
+      <button class="restart-btn" onclick="location.reload()">🔄 เริ่มใหม่</button>
+    </div>`;
+  show('resultScreen');
+}
+
+function showReview(filter='all'){
+  let html=`<div class="back-top"><button onclick="show('resultScreen')">← กลับผลลัพธ์</button></div>
+    <div class="filter-bar">
+      <button class="filter-btn ${filter==='all'?'active':''}" onclick="showReview('all')">ทั้งหมด</button>
+      <button class="filter-btn ${filter==='wrong'?'active':''}" onclick="showReview('wrong')">❌ ข้อที่ผิด</button>
+      <button class="filter-btn ${filter==='right'?'active':''}" onclick="showReview('right')">✅ ข้อที่ถูก</button>
+      <button class="filter-btn ${filter==='skipped'?'active':''}" onclick="showReview('skipped')">⏭ ข้ามไป</button>
+    </div>`;
+
+  QUESTIONS.forEach((q,i)=>{
+    const userAns=answers[i];
+    const userSorted=userAns?[...userAns].sort().join(''):'';
+    const correctSorted=[...q.answer].sort().join('');
+    const isCorrect=userSorted===correctSorted;
+    const isSkipped=!userAns;
+
+    if(filter==='wrong'&&(isCorrect||isSkipped)) return;
+    if(filter==='right'&&!isCorrect) return;
+    if(filter==='skipped'&&!isSkipped) return;
+
+    html+=`<div class="review-item ${isSkipped?'':isCorrect?'right-review':'wrong-review'}">
+      <div class="q-num">Q${q.id}</div>
+      <div class="q-text" style="font-size:.85rem;margin-bottom:4px">${q.en}</div>
+      <div class="q-text-th" style="font-size:.8rem;margin-bottom:8px">${q.th}</div>
+      <div class="review-label">คำตอบของคุณ: <span class="${isCorrect?'correct-ans':'your-ans'}">${userAns?userAns.join(', '):'ไม่ได้ตอบ'}</span></div>
+      <div class="review-label">คำตอบที่ถูก: <span class="correct-ans">${q.answer}</span></div>
+      <div class="explanation show" style="margin-top:10px">
+        <p><strong>EN:</strong> ${q.explainEN}</p>
+        <p><span class="th-label">TH:</span> ${q.explainTH}</p>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('reviewScreen').innerHTML=html;
+  show('reviewScreen');
+}
+</script>
+</body>
+</html>
