@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA Security+ SY0-701 Quiz — Part 5</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0f172a;--surface:#1e293b;--card:#334155;--border:#475569;
+--primary:#3b82f6;--primary-h:#2563eb;--green:#22c55e;--red:#ef4444;
+--amber:#f59e0b;--text:#f1f5f9;--muted:#94a3b8;--white:#fff;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+.container{max-width:900px;margin:0 auto;padding:16px}
+
+/* Header */
+.header{text-align:center;padding:32px 16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--primary),#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:var(--muted);margin-top:4px;font-size:.9rem}
+.badge{display:inline-block;background:var(--card);padding:4px 12px;border-radius:20px;font-size:.75rem;color:var(--amber);margin-top:8px;border:1px solid var(--amber)}
+
+/* Mode Selection */
+.mode-select{display:flex;flex-direction:column;gap:16px;padding:40px 16px;max-width:500px;margin:0 auto}
+.mode-btn{padding:20px;border-radius:12px;border:2px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;text-align:left;transition:.2s}
+.mode-btn:hover{border-color:var(--primary);background:var(--card)}
+.mode-btn h3{font-size:1.1rem;margin-bottom:4px}
+.mode-btn p{font-size:.85rem;color:var(--muted)}
+
+/* Progress */
+.progress-bar{background:var(--card);border-radius:8px;height:8px;margin:16px 0;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),#a855f7);border-radius:8px;transition:width .3s}
+.progress-text{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:4px}
+
+/* Question */
+.question-card{background:var(--surface);border-radius:16px;padding:24px;margin:16px 0;border:1px solid var(--border)}
+.q-number{font-size:.75rem;color:var(--primary);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.q-text{font-size:1rem;font-weight:600;margin-bottom:6px}
+.q-text-th{font-size:.9rem;color:var(--muted);margin-bottom:16px;font-style:italic}
+.multi-hint{font-size:.8rem;color:var(--amber);margin-bottom:12px}
+
+/* Options */
+.options{display:flex;flex-direction:column;gap:10px}
+.option{padding:14px 16px;border-radius:10px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:.2s;display:flex;align-items:flex-start;gap:12px;font-size:.95rem}
+.option:hover:not(.disabled){border-color:var(--primary);background:#3b82f615}
+.option.selected{border-color:var(--primary);background:#3b82f620}
+.option.correct{border-color:var(--green);background:#22c55e15}
+.option.incorrect{border-color:var(--red);background:#ef444415}
+.option.disabled{cursor:default;opacity:.85}
+.option-letter{width:28px;height:28px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;border:1px solid var(--border)}
+.option.correct .option-letter{background:var(--green);color:var(--bg);border-color:var(--green)}
+.option.incorrect .option-letter{background:var(--red);color:var(--white);border-color:var(--red)}
+.option.selected .option-letter{background:var(--primary);color:var(--white);border-color:var(--primary)}
+
+/* Explanation */
+.explanation{margin-top:16px;padding:16px;border-radius:10px;background:#22c55e10;border:1px solid #22c55e40;display:none}
+.explanation.show{display:block}
+.explanation.wrong{background:#ef444410;border-color:#ef444440}
+.exp-title{font-weight:700;font-size:.85rem;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.exp-title.correct-t{color:var(--green)}
+.exp-title.wrong-t{color:var(--red)}
+.exp-text{font-size:.85rem;color:var(--muted);margin-bottom:6px}
+.exp-label{font-size:.75rem;color:var(--primary);font-weight:600;margin-top:8px}
+
+/* Navigation */
+.nav-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:16px 0;flex-wrap:wrap}
+.nav-btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:.9rem;transition:.2s}
+.nav-btn.primary{background:var(--primary);color:var(--white)}
+.nav-btn.primary:hover{background:var(--primary-h)}
+.nav-btn.secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.nav-btn.secondary:hover{background:var(--surface)}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.submit-btn{background:var(--green);color:var(--bg);font-weight:700}
+.submit-btn:hover{background:#16a34a}
+
+/* Question Navigator */
+.q-nav{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:16px 0}
+.q-dot{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;transition:.2s}
+.q-dot:hover{border-color:var(--primary)}
+.q-dot.current{border-color:var(--primary);background:var(--primary);color:var(--white)}
+.q-dot.answered{background:var(--surface);border-color:var(--muted);color:var(--muted)}
+.q-dot.correct-dot{background:#22c55e30;border-color:var(--green);color:var(--green)}
+.q-dot.wrong-dot{background:#ef444430;border-color:var(--red);color:var(--red)}
+
+/* Results */
+.results{text-align:center;padding:40px 16px}
+.score-circle{width:160px;height:160px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:2.5rem;font-weight:800}
+.score-circle.pass{background:#22c55e20;border:4px solid var(--green);color:var(--green)}
+.score-circle.fail{background:#ef444420;border:4px solid var(--red);color:var(--red)}
+.score-circle small{font-size:.9rem;font-weight:400}
+.result-label{font-size:1.8rem;font-weight:700;margin-bottom:8px}
+.result-label.pass-l{color:var(--green)}
+.result-label.fail-l{color:var(--red)}
+.result-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:24px 0;max-width:400px;margin-left:auto;margin-right:auto}
+.stat-box{background:var(--surface);padding:16px;border-radius:10px;border:1px solid var(--border)}
+.stat-box .val{font-size:1.3rem;font-weight:700}
+.stat-box .lbl{font-size:.75rem;color:var(--muted)}
+.review-section{margin-top:32px;text-align:left}
+.review-q{background:var(--surface);border-radius:12px;padding:16px;margin:12px 0;border:1px solid var(--border)}
+.review-q.q-correct{border-left:4px solid var(--green)}
+.review-q.q-wrong{border-left:4px solid var(--red)}
+.review-q .rq-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.rq-badge{font-size:.75rem;padding:2px 8px;border-radius:4px;font-weight:600}
+.rq-badge.correct-b{background:#22c55e20;color:var(--green)}
+.rq-badge.wrong-b{background:#ef444420;color:var(--red)}
+
+.tab-bar{display:flex;gap:8px;margin-bottom:16px;justify-content:center}
+.tab-btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:.85rem;font-weight:600;transition:.2s}
+.tab-btn.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+
+.hidden{display:none!important}
+@media(max-width:600px){
+  .container{padding:10px}
+  .question-card{padding:16px}
+  .q-dot{width:30px;height:30px;font-size:.7rem}
+  .result-stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <!-- Header -->
+  <div class="header">
+    <h1>CompTIA Security+ SY0-701</h1>
+    <p>Practice Quiz — Part 5</p>
+    <div class="badge">61 Questions</div>
+  </div>
+
+  <!-- Mode Selection -->
+  <div id="modeScreen" class="mode-select">
+    <button class="mode-btn" onclick="startQuiz('practice')">
+      <h3>📝 Practice Mode</h3>
+      <p>เฉลยทันทีหลังตอบแต่ละข้อ พร้อมคำอธิบาย EN/TH</p>
+    </button>
+    <button class="mode-btn" onclick="startQuiz('exam')">
+      <h3>🎯 Exam Mode</h3>
+      <p>เฉลยตอนจบทั้งหมด จำลองการสอบจริง (Pass ≥ 70%)</p>
+    </button>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div id="quizScreen" class="hidden">
+    <div class="progress-text">
+      <span id="progressLabel">ข้อ 1 / 61</span>
+      <span id="scoreLabel"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    
+    <!-- Question Navigator -->
+    <div class="q-nav" id="qNav"></div>
+
+    <!-- Question Card -->
+    <div class="question-card">
+      <div class="q-number" id="qNumber"></div>
+      <div class="q-text" id="qTextEN"></div>
+      <div class="q-text-th" id="qTextTH"></div>
+      <div class="multi-hint hidden" id="multiHint">⚠️ เลือกหลายคำตอบ (Select multiple answers)</div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="explanation" id="explanation">
+        <div class="exp-title" id="expTitle"></div>
+        <div class="exp-label">🇬🇧 English</div>
+        <div class="exp-text" id="expEN"></div>
+        <div class="exp-label">🇹🇭 ภาษาไทย</div>
+        <div class="exp-text" id="expTH"></div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+      <button class="nav-btn secondary" id="prevBtn" onclick="navigate(-1)">← ก่อนหน้า</button>
+      <button class="nav-btn primary" id="confirmBtn" onclick="confirmAnswer()" class="hidden">ยืนยันคำตอบ</button>
+      <button class="nav-btn submit-btn hidden" id="submitBtn" onclick="showResults()">📊 ส่งคำตอบ</button>
+      <button class="nav-btn primary" id="nextBtn" onclick="navigate(1)">ถัดไป →</button>
+    </div>
+  </div>
+
+  <!-- Results Screen -->
+  <div id="resultsScreen" class="hidden">
+    <div class="results">
+      <div class="score-circle" id="scoreCircle">
+        <span id="scorePercent"></span>
+        <small id="scoreOf"></small>
+      </div>
+      <div class="result-label" id="resultLabel"></div>
+      <p style="color:var(--muted);margin-bottom:8px" id="resultMsg"></p>
+      <div class="result-stats">
+        <div class="stat-box"><div class="val" style="color:var(--green)" id="statCorrect">0</div><div class="lbl">ถูก</div></div>
+        <div class="stat-box"><div class="val" style="color:var(--red)" id="statWrong">0</div><div class="lbl">ผิด</div></div>
+        <div class="stat-box"><div class="val" style="color:var(--muted)" id="statSkip">0</div><div class="lbl">ข้าม</div></div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="filterReview('all',this)">ทั้งหมด</button>
+        <button class="tab-btn" onclick="filterReview('wrong',this)">❌ ข้อที่ผิด</button>
+        <button class="tab-btn" onclick="filterReview('correct',this)">✅ ข้อที่ถูก</button>
+      </div>
+
+      <div class="review-section" id="reviewSection"></div>
+
+      <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="nav-btn primary" onclick="location.reload()">🔄 เริ่มใหม่</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    id: 1,
+    en: "Employees in the research and development business unit receive extensive training to ensure they understand how to best protect company data. Which of the following is the type of data these employees are most likely to use in day-to-day work activities?",
+    th: "พนักงานในหน่วยธุรกิจวิจัยและพัฒนาได้รับการฝึกอบรมอย่างเข้มข้นเพื่อให้เข้าใจวิธีปกป้องข้อมูลของบริษัทให้ดีที่สุด ข้อใดต่อไปนี้เป็นประเภทข้อมูลที่พนักงานเหล่านี้มีแนวโน้มจะใช้มากที่สุดในกิจกรรมการทำงานประจำวัน?",
+    options: ["Encrypted", "Intellectual property", "Critical", "Data in transit"],
+    answer: 1,
+    explanationEN: "Intellectual property consists of ideas, inventions, designs, or creative works that have commercial value and are protected by law. R&D employees create new products/services, so they work with IP data daily and need training to protect it.",
+    explanationTH: "ทรัพย์สินทางปัญญา (Intellectual Property) ประกอบด้วยแนวคิด สิ่งประดิษฐ์ การออกแบบ หรือผลงานสร้างสรรค์ที่มีมูลค่าทางการค้าและได้รับการคุ้มครองตามกฎหมาย พนักงาน R&D สร้างผลิตภัณฑ์/บริการใหม่ จึงทำงานกับข้อมูล IP ทุกวันและต้องได้รับการฝึกอบรมเพื่อปกป้องข้อมูลเหล่านี้",
+    multi: false
+  },
+  {
+    id: 2,
+    en: "Which of the following is the best reason to complete an audit in a banking environment?",
+    th: "ข้อใดต่อไปนี้เป็นเหตุผลที่ดีที่สุดในการดำเนินการตรวจสอบ (audit) ในสภาพแวดล้อมธนาคาร?",
+    options: ["Regulatory requirement", "Organizational change", "Self-assessment requirement", "Service-level requirement"],
+    answer: 0,
+    explanationEN: "A regulatory requirement is a mandate imposed by a government or authority. In banking, audits are often required by regulators to ensure compliance with laws, standards, and policies related to security, privacy, and financial reporting.",
+    explanationTH: "ข้อกำหนดด้านกฎระเบียบ (Regulatory requirement) เป็นคำสั่งที่กำหนดโดยรัฐบาลหรือหน่วยงานกำกับดูแล ในสภาพแวดล้อมธนาคาร การตรวจสอบมักถูกกำหนดโดยหน่วยงานกำกับดูแลเพื่อให้มั่นใจว่าปฏิบัติตามกฎหมาย มาตรฐาน และนโยบายที่เกี่ยวข้องกับความปลอดภัย ความเป็นส่วนตัว และการรายงานทางการเงิน",
+    multi: false
+  },
+  {
+    id: 3,
+    en: "Which of the following must be considered when designing a high-availability network? (Choose two).",
+    th: "ข้อใดต่อไปนี้ต้องพิจารณาเมื่อออกแบบเครือข่ายที่มีความพร้อมใช้งานสูง (high-availability)? (เลือกสองข้อ)",
+    options: ["Ease of recovery", "Ability to patch", "Physical isolation", "Responsiveness", "Attack surface", "Extensible authentication"],
+    answer: [0, 4],
+    explanationEN: "Ease of recovery refers to the ability to restore normal functionality quickly after a failure. Attack surface refers to the exposure and vulnerability of the network to threats. Both are key factors in high-availability network design.",
+    explanationTH: "ความง่ายในการกู้คืน (Ease of recovery) หมายถึงความสามารถในการคืนค่าการทำงานปกติอย่างรวดเร็วหลังจากเกิดความล้มเหลว พื้นผิวการโจมตี (Attack surface) หมายถึงความเสี่ยงและช่องโหว่ของเครือข่ายต่อภัยคุกคาม ทั้งสองเป็นปัจจัยสำคัญในการออกแบบเครือข่าย high-availability",
+    multi: true
+  },
+  {
+    id: 4,
+    en: "An engineer needs to find a solution that creates an added layer of security by preventing unauthorized access to internal company resources. Which of the following would be the best solution?",
+    th: "วิศวกรต้องการหาโซลูชันที่สร้างชั้นความปลอดภัยเพิ่มเติมโดยการป้องกันการเข้าถึงทรัพยากรภายในบริษัทโดยไม่ได้รับอนุญาต ข้อใดต่อไปนี้จะเป็นโซลูชันที่ดีที่สุด?",
+    options: ["RDP server", "Jump server", "Proxy server", "Hypervisor"],
+    answer: 1,
+    explanationEN: "A jump server acts as an intermediary between a user and a target system. Users connect via SSH, then access internal resources from the jump server. It isolates the target system from the external network and enforces security policies.",
+    explanationTH: "Jump server ทำหน้าที่เป็นตัวกลางระหว่างผู้ใช้และระบบเป้าหมาย ผู้ใช้เชื่อมต่อผ่าน SSH แล้วเข้าถึงทรัพยากรภายในจาก jump server ซึ่งแยกระบบเป้าหมายออกจากเครือข่ายภายนอกและบังคับใช้นโยบายความปลอดภัย",
+    multi: false
+  },
+  {
+    id: 5,
+    en: "Which of the following can best protect against an employee inadvertently installing malware on a company system?",
+    th: "ข้อใดต่อไปนี้สามารถป้องกันได้ดีที่สุดกรณีพนักงานติดตั้งมัลแวร์บนระบบของบริษัทโดยไม่ตั้งใจ?",
+    options: ["Host-based firewall", "System isolation", "Least privilege", "Application allow list"],
+    answer: 3,
+    explanationEN: "An application allow list specifies which applications are authorized to run on a system and blocks all others. It prevents execution of any unauthorized or malicious software.",
+    explanationTH: "Application allow list ระบุว่าแอปพลิเคชันใดได้รับอนุญาตให้ทำงานบนระบบและบล็อกแอปอื่นทั้งหมด ป้องกันการทำงานของซอฟต์แวร์ที่ไม่ได้รับอนุญาตหรือเป็นอันตราย",
+    multi: false
+  },
+  {
+    id: 6,
+    en: "A data administrator is configuring authentication for a SaaS application and would like to reduce the number of credentials employees need to maintain. The company prefers to use domain credentials to access new SaaS applications. Which of the following methods would allow this functionality?",
+    th: "ผู้ดูแลข้อมูลกำลังกำหนดค่าการยืนยันตัวตนสำหรับแอปพลิเคชัน SaaS และต้องการลดจำนวน credentials ที่พนักงานต้องจัดการ บริษัทต้องการใช้ domain credentials เพื่อเข้าถึงแอปพลิเคชัน SaaS ใหม่ ข้อใดต่อไปนี้จะอนุญาตให้ใช้ฟังก์ชันนี้ได้?",
+    options: ["SSO", "LEAP", "MFA", "PEAP"],
+    answer: 0,
+    explanationEN: "SSO (Single Sign-On) allows users to access multiple applications with one set of credentials. It reduces credential management burden and can be implemented using SAML, OAuth, OpenID Connect, and Kerberos.",
+    explanationTH: "SSO (Single Sign-On) ช่วยให้ผู้ใช้เข้าถึงหลายแอปพลิเคชันด้วย credentials ชุดเดียว ลดภาระการจัดการ credentials และสามารถ implement ได้โดยใช้ SAML, OAuth, OpenID Connect และ Kerberos",
+    multi: false
+  },
+  {
+    id: 7,
+    en: "An enterprise is trying to limit outbound DNS traffic originating from its internal network. Outbound DNS requests will only be allowed from one device with the IP address 10.50.10.25. Which of the following firewall ACLs will accomplish this goal?",
+    th: "องค์กรกำลังพยายามจำกัด DNS traffic ขาออกที่มาจากเครือข่ายภายใน DNS requests ขาออกจะอนุญาตจากอุปกรณ์เดียวที่มี IP address 10.50.10.25 เท่านั้น Firewall ACL ข้อใดจะบรรลุเป้าหมายนี้?",
+    options: [
+      "Access list outbound permit 0.0.0.0/0 0.0.0.0/0 port 53 → deny 10.50.10.25/32 0.0.0.0/0 port 53",
+      "Access list outbound permit 0.0.0.0/0 10.50.10.25/32 port 53 → deny 0.0.0.0/0 0.0.0.0/0 port 53",
+      "Access list outbound permit 0.0.0.0/0 0.0.0.0/0 port 53 → deny 0.0.0.0/0 10.50.10.25/32 port 53",
+      "Access list outbound permit 10.50.10.25/32 0.0.0.0/0 port 53 → deny 0.0.0.0/0 0.0.0.0/0 port 53"
+    ],
+    answer: 3,
+    explanationEN: "The first rule permits outbound DNS (port 53) from 10.50.10.25/32 to any destination. The second rule denies all other outbound DNS traffic. Rules are processed top-to-bottom.",
+    explanationTH: "กฎแรกอนุญาต DNS ขาออก (port 53) จาก 10.50.10.25/32 ไปยังปลายทางใดก็ได้ กฎที่สองปฏิเสธ DNS traffic ขาออกอื่นทั้งหมด กฎถูกประมวลผลจากบนลงล่าง",
+    multi: false
+  },
+  {
+    id: 8,
+    en: "Which of the following allows for the attribution of messages to individuals?",
+    th: "ข้อใดต่อไปนี้อนุญาตให้ระบุผู้ส่งข้อความไปยังบุคคลเฉพาะได้?",
+    options: ["Adaptive identity", "Non-repudiation", "Authentication", "Access logs"],
+    answer: 1,
+    explanationEN: "Non-repudiation is the ability to prove that a message was sent or signed by a particular person, and that person cannot deny it. Achieved through cryptographic techniques like hashing and digital signatures.",
+    explanationTH: "การห้ามปฏิเสธ (Non-repudiation) คือความสามารถในการพิสูจน์ว่าข้อความถูกส่งหรือลงนามโดยบุคคลใดบุคคลหนึ่ง และบุคคลนั้นไม่สามารถปฏิเสธได้ ทำได้โดยใช้เทคนิคการเข้ารหัส เช่น hashing และ digital signatures",
+    multi: false
+  },
+  {
+    id: 9,
+    en: "Which of the following describes the process of concealing code or text inside a graphical image?",
+    th: "ข้อใดต่อไปนี้อธิบายกระบวนการซ่อนรหัสหรือข้อความภายในรูปภาพกราฟิก?",
+    options: ["Symmetric encryption", "Hashing", "Data masking", "Steganography"],
+    answer: 3,
+    explanationEN: "Steganography is hiding information within another medium, such as an image, audio, video, or text file. The hidden information is not visible to the casual observer.",
+    explanationTH: "Steganography คือการซ่อนข้อมูลภายในสื่อตัวกลาง เช่น รูปภาพ เสียง วิดีโอ หรือไฟล์ข้อความ ข้อมูลที่ซ่อนจะไม่สามารถมองเห็นได้ด้วยตาเปล่า",
+    multi: false
+  },
+  {
+    id: 10,
+    en: "A security operations center determines that the malicious activity detected on a server is normal. Which of the following activities describes the act of ignoring detected activity in the future?",
+    th: "ศูนย์ปฏิบัติการด้านความปลอดภัย (SOC) พิจารณาว่ากิจกรรมที่ตรวจพบบนเซิร์ฟเวอร์เป็นเรื่องปกติ ข้อใดต่อไปนี้อธิบายการกระทำของการเพิกเฉยต่อกิจกรรมที่ตรวจพบในอนาคต?",
+    options: ["Tuning", "Aggregating", "Quarantining", "Archiving"],
+    answer: 0,
+    explanationEN: "Tuning is adjusting the configuration of a security tool to optimize performance and reduce false positives. It filters out normal/benign activity so analysts can focus on real threats.",
+    explanationTH: "Tuning คือการปรับค่าคอนฟิกของเครื่องมือรักษาความปลอดภัยเพื่อเพิ่มประสิทธิภาพและลด false positives ช่วยกรอง activity ที่ปกติออกเพื่อให้นักวิเคราะห์มุ่งเน้นที่ภัยคุกคามจริง",
+    multi: false
+  },
+  {
+    id: 11,
+    en: "Malware spread across a company's network after an employee visited a compromised industry blog. Which of the following best describes this type of attack?",
+    th: "มัลแวร์แพร่กระจายไปทั่วเครือข่ายของบริษัทหลังจากพนักงานเข้าชมบล็อกอุตสาหกรรมที่ถูกบุกรุก ข้อใดต่อไปนี้อธิบายการโจมตีประเภทนี้ได้ดีที่สุด?",
+    options: ["Impersonation", "Disinformation", "Watering-hole", "Smishing"],
+    answer: 2,
+    explanationEN: "A watering-hole attack targets groups of users by infecting websites they commonly visit. Attackers exploit vulnerabilities to deliver malicious payloads to the organization's network.",
+    explanationTH: "การโจมตีแบบ Watering-hole กำหนดเป้าหมายกลุ่มผู้ใช้โดยการแพร่เชื้อเว็บไซต์ที่พวกเขาเข้าชมเป็นประจำ ผู้โจมตีใช้ช่องโหว่เพื่อส่ง payload ที่เป็นอันตรายไปยังเครือข่ายขององค์กร",
+    multi: false
+  },
+  {
+    id: 12,
+    en: "Which of the following enables the use of an input field to run commands that can view or manipulate data?",
+    th: "ข้อใดต่อไปนี้ทำให้สามารถใช้ช่องป้อนข้อมูลเพื่อรันคำสั่งที่สามารถดูหรือจัดการข้อมูลได้?",
+    options: ["Cross-site scripting", "Side loading", "Buffer overflow", "SQL injection"],
+    answer: 3,
+    explanationEN: "SQL injection enables use of an input field to run SQL commands that can view or manipulate data in a database. It's one of the most common and dangerous web application vulnerabilities.",
+    explanationTH: "SQL injection ทำให้สามารถใช้ช่องป้อนข้อมูลเพื่อรันคำสั่ง SQL ที่สามารถดูหรือจัดการข้อมูลในฐานข้อมูลได้ เป็นหนึ่งในช่องโหว่ของเว็บแอปพลิเคชันที่พบบ่อยและอันตรายที่สุด",
+    multi: false
+  },
+  {
+    id: 13,
+    en: "A company prevented direct access from the database administrators' workstations to the network segment that contains database servers. Which of the following should a database administrator use to access the database servers?",
+    th: "บริษัทป้องกันการเข้าถึงโดยตรงจากเวิร์กสเตชันของผู้ดูแลฐานข้อมูลไปยังเซกเมนต์เครือข่ายที่มีเซิร์ฟเวอร์ฐานข้อมูล ผู้ดูแลฐานข้อมูลควรใช้สิ่งใดเพื่อเข้าถึงเซิร์ฟเวอร์ฐานข้อมูล?",
+    options: ["Jump server", "RADIUS", "HSM", "Load balancer"],
+    answer: 0,
+    explanationEN: "A jump server acts as an intermediary between a user's workstation and a remote network segment, providing secure access to servers not directly reachable, with audit logs and access control.",
+    explanationTH: "Jump server ทำหน้าที่เป็นตัวกลางระหว่างเวิร์กสเตชันของผู้ใช้และเซกเมนต์เครือข่ายระยะไกล ให้การเข้าถึงที่ปลอดภัยไปยังเซิร์ฟเวอร์ที่เข้าถึงโดยตรงไม่ได้ พร้อม audit logs และ access control",
+    multi: false
+  },
+  {
+    id: 14,
+    en: "A business received a small grant to migrate its infrastructure to an off-premises solution. Which of the following should be considered first?",
+    th: "ธุรกิจได้รับเงินช่วยเหลือจำนวนเล็กน้อยเพื่อย้ายโครงสร้างพื้นฐานไปยังโซลูชันนอกสถานที่ ข้อใดควรพิจารณาเป็นอันดับแรก?",
+    options: ["Security of cloud providers", "Cost of implementation", "Ability of engineers", "Security of architecture"],
+    answer: 3,
+    explanationEN: "Security of architecture should be considered first when migrating to an off-premises solution. It helps identify and mitigate risks such as data security, compliance, availability, scalability, and performance.",
+    explanationTH: "ความปลอดภัยของสถาปัตยกรรม (Security of architecture) ควรพิจารณาเป็นอันดับแรกเมื่อย้ายไปยังโซลูชันนอกสถานที่ ช่วยระบุและลดความเสี่ยง เช่น ความปลอดภัยของข้อมูล การปฏิบัติตามข้อกำหนด ความพร้อมใช้งาน ความสามารถในการปรับขนาด และประสิทธิภาพ",
+    multi: false
+  },
+  {
+    id: 15,
+    en: "Which of the following should a security administrator adhere to when setting up a new set of firewall rules?",
+    th: "ผู้ดูแลระบบความปลอดภัยควรปฏิบัติตามข้อใดเมื่อตั้งค่า firewall rules ชุดใหม่?",
+    options: ["Disaster recovery plan", "Incident response procedure", "Business continuity plan", "Change management procedure"],
+    answer: 3,
+    explanationEN: "A change management procedure ensures changes are planned, tested, approved, implemented, documented, and reviewed in a controlled manner. Setting up new firewall rules is a change that affects security, performance, and functionality.",
+    explanationTH: "กระบวนการจัดการการเปลี่ยนแปลง (Change management procedure) รับรองว่าการเปลี่ยนแปลงได้รับการวางแผน ทดสอบ อนุมัติ ดำเนินการ จัดทำเอกสาร และทบทวนอย่างเป็นระบบ การตั้งค่า firewall rules ใหม่เป็นการเปลี่ยนแปลงที่ส่งผลต่อความปลอดภัย ประสิทธิภาพ และฟังก์ชันการทำงาน",
+    multi: false
+  },
+  {
+    id: 16,
+    en: "An administrator notices that several users are logging in from suspicious IP addresses. After speaking with the users, the administrator determines that the employees were not logging in from those IP addresses and resets the affected users' passwords. Which of the following should the administrator implement to prevent this type of attack from succeeding in the future?",
+    th: "ผู้ดูแลระบบสังเกตว่าผู้ใช้หลายคน login จาก IP addresses ที่น่าสงสัย หลังจากพูดคุยกับผู้ใช้ ผู้ดูแลระบบพิจารณาว่าพนักงานไม่ได้ login จาก IP addresses เหล่านั้นและรีเซ็ตรหัสผ่าน ข้อใดควร implement เพื่อป้องกันการโจมตีประเภทนี้ในอนาคต?",
+    options: ["Multifactor authentication", "Permissions assignment", "Access management", "Password complexity"],
+    answer: 0,
+    explanationEN: "MFA requires more than one factor (something you know, have, or are) to verify identity. Even if a password is compromised, the attacker would need another factor to log in.",
+    explanationTH: "MFA ต้องการมากกว่าหนึ่งปัจจัย (สิ่งที่คุณรู้ มี หรือเป็น) เพื่อยืนยันตัวตน แม้รหัสผ่านถูกเปิดเผย ผู้โจมตียังต้องมีปัจจัยอื่นเพื่อ login",
+    multi: false
+  },
+  {
+    id: 17,
+    en: "Which of the following exercises should an organization use to improve its incident response process?",
+    th: "องค์กรควรใช้แบบฝึกหัดข้อใดเพื่อปรับปรุงกระบวนการตอบสนองต่อเหตุการณ์ (incident response)?",
+    options: ["Tabletop", "Replication", "Failover", "Recovery"],
+    answer: 0,
+    explanationEN: "A tabletop exercise is a simulated scenario that tests the incident response plan. Key stakeholders discuss their roles and actions in response to a hypothetical incident, identifying gaps and improvement areas.",
+    explanationTH: "Tabletop exercise เป็นสถานการณ์จำลองที่ทดสอบแผนตอบสนองต่อเหตุการณ์ ผู้มีส่วนได้ส่วนเสียหลักจะอภิปรายบทบาทและการดำเนินการตอบสนองต่อเหตุการณ์สมมติ เพื่อระบุช่องว่างและจุดที่ต้องปรับปรุง",
+    multi: false
+  },
+  {
+    id: 18,
+    en: "Which of the following describes a security alerting and monitoring tool that collects system, application, and network logs from multiple sources in a centralized system?",
+    th: "ข้อใดต่อไปนี้อธิบายเครื่องมือแจ้งเตือนและตรวจสอบความปลอดภัยที่รวบรวม logs ของระบบ แอปพลิเคชัน และเครือข่ายจากหลายแหล่งในระบบส่วนกลาง?",
+    options: ["SIEM", "DLP", "IDS", "SNMP"],
+    answer: 0,
+    explanationEN: "SIEM (Security Information and Event Management) collects logs from multiple sources, analyzes data, correlates events, generates alerts, and provides reports and dashboards.",
+    explanationTH: "SIEM (Security Information and Event Management) รวบรวม logs จากหลายแหล่ง วิเคราะห์ข้อมูล เชื่อมโยงเหตุการณ์ สร้างการแจ้งเตือน และให้รายงานและ dashboards",
+    multi: false
+  },
+  {
+    id: 19,
+    en: "Which of the following actions could a security engineer take to ensure workstations and servers are properly monitored for unauthorized changes and software?",
+    th: "วิศวกรด้านความปลอดภัยสามารถดำเนินการข้อใดเพื่อให้แน่ใจว่าเวิร์กสเตชันและเซิร์ฟเวอร์ได้รับการตรวจสอบอย่างเหมาะสมสำหรับการเปลี่ยนแปลงและซอฟต์แวร์ที่ไม่ได้รับอนุญาต?",
+    options: ["Configure all systems to log scheduled tasks.", "Collect and monitor all traffic exiting the network.", "Block traffic based on known malicious signatures.", "Install endpoint management software on all systems."],
+    answer: 3,
+    explanationEN: "Endpoint management software monitors and controls the configuration, security, and performance of workstations and servers from a central console. It detects unauthorized changes and software installations.",
+    explanationTH: "Endpoint management software ตรวจสอบและควบคุมการกำหนดค่า ความปลอดภัย และประสิทธิภาพของเวิร์กสเตชันและเซิร์ฟเวอร์จากคอนโซลกลาง ตรวจจับการเปลี่ยนแปลงและการติดตั้งซอฟต์แวร์ที่ไม่ได้รับอนุญาต",
+    multi: false
+  },
+  {
+    id: 20,
+    en: "A security engineer is implementing FDE for all laptops in an organization. Which of the following are the most important for the engineer to consider as part of the planning process? (Select two).",
+    th: "วิศวกรด้านความปลอดภัยกำลัง implement FDE สำหรับแล็ปท็อปทั้งหมดในองค์กร ข้อใดต่อไปนี้สำคัญที่สุดที่วิศวกรควรพิจารณาเป็นส่วนหนึ่งของกระบวนการวางแผน? (เลือกสองข้อ)",
+    options: ["Key escrow", "TPM presence", "Digital signatures", "Data tokenization", "Public key management", "Certificate authority linking"],
+    answer: [0, 1],
+    explanationEN: "Key escrow stores encryption keys in a secure location for recovery purposes. TPM (Trusted Platform Module) is a hardware chip that securely stores encryption keys, enhancing FDE security and performance.",
+    explanationTH: "Key escrow เก็บ encryption keys ในตำแหน่งที่ปลอดภัยเพื่อวัตถุประสงค์การกู้คืน TPM (Trusted Platform Module) เป็นชิปฮาร์ดแวร์ที่เก็บ encryption keys อย่างปลอดภัย เพิ่มความปลอดภัยและประสิทธิภาพของ FDE",
+    multi: true
+  },
+  {
+    id: 21,
+    en: "An administrator was notified that a user logged in remotely after hours and copied large amounts of data to a personal device. Which of the following best describes the user's activity?",
+    th: "ผู้ดูแลระบบได้รับแจ้งว่าผู้ใช้ login ระยะไกลนอกเวลาทำการและคัดลอกข้อมูลจำนวนมากไปยังอุปกรณ์ส่วนตัว ข้อใดอธิบายกิจกรรมของผู้ใช้ได้ดีที่สุด?",
+    options: ["Penetration testing", "Phishing campaign", "External audit", "Insider threat"],
+    answer: 3,
+    explanationEN: "An insider threat originates from within the organization - employees, contractors, or partners with authorized access who misuse it. Logging in after hours to copy data to a personal device is a malicious insider threat.",
+    explanationTH: "Insider threat มาจากภายในองค์กร - พนักงาน ผู้รับเหมา หรือพาร์ทเนอร์ที่มีสิทธิ์เข้าถึงแต่ใช้ในทางที่ผิด การ login นอกเวลาทำการเพื่อคัดลอกข้อมูลไปยังอุปกรณ์ส่วนตัวเป็น insider threat ที่เป็นอันตราย",
+    multi: false
+  },
+  {
+    id: 22,
+    en: "One of a company's vendors sent an analyst a security bulletin that recommends a BIOS update. Which of the following vulnerability types is being addressed by the patch?",
+    th: "หนึ่งในผู้ขายของบริษัทส่งบันทึกความปลอดภัยให้นักวิเคราะห์ที่แนะนำการอัปเดต BIOS ช่องโหว่ประเภทใดที่ถูกแก้ไขโดย patch นี้?",
+    options: ["Virtualization", "Firmware", "Application", "Operating system"],
+    answer: 1,
+    explanationEN: "Firmware is software embedded in hardware devices like BIOS. A BIOS update is a firmware patch that addresses vulnerabilities in the basic input/output system of a computer.",
+    explanationTH: "Firmware เป็นซอฟต์แวร์ที่ฝังในอุปกรณ์ฮาร์ดแวร์เช่น BIOS การอัปเดต BIOS เป็น firmware patch ที่แก้ไขช่องโหว่ใน basic input/output system ของคอมพิวเตอร์",
+    multi: false
+  },
+  {
+    id: 23,
+    en: "A newly identified network access vulnerability has been found in the OS of legacy IoT devices. Which of the following would best mitigate this vulnerability quickly?",
+    th: "พบช่องโหว่การเข้าถึงเครือข่ายใหม่ใน OS ของอุปกรณ์ IoT รุ่นเก่า ข้อใดต่อไปนี้จะลดช่องโหว่นี้ได้ดีที่สุดอย่างรวดเร็ว?",
+    options: ["Insurance", "Patching", "Segmentation", "Replacement"],
+    answer: 2,
+    explanationEN: "Segmentation divides a network into smaller segments with their own security controls. It isolates legacy IoT devices from other systems, reducing attack surface and limiting breach impact quickly.",
+    explanationTH: "Segmentation แบ่งเครือข่ายออกเป็นเซกเมนต์ย่อยที่มีการควบคุมความปลอดภัยเป็นของตัวเอง แยก IoT รุ่นเก่าออกจากระบบอื่น ลดพื้นผิวการโจมตีและจำกัดผลกระทบจากการบุกรุกได้อย่างรวดเร็ว",
+    multi: false
+  },
+  {
+    id: 24,
+    en: "Which of the following are cases in which an engineer should recommend the decommissioning of a network device? (Select two).",
+    th: "กรณีใดต่อไปนี้ที่วิศวกรควรแนะนำการปลดระวาง (decommissioning) อุปกรณ์เครือข่าย? (เลือกสองข้อ)",
+    options: [
+      "The device has been moved from a production environment to a test environment.",
+      "The device is configured to use cleartext passwords.",
+      "The device is moved to an isolated segment on the enterprise network.",
+      "The device is moved to a different location in the enterprise.",
+      "The device's encryption level cannot meet organizational standards.",
+      "The device is unable to receive authorized updates."
+    ],
+    answer: [4, 5],
+    explanationEN: "A device that cannot meet encryption standards or receive authorized updates poses a security risk and compliance violation. Such devices should be decommissioned and replaced.",
+    explanationTH: "อุปกรณ์ที่ไม่สามารถตอบสนองมาตรฐานการเข้ารหัสหรือรับการอัปเดตที่ได้รับอนุญาตจะก่อให้เกิดความเสี่ยงด้านความปลอดภัยและการละเมิดข้อกำหนด อุปกรณ์เหล่านี้ควรถูกปลดระวางและแทนที่",
+    multi: true
+  },
+  {
+    id: 25,
+    en: "Which of the following involves an attempt to take advantage of database misconfigurations?",
+    th: "ข้อใดต่อไปนี้เกี่ยวข้องกับความพยายามใช้ประโยชน์จากการกำหนดค่าฐานข้อมูลที่ผิดพลาด?",
+    options: ["Buffer overflow", "SQL injection", "VM escape", "Memory injection"],
+    answer: 1,
+    explanationEN: "SQL injection exploits database misconfigurations or application code flaws. Attackers inject malicious SQL statements to execute unauthorized commands on the database.",
+    explanationTH: "SQL injection ใช้ประโยชน์จากการกำหนดค่าฐานข้อมูลที่ผิดพลาดหรือข้อบกพร่องในรหัสแอปพลิเคชัน ผู้โจมตี inject คำสั่ง SQL ที่เป็นอันตรายเพื่อรันคำสั่งที่ไม่ได้รับอนุญาตบนฐานข้อมูล",
+    multi: false
+  },
+  {
+    id: 26,
+    en: "Which of the following best practices gives administrators a set period to perform changes to an operational system to ensure availability and minimize business impacts?",
+    th: "แนวปฏิบัติที่ดีข้อใดให้ระยะเวลาที่กำหนดแก่ผู้ดูแลระบบเพื่อทำการเปลี่ยนแปลงระบบปฏิบัติการเพื่อรับรองความพร้อมใช้งานและลดผลกระทบทางธุรกิจ?",
+    options: ["Impact analysis", "Scheduled downtime", "Backout plan", "Change management boards"],
+    answer: 1,
+    explanationEN: "Scheduled downtime is a planned period when a system is unavailable for maintenance, updates, or changes without disrupting normal business operations.",
+    explanationTH: "Scheduled downtime คือช่วงเวลาที่วางแผนไว้เมื่อระบบไม่พร้อมใช้งานสำหรับการบำรุงรักษา อัปเดต หรือการเปลี่ยนแปลงโดยไม่รบกวนการดำเนินธุรกิจปกติ",
+    multi: false
+  },
+  {
+    id: 27,
+    en: "A systems administrator receives the following alert from a file integrity monitoring tool: The hash of the cmd.exe file has changed. The systems administrator checks the OS logs and notices that no patches were applied in the last two months. Which of the following most likely occurred?",
+    th: "ผู้ดูแลระบบได้รับการแจ้งเตือนจากเครื่องมือตรวจสอบความสมบูรณ์ของไฟล์: hash ของไฟล์ cmd.exe เปลี่ยนแปลง ผู้ดูแลระบบตรวจสอบ OS logs และพบว่าไม่มี patches ที่ถูกติดตั้งในช่วงสองเดือนที่ผ่านมา ข้อใดน่าจะเกิดขึ้นมากที่สุด?",
+    options: ["The end user changed the file permissions.", "A cryptographic collision was detected.", "A snapshot of the file system was taken.", "A rootkit was deployed."],
+    answer: 3,
+    explanationEN: "A rootkit modifies or replaces system files to hide its presence. It can change the hash of cmd.exe to avoid detection by antivirus or file integrity monitoring tools.",
+    explanationTH: "Rootkit แก้ไขหรือแทนที่ไฟล์ระบบเพื่อซ่อนการมีอยู่ของตัวเอง สามารถเปลี่ยน hash ของ cmd.exe เพื่อหลีกเลี่ยงการตรวจจับจาก antivirus หรือเครื่องมือตรวจสอบความสมบูรณ์ของไฟล์",
+    multi: false
+  },
+  {
+    id: 28,
+    en: "Which of the following is used to quantitatively measure the criticality of a vulnerability?",
+    th: "ข้อใดต่อไปนี้ใช้เพื่อวัดระดับความร้ายแรงของช่องโหว่เชิงปริมาณ?",
+    options: ["CVE", "CVSS", "CIA", "CERT"],
+    answer: 1,
+    explanationEN: "CVSS (Common Vulnerability Scoring System) provides a standardized way to assess vulnerability severity with a numerical score from 0 to 10, where higher scores indicate higher criticality.",
+    explanationTH: "CVSS (Common Vulnerability Scoring System) ให้วิธีมาตรฐานในการประเมินความรุนแรงของช่องโหว่ด้วยคะแนนตัวเลขตั้งแต่ 0 ถึง 10 โดยคะแนนที่สูงกว่าบ่งบอกถึงความร้ายแรงที่สูงกว่า",
+    multi: false
+  },
+  {
+    id: 29,
+    en: "A company's legal department drafted sensitive documents in a SaaS application and wants to ensure the documents cannot be accessed by individuals in high-risk countries. Which of the following is the most effective way to limit this access?",
+    th: "ฝ่ายกฎหมายของบริษัทร่างเอกสารที่ละเอียดอ่อนในแอปพลิเคชัน SaaS และต้องการให้แน่ใจว่าเอกสารไม่สามารถเข้าถึงได้โดยบุคคลในประเทศที่มีความเสี่ยงสูง วิธีใดมีประสิทธิภาพมากที่สุดในการจำกัดการเข้าถึงนี้?",
+    options: ["Data masking", "Encryption", "Geolocation policy", "Data sovereignty regulation"],
+    answer: 2,
+    explanationEN: "A geolocation policy restricts or allows access based on geographic location using IP filtering, GPS tracking, or geofencing. It can prevent access from high-risk countries.",
+    explanationTH: "นโยบายตำแหน่งทางภูมิศาสตร์ (Geolocation policy) จำกัดหรืออนุญาตการเข้าถึงตามตำแหน่งทางภูมิศาสตร์โดยใช้ IP filtering, GPS tracking หรือ geofencing สามารถป้องกันการเข้าถึงจากประเทศที่มีความเสี่ยงสูง",
+    multi: false
+  },
+  {
+    id: 30,
+    en: "Which of the following would be the best way to block unknown programs from executing?",
+    th: "วิธีใดดีที่สุดในการบล็อกโปรแกรมที่ไม่รู้จักไม่ให้ทำงาน?",
+    options: ["Access control list", "Application allow list", "Host-based firewall", "DLP solution"],
+    answer: 1,
+    explanationEN: "An application allow list specifies which applications are permitted to run, blocking all unknown programs. It prevents malware and unauthorized software from executing.",
+    explanationTH: "Application allow list ระบุว่าแอปพลิเคชันใดได้รับอนุญาตให้ทำงาน บล็อกโปรแกรมที่ไม่รู้จักทั้งหมด ป้องกันมัลแวร์และซอฟต์แวร์ที่ไม่ได้รับอนุญาตจากการทำงาน",
+    multi: false
+  },
+  {
+    id: 31,
+    en: "Which of the following is used to protect a computer from viruses, malware, and Trojans being installed and moving laterally across the network?",
+    th: "ข้อใดต่อไปนี้ใช้เพื่อป้องกันคอมพิวเตอร์จากไวรัส มัลแวร์ และโทรจันที่ถูกติดตั้งและเคลื่อนที่ข้ามเครือข่าย?",
+    options: ["IDS", "ACL", "EDR", "NAC"],
+    answer: 2,
+    explanationEN: "EDR (Endpoint Detection and Response) monitors endpoint activity and behavior, detecting and preventing malicious software from infecting endpoints and spreading across the network.",
+    explanationTH: "EDR (Endpoint Detection and Response) ตรวจสอบกิจกรรมและพฤติกรรมของ endpoint ตรวจจับและป้องกันซอฟต์แวร์ที่เป็นอันตรายจากการแพร่เชื้อ endpoint และแพร่กระจายข้ามเครือข่าย",
+    multi: false
+  },
+  {
+    id: 32,
+    en: "An enterprise has been experiencing attacks focused on exploiting vulnerabilities in older browser versions with well-known exploits. Which of the following security solutions should be configured to best provide the ability to monitor and block these known signature-based attacks?",
+    th: "องค์กรประสบปัญหาการโจมตีที่มุ่งเน้นการใช้ช่องโหว่ใน browser เวอร์ชันเก่าด้วย exploits ที่เป็นที่รู้จัก โซลูชันความปลอดภัยข้อใดควรกำหนดค่าเพื่อตรวจสอบและบล็อกการโจมตีตาม signature ที่เป็นที่รู้จักเหล่านี้ได้ดีที่สุด?",
+    options: ["ACL", "DLP", "IDS", "IPS"],
+    answer: 3,
+    explanationEN: "An IPS (Intrusion Prevention System) monitors network traffic and blocks malicious packets based on predefined rules or signatures, preventing attacks that exploit known vulnerabilities.",
+    explanationTH: "IPS (Intrusion Prevention System) ตรวจสอบ network traffic และบล็อก packets ที่เป็นอันตรายตามกฎหรือ signatures ที่กำหนดไว้ล่วงหน้า ป้องกันการโจมตีที่ใช้ช่องโหว่ที่เป็นที่รู้จัก",
+    multi: false
+  },
+  {
+    id: 33,
+    en: "An organization is building a new backup data center with cost-benefit as the primary requirement and RTO and RPO values around two days. Which of the following types of sites is the best for this scenario?",
+    th: "องค์กรกำลังสร้างศูนย์ข้อมูลสำรองใหม่โดยมีความคุ้มค่าเป็นข้อกำหนดหลักและค่า RTO และ RPO ประมาณสองวัน ประเภทไซต์ใดดีที่สุดสำหรับสถานการณ์นี้?",
+    options: ["Real-time recovery", "Hot", "Cold", "Warm"],
+    answer: 2,
+    explanationEN: "A cold site has infrastructure but no pre-configured hardware/software. It's the cheapest option with the longest RTO/RPO values, suitable when cost-benefit is primary and RTO/RPO around two days is acceptable.",
+    explanationTH: "Cold site มีโครงสร้างพื้นฐานแต่ไม่มีฮาร์ดแวร์/ซอฟต์แวร์ที่กำหนดค่าไว้ล่วงหน้า เป็นตัวเลือกที่ถูกที่สุดโดยมีค่า RTO/RPO ที่ยาวนานที่สุด เหมาะเมื่อความคุ้มค่าเป็นสิ่งสำคัญและ RTO/RPO ประมาณสองวันเป็นที่ยอมรับได้",
+    multi: false
+  },
+  {
+    id: 34,
+    en: "An attacker posing as the Chief Executive Officer calls an employee and instructs the employee to buy gift cards. Which of the following techniques is the attacker using?",
+    th: "ผู้โจมตีที่แอบอ้างเป็นประธานเจ้าหน้าที่บริหาร (CEO) โทรหาพนักงานและสั่งให้พนักงานซื้อบัตรของขวัญ ผู้โจมตีใช้เทคนิคใด?",
+    options: ["Smishing", "Disinformation", "Impersonating", "Whaling"],
+    answer: 3,
+    explanationEN: "Whaling is a phishing attack targeting high-profile individuals like executives. The attacker impersonates someone with authority to trick victims into performing actions. Also called CEO fraud.",
+    explanationTH: "Whaling เป็นการโจมตีแบบ phishing ที่กำหนดเป้าหมายบุคคลระดับสูง เช่น ผู้บริหาร ผู้โจมตีแอบอ้างเป็นผู้มีอำนาจเพื่อหลอกให้เหยื่อดำเนินการ เรียกอีกอย่างว่า CEO fraud",
+    multi: false
+  },
+  {
+    id: 35,
+    en: "Which of the following should a systems administrator use to ensure an easy deployment of resources within the cloud provider?",
+    th: "ผู้ดูแลระบบควรใช้ข้อใดเพื่อให้มั่นใจในการ deploy ทรัพยากรภายใน cloud provider ได้ง่าย?",
+    options: ["Software as a service", "Infrastructure as code", "Internet of Things", "Software-defined networking"],
+    answer: 1,
+    explanationEN: "Infrastructure as Code (IaC) uses code and automation to manage and provision cloud resources, allowing easy deployment, scalability, consistency, and repeatability.",
+    explanationTH: "Infrastructure as Code (IaC) ใช้โค้ดและระบบอัตโนมัติเพื่อจัดการและจัดเตรียมทรัพยากร cloud ช่วยให้ deploy ง่าย มีความสามารถในการปรับขนาด ความสอดคล้อง และทำซ้ำได้",
+    multi: false
+  },
+  {
+    id: 36,
+    en: "Which of the following is a hardware-specific vulnerability?",
+    th: "ข้อใดต่อไปนี้เป็นช่องโหว่เฉพาะฮาร์ดแวร์?",
+    options: ["Firmware version", "Buffer overflow", "SQL injection", "Cross-site scripting"],
+    answer: 0,
+    explanationEN: "Firmware version is a hardware-specific vulnerability. Outdated, corrupted, or tampered firmware can expose devices to security risks. Attackers can exploit firmware vulnerabilities for unauthorized access.",
+    explanationTH: "Firmware version เป็นช่องโหว่เฉพาะฮาร์ดแวร์ firmware ที่ล้าสมัย เสียหาย หรือถูกดัดแปลงสามารถเปิดเผยอุปกรณ์ต่อความเสี่ยงด้านความปลอดภัย ผู้โจมตีสามารถใช้ช่องโหว่ firmware เพื่อเข้าถึงโดยไม่ได้รับอนุญาต",
+    multi: false
+  },
+  {
+    id: 37,
+    en: "A company is planning to set up a SIEM system and assign an analyst to review the logs on a weekly basis. Which of the following types of controls is the company setting up?",
+    th: "บริษัทกำลังวางแผนตั้งค่าระบบ SIEM และมอบหมายนักวิเคราะห์เพื่อตรวจสอบ logs เป็นรายสัปดาห์ บริษัทกำลังตั้งค่าการควบคุมประเภทใด?",
+    options: ["Corrective", "Preventive", "Detective", "Deterrent"],
+    answer: 2,
+    explanationEN: "A detective control monitors and analyzes events, alerting when an incident occurs. SIEM with log review is a detective control that identifies anomalies and potential threats.",
+    explanationTH: "Detective control ตรวจสอบและวิเคราะห์เหตุการณ์ แจ้งเตือนเมื่อเกิดเหตุการณ์ SIEM ที่มีการตรวจสอบ logs เป็น detective control ที่ระบุความผิดปกติและภัยคุกคามที่อาจเกิดขึ้น",
+    multi: false
+  },
+  {
+    id: 38,
+    en: "Which of the following is used to validate a certificate when it is presented to a user?",
+    th: "ข้อใดต่อไปนี้ใช้เพื่อตรวจสอบความถูกต้องของใบรับรอง (certificate) เมื่อนำเสนอต่อผู้ใช้?",
+    options: ["OCSP", "CSR", "CA", "CRC"],
+    answer: 0,
+    explanationEN: "OCSP (Online Certificate Status Protocol) allows real-time checking of certificate revocation status. It queries an OCSP responder that indicates whether a certificate is valid, revoked, or unknown.",
+    explanationTH: "OCSP (Online Certificate Status Protocol) อนุญาตให้ตรวจสอบสถานะการเพิกถอนใบรับรองแบบ real-time โดย query OCSP responder ที่ระบุว่าใบรับรองถูกต้อง ถูกเพิกถอน หรือไม่ทราบ",
+    multi: false
+  },
+  {
+    id: 39,
+    en: "During an investigation, an incident response team attempts to understand the source of an incident. Which of the following incident response activities describes this process?",
+    th: "ระหว่างการสอบสวน ทีมตอบสนองต่อเหตุการณ์พยายามทำความเข้าใจแหล่งที่มาของเหตุการณ์ กิจกรรมตอบสนองต่อเหตุการณ์ข้อใดอธิบายกระบวนการนี้?",
+    options: ["Analysis", "Lessons learned", "Detection", "Containment"],
+    answer: 0,
+    explanationEN: "Analysis involves collecting evidence, identifying root cause, determining scope and impact, and assessing threat actor's motives. It helps formulate an appropriate response strategy.",
+    explanationTH: "การวิเคราะห์ (Analysis) เกี่ยวข้องกับการรวบรวมหลักฐาน ระบุสาเหตุหลัก กำหนดขอบเขตและผลกระทบ และประเมินแรงจูงใจของผู้โจมตี ช่วยกำหนดกลยุทธ์การตอบสนองที่เหมาะสม",
+    multi: false
+  },
+  {
+    id: 40,
+    en: "Which of the following automation use cases would best enhance the security posture of an organization by rapidly updating permissions when employees leave a company?",
+    th: "กรณีการใช้ automation ข้อใดจะช่วยเพิ่มสถานะความปลอดภัยขององค์กรได้ดีที่สุดโดยการอัปเดตสิทธิ์อย่างรวดเร็วเมื่อพนักงานออกจากบริษัท?",
+    options: ["Provisioning resources", "Disabling access", "Reviewing change approvals", "Escalating permission requests"],
+    answer: 1,
+    explanationEN: "Disabling access revokes user account rights (login, email, VPN, cloud services) when employees leave. Automation ensures timely, consistent, and efficient access removal.",
+    explanationTH: "การปิดการเข้าถึง (Disabling access) เพิกถอนสิทธิ์ของบัญชีผู้ใช้ (login, email, VPN, cloud services) เมื่อพนักงานออก ระบบอัตโนมัติรับรองการลบการเข้าถึงที่ทันเวลา สม่ำเสมอ และมีประสิทธิภาพ",
+    multi: false
+  },
+  {
+    id: 41,
+    en: "Which of the following is the phase in the incident response process when a security analyst reviews roles and responsibilities?",
+    th: "ข้อใดเป็นเฟสในกระบวนการตอบสนองต่อเหตุการณ์เมื่อนักวิเคราะห์ความปลอดภัยทบทวนบทบาทและความรับผิดชอบ?",
+    options: ["Preparation", "Recovery", "Lessons learned", "Analysis"],
+    answer: 0,
+    explanationEN: "Preparation is when roles, responsibilities, policies, procedures, tools, resources, and contacts for incident response are reviewed and established.",
+    explanationTH: "Preparation คือขั้นตอนที่ทบทวนและจัดตั้งบทบาท ความรับผิดชอบ นโยบาย กระบวนการ เครื่องมือ ทรัพยากร และรายชื่อติดต่อสำหรับการตอบสนองต่อเหตุการณ์",
+    multi: false
+  },
+  {
+    id: 42,
+    en: "An organization recently updated its security policy to include the following statement: Regular expressions are included in source code to remove special characters such as $, |, ;. &, `, and ? from variables set by forms in a web application. Which of the following best explains the security technique the organization adopted?",
+    th: "องค์กรเพิ่งอัปเดตนโยบายความปลอดภัยเพื่อรวมข้อความต่อไปนี้: Regular expressions รวมอยู่ใน source code เพื่อลบอักขระพิเศษ เช่น $, |, ;, &, `, และ ? จากตัวแปรที่ตั้งค่าโดย forms ในเว็บแอปพลิเคชัน เทคนิคความปลอดภัยใดที่องค์กรนำมาใช้?",
+    options: ["Identify embedded keys", "Code debugging", "Input validation", "Static code analysis"],
+    answer: 2,
+    explanationEN: "Input validation checks user input for malicious or unexpected data before processing. Using regular expressions to remove special characters prevents injection and XSS attacks.",
+    explanationTH: "Input validation ตรวจสอบข้อมูลที่ผู้ใช้ป้อนว่ามีข้อมูลที่เป็นอันตรายหรือไม่คาดคิดก่อนประมวลผล การใช้ regular expressions เพื่อลบอักขระพิเศษป้องกันการโจมตีแบบ injection และ XSS",
+    multi: false
+  },
+  {
+    id: 43,
+    en: "An organization's internet-facing website was compromised when an attacker exploited a buffer overflow. Which of the following should the organization deploy to best protect against similar attacks in the future?",
+    th: "เว็บไซต์ที่เปิดให้เข้าถึงจากอินเทอร์เน็ตขององค์กรถูกบุกรุกเมื่อผู้โจมตีใช้ buffer overflow ข้อใดที่องค์กรควร deploy เพื่อป้องกันการโจมตีที่คล้ายกันในอนาคตได้ดีที่สุด?",
+    options: ["NGFW", "WAF", "TLS", "SD-WAN"],
+    answer: 1,
+    explanationEN: "A WAF (Web Application Firewall) monitors and filters traffic between a web application and the internet. It detects and blocks common web attacks including buffer overflows, SQL injections, and XSS.",
+    explanationTH: "WAF (Web Application Firewall) ตรวจสอบและกรอง traffic ระหว่างเว็บแอปพลิเคชันและอินเทอร์เน็ต ตรวจจับและบล็อกการโจมตีเว็บทั่วไปรวมถึง buffer overflows, SQL injections และ XSS",
+    multi: false
+  },
+  {
+    id: 44,
+    en: "A security team is reviewing the findings in a report that was delivered after a third party performed a penetration test. One of the findings indicated that a web application form field is vulnerable to cross-site scripting. Which of the following application security techniques should the security analyst recommend the developer implement to prevent this vulnerability?",
+    th: "ทีมรักษาความปลอดภัยกำลังทบทวนผลการค้นพบในรายงานที่ส่งมอบหลังจากบุคคลที่สามทำ penetration test ผลการค้นพบหนึ่งระบุว่า form field ของเว็บแอปมีช่องโหว่ cross-site scripting นักวิเคราะห์ควรแนะนำให้นักพัฒนา implement เทคนิคความปลอดภัยข้อใดเพื่อป้องกันช่องโหว่นี้?",
+    options: ["Secure cookies", "Version control", "Input validation", "Code signing"],
+    answer: 2,
+    explanationEN: "Input validation checks user input before processing, preventing XSS attacks. It can use whitelisting, blacklisting, filtering, escaping, encoding, and sanitizing methods.",
+    explanationTH: "Input validation ตรวจสอบข้อมูลที่ผู้ใช้ป้อนก่อนประมวลผล ป้องกันการโจมตี XSS สามารถใช้วิธี whitelisting, blacklisting, filtering, escaping, encoding และ sanitizing",
+    multi: false
+  },
+  {
+    id: 45,
+    en: "A technician needs to apply a high-priority patch to a production system. Which of the following steps should be taken first?",
+    th: "ช่างเทคนิคต้องติดตั้ง patch ที่มีความสำคัญสูงบนระบบ production ควรดำเนินการขั้นตอนใดก่อน?",
+    options: ["Air gap the system.", "Move the system to a different network segment.", "Create a change control request.", "Apply the patch to the system."],
+    answer: 2,
+    explanationEN: "A change control request documents the proposed change, reason, impact, approval process, testing plan, implementation plan, and rollback plan. It's a best practice before any production change.",
+    explanationTH: "Change control request บันทึกการเปลี่ยนแปลงที่เสนอ เหตุผล ผลกระทบ กระบวนการอนุมัติ แผนทดสอบ แผนการดำเนินการ และแผนย้อนกลับ เป็นแนวปฏิบัติที่ดีก่อนการเปลี่ยนแปลง production ใดๆ",
+    multi: false
+  },
+  {
+    id: 46,
+    en: "A company is discarding a classified storage array and hires an outside vendor to complete the disposal. Which of the following should the company request from the vendor?",
+    th: "บริษัทกำลังทิ้งอาร์เรย์จัดเก็บข้อมูลที่เป็นความลับและจ้าง vendor ภายนอกมาทำลาย บริษัทควรขอสิ่งใดจาก vendor?",
+    options: ["Certification", "Inventory list", "Classification", "Proof of ownership"],
+    answer: 0,
+    explanationEN: "A certification confirms the storage array was disposed of securely in compliance with policies. It provides evidence of proper destruction procedures including date, time, location, and method.",
+    explanationTH: "ใบรับรอง (Certification) ยืนยันว่า storage array ถูกกำจัดอย่างปลอดภัยตามนโยบาย ให้หลักฐานของขั้นตอนการทำลายที่เหมาะสมรวมถึงวันที่ เวลา สถานที่ และวิธีการ",
+    multi: false
+  },
+  {
+    id: 47,
+    en: "A systems administrator wants to prevent users from being able to access data based on their responsibilities. The administrator also wants to apply the required access structure via a simplified format. Which of the following should the administrator apply?",
+    th: "ผู้ดูแลระบบต้องการป้องกันผู้ใช้ไม่ให้เข้าถึงข้อมูลตามความรับผิดชอบ และต้องการใช้โครงสร้างการเข้าถึงที่ต้องการผ่านรูปแบบที่ง่ายขึ้น ข้อใดที่ผู้ดูแลระบบควรใช้?",
+    options: ["RBAC", "ACL", "SAML", "GPO"],
+    answer: 0,
+    explanationEN: "RBAC (Role-Based Access Control) restricts access based on user roles/responsibilities. It simplifies permission management by assigning roles to users and access rights to roles.",
+    explanationTH: "RBAC (Role-Based Access Control) จำกัดการเข้าถึงตามบทบาท/ความรับผิดชอบของผู้ใช้ ช่วยให้การจัดการสิทธิ์ง่ายขึ้นโดยกำหนดบทบาทให้ผู้ใช้และสิทธิ์การเข้าถึงให้บทบาท",
+    multi: false
+  },
+  {
+    id: 48,
+    en: "Which of the following roles, according to the shared responsibility model, is responsible for securing the company's database in an IaaS model for a cloud environment?",
+    th: "ตาม shared responsibility model บทบาทใดรับผิดชอบในการรักษาความปลอดภัยฐานข้อมูลของบริษัทใน IaaS model สำหรับ cloud environment?",
+    options: ["Client", "Third-party vendor", "Cloud provider", "DBA"],
+    answer: 0,
+    explanationEN: "In IaaS, the cloud provider secures physical infrastructure while the client secures OS, applications, and data. The database is the client's responsibility.",
+    explanationTH: "ใน IaaS ผู้ให้บริการ cloud รักษาความปลอดภัยโครงสร้างพื้นฐานทางกายภาพ ขณะที่ลูกค้า (client) รักษาความปลอดภัย OS แอปพลิเคชัน และข้อมูล ฐานข้อมูลเป็นความรับผิดชอบของลูกค้า",
+    multi: false
+  },
+  {
+    id: 49,
+    en: "Which of the following is the most likely to be included as an element of communication in a security awareness program?",
+    th: "ข้อใดต่อไปนี้มีแนวโน้มมากที่สุดที่จะรวมเป็นองค์ประกอบของการสื่อสารในโปรแกรมสร้างความตระหนักด้านความปลอดภัย?",
+    options: ["Reporting phishing attempts or other suspicious activities", "Detecting insider threats using anomalous behavior recognition", "Verifying information when modifying wire transfer data", "Performing social engineering as part of third-party penetration testing"],
+    answer: 0,
+    explanationEN: "Reporting phishing attempts raises user awareness about common cyberattacks and helps alert the security team. It's a key communication element in security awareness programs.",
+    explanationTH: "การรายงานความพยายาม phishing เพิ่มความตระหนักของผู้ใช้เกี่ยวกับการโจมตีทางไซเบอร์ทั่วไปและช่วยแจ้งเตือนทีมรักษาความปลอดภัย เป็นองค์ประกอบการสื่อสารสำคัญในโปรแกรมสร้างความตระหนัก",
+    multi: false
+  },
+  {
+    id: 50,
+    en: "An administrator discovers that some files on a database server were recently encrypted. The administrator sees from the security logs that the data was last accessed by a domain user. Which of the following best describes the type of attack that occurred?",
+    th: "ผู้ดูแลระบบค้นพบว่าไฟล์บางส่วนบนเซิร์ฟเวอร์ฐานข้อมูลถูกเข้ารหัสเมื่อเร็วๆ นี้ ผู้ดูแลระบบเห็นจาก security logs ว่าข้อมูลถูกเข้าถึงครั้งสุดท้ายโดย domain user ข้อใดอธิบายประเภทการโจมตีที่เกิดขึ้นได้ดีที่สุด?",
+    options: ["Insider threat", "Social engineering", "Watering-hole", "Unauthorized attacker"],
+    answer: 0,
+    explanationEN: "An insider threat originates from someone with legitimate access who abuses their privileges. The domain user who encrypted files is an insider threat.",
+    explanationTH: "Insider threat มาจากผู้ที่มีสิทธิ์เข้าถึงอย่างถูกต้องแต่ใช้สิทธิ์ในทางที่ผิด domain user ที่เข้ารหัสไฟล์เป็น insider threat",
+    multi: false
+  },
+  {
+    id: 51,
+    en: "Which of the following is used to add extra complexity before using a one-way data transformation algorithm?",
+    th: "ข้อใดต่อไปนี้ใช้เพื่อเพิ่มความซับซ้อนก่อนใช้อัลกอริทึมการแปลงข้อมูลทางเดียว?",
+    options: ["Key stretching", "Data masking", "Steganography", "Salting"],
+    answer: 3,
+    explanationEN: "Salting adds extra random data to a password before hashing. It increases complexity, prevents identical passwords from producing identical hashes, and makes cracking harder.",
+    explanationTH: "Salting เพิ่มข้อมูลสุ่มเข้าไปในรหัสผ่านก่อนทำ hashing เพิ่มความซับซ้อน ป้องกันรหัสผ่านเหมือนกันจากการสร้าง hash เหมือนกัน และทำให้การ crack ยากขึ้น",
+    multi: false
+  },
+  {
+    id: 52,
+    en: "A cyber operations team informs a security analyst about a new tactic malicious actors are using to compromise networks. SIEM alerts have not yet been configured. Which of the following best describes what the security analyst should do to identify this behavior?",
+    th: "ทีม cyber operations แจ้งนักวิเคราะห์ความปลอดภัยเกี่ยวกับกลวิธีใหม่ที่ผู้ไม่ประสงค์ดีใช้เพื่อบุกรุกเครือข่าย ยังไม่ได้กำหนดค่า SIEM alerts นักวิเคราะห์ควรทำอะไรเพื่อระบุพฤติกรรมนี้?",
+    options: ["Digital forensics", "E-discovery", "Incident response", "Threat hunting"],
+    answer: 3,
+    explanationEN: "Threat hunting is proactively searching for signs of malicious activity rather than waiting for alerts. It can identify new TTPs and uncover hidden threats that evade detection tools.",
+    explanationTH: "Threat hunting คือการค้นหาสัญญาณของกิจกรรมที่เป็นอันตรายเชิงรุกแทนที่จะรอการแจ้งเตือน สามารถระบุ TTPs ใหม่และเปิดเผยภัยคุกคามที่ซ่อนอยู่ซึ่งหลบเลี่ยงเครื่องมือตรวจจับ",
+    multi: false
+  },
+  {
+    id: 53,
+    en: "Which of the following is the best way to consistently determine on a daily basis whether security settings on servers have been modified?",
+    th: "วิธีใดดีที่สุดในการตรวจสอบอย่างสม่ำเสมอเป็นรายวันว่าการตั้งค่าความปลอดภัยบนเซิร์ฟเวอร์ถูกแก้ไขหรือไม่?",
+    options: ["Automation", "Compliance checklist", "Attestation", "Manual audit"],
+    answer: 0,
+    explanationEN: "Automation uses software/tools to perform tasks that would otherwise require manual effort. It can monitor, audit, and enforce security settings consistently and alert on any changes or anomalies.",
+    explanationTH: "Automation ใช้ซอฟต์แวร์/เครื่องมือเพื่อทำงานที่ต้องใช้ความพยายามแบบ manual สามารถตรวจสอบ audit และบังคับใช้การตั้งค่าความปลอดภัยอย่างสม่ำเสมอและแจ้งเตือนเมื่อมีการเปลี่ยนแปลงหรือความผิดปกติ",
+    multi: false
+  },
+  {
+    id: 54,
+    en: "A company hired a consultant to perform an offensive security assessment covering penetration testing and social engineering. Which of the following teams will conduct this assessment activity?",
+    th: "บริษัทจ้างที่ปรึกษาเพื่อทำการประเมินความปลอดภัยเชิงรุก (offensive) ครอบคลุม penetration testing และ social engineering ทีมใดจะดำเนินกิจกรรมการประเมินนี้?",
+    options: ["White", "Purple", "Blue", "Red"],
+    answer: 3,
+    explanationEN: "A red team performs offensive security assessments including penetration testing and social engineering. They simulate real-world attacks to test the effectiveness of security controls.",
+    explanationTH: "Red team ทำการประเมินความปลอดภัยเชิงรุก (offensive) รวมถึง penetration testing และ social engineering จำลองการโจมตีในโลกจริงเพื่อทดสอบประสิทธิภาพของการควบคุมความปลอดภัย",
+    multi: false
+  },
+  {
+    id: 55,
+    en: "Which of the following is the most common data loss path for an air-gapped network?",
+    th: "ข้อใดต่อไปนี้เป็นเส้นทางการสูญเสียข้อมูลที่พบบ่อยที่สุดสำหรับเครือข่ายที่แยกออกจากกัน (air-gapped network)?",
+    options: ["Bastion host", "Unsecured Bluetooth", "Unpatched OS", "Removable devices"],
+    answer: 3,
+    explanationEN: "Removable devices (USB drives, CDs, external hard drives) can transfer data between air-gapped and other networks. They can carry malware or exfiltrate data from the isolated network.",
+    explanationTH: "อุปกรณ์ถอดได้ (USB drives, CDs, external hard drives) สามารถถ่ายโอนข้อมูลระหว่างเครือข่าย air-gapped และเครือข่ายอื่น สามารถนำมัลแวร์หรือดึงข้อมูลออกจากเครือข่ายที่แยกออก",
+    multi: false
+  },
+  {
+    id: 56,
+    en: "Which of the following security concepts is the best reason for permissions on a human resources fileshare to follow the principle of least privilege?",
+    th: "แนวคิดด้านความปลอดภัยข้อใดเป็นเหตุผลที่ดีที่สุดสำหรับการกำหนดสิทธิ์บน fileshare ของฝ่ายทรัพยากรบุคคลให้เป็นไปตามหลัก least privilege?",
+    options: ["Integrity", "Availability", "Confidentiality", "Non-repudiation"],
+    answer: 2,
+    explanationEN: "Confidentiality ensures data is protected from unauthorized access or disclosure. Least privilege restricts access to only those with a legitimate need, protecting sensitive HR data.",
+    explanationTH: "การรักษาความลับ (Confidentiality) รับรองว่าข้อมูลได้รับการป้องกันจากการเข้าถึงหรือเปิดเผยโดยไม่ได้รับอนุญาต Least privilege จำกัดการเข้าถึงเฉพาะผู้ที่มีความจำเป็นเท่านั้น ปกป้องข้อมูล HR ที่ละเอียดอ่อน",
+    multi: false
+  },
+  {
+    id: 57,
+    en: "An organization is struggling with scaling issues on its VPN concentrator and internet circuit due to remote work. The organization is looking for a software solution that will allow it to reduce traffic on the VPN and internet circuit, while still providing encrypted tunnel access to the data center and monitoring of remote employee internet traffic. Which of the following will help achieve these objectives?",
+    th: "องค์กรกำลังประสบปัญหาการปรับขนาดบน VPN concentrator และวงจรอินเทอร์เน็ตเนื่องจากการทำงานระยะไกล องค์กรกำลังมองหาโซลูชันซอฟต์แวร์ที่จะช่วยลด traffic บน VPN และวงจรอินเทอร์เน็ต ขณะยังคงให้ encrypted tunnel access ไปยัง data center และตรวจสอบ internet traffic ของพนักงานระยะไกล ข้อใดจะช่วยบรรลุวัตถุประสงค์เหล่านี้?",
+    options: ["Deploying a SASE solution to remote employees", "Building a load-balanced VPN solution with redundant internet", "Purchasing a low-cost SD-WAN solution for VPN traffic", "Using a cloud provider to create additional VPN concentrators"],
+    answer: 0,
+    explanationEN: "SASE (Secure Access Service Edge) is a cloud-based service combining network and security functions. It reduces VPN traffic while providing secure access and traffic monitoring.",
+    explanationTH: "SASE (Secure Access Service Edge) เป็นบริการบน cloud ที่รวมฟังก์ชันเครือข่ายและความปลอดภัย ลด VPN traffic ขณะให้การเข้าถึงที่ปลอดภัยและการตรวจสอบ traffic",
+    multi: false
+  },
+  {
+    id: 58,
+    en: "Which of the following threat actors is the most likely to use large financial resources to attack critical systems located in other countries?",
+    th: "ผู้คุกคาม (threat actor) ข้อใดมีแนวโน้มมากที่สุดที่จะใช้ทรัพยากรทางการเงินจำนวนมากเพื่อโจมตีระบบสำคัญที่ตั้งอยู่ในประเทศอื่น?",
+    options: ["Insider", "Unskilled attacker", "Nation-state", "Hacktivist"],
+    answer: 2,
+    explanationEN: "Nation-states are government-sponsored threat actors with large financial resources, advanced skills, and strategic objectives targeting critical infrastructure of other countries.",
+    explanationTH: "Nation-state เป็นผู้คุกคามที่ได้รับการสนับสนุนจากรัฐบาลที่มีทรัพยากรทางการเงินมาก ทักษะขั้นสูง และวัตถุประสงค์เชิงกลยุทธ์ที่มุ่งเป้าโครงสร้างพื้นฐานที่สำคัญของประเทศอื่น",
+    multi: false
+  },
+  {
+    id: 59,
+    en: "Which of the following is required for an organization to properly manage its restore process in the event of system failure?",
+    th: "ข้อใดจำเป็นสำหรับองค์กรในการจัดการกระบวนการกู้คืนอย่างเหมาะสมในกรณีที่ระบบล้มเหลว?",
+    options: ["IRP", "DRP", "RPO", "SDLC"],
+    answer: 1,
+    explanationEN: "A DRP (Disaster Recovery Plan) defines policies and procedures to restore normal operations after a disaster, including risk assessment, business impact analysis, and recovery strategy.",
+    explanationTH: "DRP (Disaster Recovery Plan) กำหนดนโยบายและกระบวนการเพื่อกู้คืนการดำเนินงานปกติหลังภัยพิบัติ รวมถึงการประเมินความเสี่ยง การวิเคราะห์ผลกระทบทางธุรกิจ และกลยุทธ์การกู้คืน",
+    multi: false
+  },
+  {
+    id: 60,
+    en: "A network manager wants to protect the company's VPN by implementing multifactor authentication that uses: Something you know, Something you have, Something you are. Which of the following would accomplish the manager's goal?",
+    th: "ผู้จัดการเครือข่ายต้องการปกป้อง VPN ของบริษัทโดย implement multifactor authentication ที่ใช้: สิ่งที่คุณรู้, สิ่งที่คุณมี, สิ่งที่คุณเป็น ข้อใดจะบรรลุเป้าหมายของผู้จัดการ?",
+    options: ["Domain name, PKI, GeoIP lookup", "VPN IP address, company ID, facial structure", "Password, authentication token, thumbprint", "Company URL, TLS certificate, home address"],
+    answer: 2,
+    explanationEN: "Password = something you know, Authentication token = something you have, Thumbprint = something you are. This combination satisfies all three MFA factors.",
+    explanationTH: "Password = สิ่งที่คุณรู้, Authentication token = สิ่งที่คุณมี, Thumbprint = สิ่งที่คุณเป็น การรวมกันนี้ตอบสนองปัจจัย MFA ทั้งสามประการ",
+    multi: false
+  },
+  {
+    id: 61,
+    en: "A company is developing a critical system for the government and storing project information on a fileshare. Which of the following describes how this data will most likely be classified? (Select two).",
+    th: "บริษัทกำลังพัฒนาระบบสำคัญสำหรับรัฐบาลและจัดเก็บข้อมูลโครงการบน fileshare ข้อใดอธิบายว่าข้อมูลนี้จะถูกจัดประเภทอย่างไรมากที่สุด? (เลือกสองข้อ)",
+    options: ["Private", "Confidential", "Public", "Operational", "Urgent", "Restricted"],
+    answer: [1, 5],
+    explanationEN: "Government project data is classified as Confidential (significant harm if disclosed) and Restricted (very limited use, severe harm if disclosed). It requires encryption, access control, and auditing.",
+    explanationTH: "ข้อมูลโครงการรัฐบาลจัดเป็น Confidential (เป็นอันตรายอย่างมากหากเปิดเผย) และ Restricted (ใช้งานจำกัดมาก เป็นอันตรายร้ายแรงหากเปิดเผย) ต้องมี encryption, access control และ auditing",
+    multi: true
+  }
+];
+
+// === QUIZ ENGINE ===
+let mode = '';
+let currentQ = 0;
+let userAnswers = [];
+let answered = [];
+let score = 0;
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz(m) {
+  mode = m;
+  userAnswers = new Array(QUESTIONS.length).fill(null);
+  answered = new Array(QUESTIONS.length).fill(false);
+  document.getElementById('modeScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  buildNav();
+  renderQuestion();
+}
+
+function buildNav() {
+  const nav = document.getElementById('qNav');
+  nav.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'q-dot' + (i === currentQ ? ' current' : '');
+    dot.textContent = i + 1;
+    dot.onclick = () => { currentQ = i; renderQuestion(); };
+    nav.appendChild(dot);
+  });
+}
+
+function updateNav() {
+  const dots = document.querySelectorAll('.q-dot');
+  dots.forEach((d, i) => {
+    d.className = 'q-dot';
+    if (i === currentQ) d.classList.add('current');
+    if (answered[i]) {
+      if (mode === 'practice') {
+        d.classList.add(isCorrect(i) ? 'correct-dot' : 'wrong-dot');
+      } else {
+        d.classList.add('answered');
+      }
+    }
+  });
+}
+
+function isCorrect(idx) {
+  const q = QUESTIONS[idx];
+  const ua = userAnswers[idx];
+  if (ua === null) return false;
+  if (q.multi) {
+    if (!Array.isArray(ua)) return false;
+    const ans = Array.isArray(q.answer) ? q.answer : [q.answer];
+    if (ua.length !== ans.length) return false;
+    return ans.every(a => ua.includes(a));
+  } else {
+    return ua === q.answer;
+  }
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const total = QUESTIONS.length;
+  
+  document.getElementById('progressLabel').textContent = 'ข้อ ' + (currentQ + 1) + ' / ' + total;
+  document.getElementById('progressFill').style.width = ((currentQ + 1) / total * 100) + '%';
+  
+  if (mode === 'practice') {
+    const done = answered.filter(Boolean).length;
+    const correct = answered.reduce((s, a, i) => s + (a && isCorrect(i) ? 1 : 0), 0);
+    document.getElementById('scoreLabel').textContent = '✅ ' + correct + ' / ' + done;
+  } else {
+    const done = answered.filter(Boolean).length;
+    document.getElementById('scoreLabel').textContent = 'ตอบแล้ว ' + done + ' / ' + total;
+  }
+
+  document.getElementById('qNumber').textContent = 'QUESTION ' + q.id + ' (ข้อ ' + (currentQ + 1) + ')';
+  document.getElementById('qTextEN').textContent = q.en;
+  document.getElementById('qTextTH').textContent = q.th;
+  
+  const multiHint = document.getElementById('multiHint');
+  if (q.multi) multiHint.classList.remove('hidden');
+  else multiHint.classList.add('hidden');
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = 'ABCDEFGH';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = '<span class="option-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+    
+    if (answered[currentQ]) {
+      div.classList.add('disabled');
+      const ans = Array.isArray(q.answer) ? q.answer : [q.answer];
+      const ua = Array.isArray(userAnswers[currentQ]) ? userAnswers[currentQ] : [userAnswers[currentQ]];
+      if (ans.includes(i)) div.classList.add('correct');
+      if (ua.includes(i) && !ans.includes(i)) div.classList.add('incorrect');
+      if (ua.includes(i)) div.classList.add('selected');
+    } else {
+      const ua = userAnswers[currentQ];
+      if (q.multi) {
+        if (Array.isArray(ua) && ua.includes(i)) div.classList.add('selected');
+      } else {
+        if (ua === i) div.classList.add('selected');
+      }
+      div.onclick = () => selectOption(i);
+    }
+    container.appendChild(div);
+  });
+
+  // Explanation
+  const exp = document.getElementById('explanation');
+  if (answered[currentQ] && (mode === 'practice' || mode === 'review')) {
+    exp.classList.add('show');
+    const correct = isCorrect(currentQ);
+    exp.className = 'explanation show' + (correct ? '' : ' wrong');
+    document.getElementById('expTitle').className = 'exp-title ' + (correct ? 'correct-t' : 'wrong-t');
+    document.getElementById('expTitle').innerHTML = correct ? '✅ ถูกต้อง!' : '❌ ไม่ถูกต้อง';
+    document.getElementById('expEN').textContent = q.explanationEN;
+    document.getElementById('expTH').textContent = q.explanationTH;
+  } else {
+    exp.classList.remove('show');
+  }
+
+  // Buttons
+  document.getElementById('prevBtn').disabled = currentQ === 0;
+  document.getElementById('nextBtn').textContent = currentQ === total - 1 ? (mode === 'exam' ? '📊 ดูผลลัพธ์' : 'ถัดไป →') : 'ถัดไป →';
+  
+  const confirmBtn = document.getElementById('confirmBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  if (mode === 'practice') {
+    confirmBtn.classList.toggle('hidden', answered[currentQ]);
+    submitBtn.classList.add('hidden');
+    if (answered.every(Boolean)) {
+      submitBtn.classList.remove('hidden');
+      submitBtn.textContent = '📊 ดูผลลัพธ์';
+    }
+  } else {
+    confirmBtn.classList.add('hidden');
+    submitBtn.classList.toggle('hidden', !answered.some(Boolean));
+  }
+  
+  updateNav();
+}
+
+function selectOption(idx) {
+  const q = QUESTIONS[currentQ];
+  if (answered[currentQ]) return;
+  
+  if (q.multi) {
+    let ua = userAnswers[currentQ] || [];
+    if (!Array.isArray(ua)) ua = [];
+    if (ua.includes(idx)) ua = ua.filter(x => x !== idx);
+    else ua.push(idx);
+    userAnswers[currentQ] = ua;
+  } else {
+    userAnswers[currentQ] = idx;
+    if (mode === 'practice') {
+      confirmAnswer();
+      return;
+    }
+    if (mode === 'exam') {
+      answered[currentQ] = true;
+    }
+  }
+  renderQuestion();
+}
+
+function confirmAnswer() {
+  if (userAnswers[currentQ] === null) return;
+  const q = QUESTIONS[currentQ];
+  if (q.multi && (!Array.isArray(userAnswers[currentQ]) || userAnswers[currentQ].length === 0)) return;
+  answered[currentQ] = true;
+  renderQuestion();
+}
+
+function navigate(dir) {
+  const total = QUESTIONS.length;
+  if (mode === 'exam' && currentQ === total - 1 && dir === 1) {
+    showResults();
+    return;
+  }
+  currentQ = Math.max(0, Math.min(total - 1, currentQ + dir));
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showResults() {
+  // For exam mode, mark all as answered for review
+  if (mode === 'exam') {
+    answered = answered.map((a, i) => a || userAnswers[i] !== null);
+  }
+  
+  mode = 'review';
+  document.getElementById('quizScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.remove('hidden');
+  
+  const total = QUESTIONS.length;
+  let correct = 0, wrong = 0, skipped = 0;
+  QUESTIONS.forEach((q, i) => {
+    if (userAnswers[i] === null || (Array.isArray(userAnswers[i]) && userAnswers[i].length === 0)) { skipped++; answered[i] = true; }
+    else if (isCorrect(i)) correct++;
+    else wrong++;
+  });
+  
+  const pct = Math.round(correct / total * 100);
+  const pass = pct >= 70;
+  
+  document.getElementById('scorePercent').textContent = pct + '%';
+  document.getElementById('scoreOf').textContent = correct + '/' + total;
+  const circle = document.getElementById('scoreCircle');
+  circle.className = 'score-circle ' + (pass ? 'pass' : 'fail');
+  
+  document.getElementById('resultLabel').textContent = pass ? '🎉 PASSED' : '😔 FAILED';
+  document.getElementById('resultLabel').className = 'result-label ' + (pass ? 'pass-l' : 'fail-l');
+  document.getElementById('resultMsg').textContent = pass ? 'ยินดีด้วย! คุณผ่านเกณฑ์ 70%' : 'ต้องได้ 70% เพื่อผ่าน ลองอีกครั้ง!';
+  
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statWrong').textContent = wrong;
+  document.getElementById('statSkip').textContent = skipped;
+  
+  renderReview('all');
+}
+
+function renderReview(filter) {
+  const section = document.getElementById('reviewSection');
+  section.innerHTML = '';
+  const letters = 'ABCDEFGH';
+  
+  QUESTIONS.forEach((q, i) => {
+    const correct = isCorrect(i);
+    const skipped = userAnswers[i] === null || (Array.isArray(userAnswers[i]) && userAnswers[i].length === 0);
+    
+    if (filter === 'wrong' && (correct || skipped)) return;
+    if (filter === 'correct' && !correct) return;
+    
+    const div = document.createElement('div');
+    div.className = 'review-q ' + (correct ? 'q-correct' : 'q-wrong');
+    
+    const ans = Array.isArray(q.answer) ? q.answer : [q.answer];
+    const ua = userAnswers[i] === null ? [] : (Array.isArray(userAnswers[i]) ? userAnswers[i] : [userAnswers[i]]);
+    
+    let optionsHtml = q.options.map((o, j) => {
+      let cls = '';
+      if (ans.includes(j)) cls = 'color:var(--green);font-weight:600';
+      if (ua.includes(j) && !ans.includes(j)) cls = 'color:var(--red);text-decoration:line-through';
+      return '<div style="font-size:.85rem;margin:2px 0;' + cls + '">' + letters[j] + '. ' + o + (ans.includes(j) ? ' ✅' : '') + (ua.includes(j) && !ans.includes(j) ? ' ❌' : '') + '</div>';
+    }).join('');
+    
+    div.innerHTML = '<div class="rq-head"><strong style="font-size:.85rem">Q' + (i+1) + '</strong><span class="rq-badge ' + (correct ? 'correct-b' : 'wrong-b') + '">' + (skipped ? 'ข้าม' : (correct ? 'ถูก' : 'ผิด')) + '</span></div>' +
+      '<div style="font-size:.9rem;margin-bottom:8px">' + q.en + '</div>' +
+      '<div style="font-size:.85rem;color:var(--muted);font-style:italic;margin-bottom:10px">' + q.th + '</div>' +
+      optionsHtml +
+      '<div style="margin-top:10px;padding:10px;background:var(--card);border-radius:8px;font-size:.8rem">' +
+      '<div style="color:var(--primary);font-weight:600;margin-bottom:4px">📖 Explanation</div>' +
+      '<div style="color:var(--muted);margin-bottom:4px">' + q.explanationEN + '</div>' +
+      '<div style="color:var(--muted);font-style:italic">' + q.explanationTH + '</div></div>';
+    
+    section.appendChild(div);
+  });
+  
+  if (section.children.length === 0) {
+    section.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px">ไม่มีข้อที่ตรงกับตัวกรอง</p>';
+  }
+}
+
+function filterReview(filter, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReview(filter);
+}
+
+
+</script>
+</body>
+</html>
