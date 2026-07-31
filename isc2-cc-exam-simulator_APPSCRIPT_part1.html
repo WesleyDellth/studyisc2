@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CC:// Exam Simulator — ISC2 Certified in Cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#080a14;
+  --panel:#0e1220;
+  --panel-2:#131829;
+  --line: rgba(148,163,199,0.14);
+  --line-bright: rgba(148,163,199,0.28);
+  --violet:#8b6bff;
+  --violet-soft: rgba(139,107,255,0.14);
+  --violet-bright:#a58bff;
+  --cyan:#2fe3d6;
+  --cyan-soft: rgba(47,227,214,0.12);
+  --cyan-bright:#5cf5e8;
+  --text:#e7e9f5;
+  --text-dim:#9aa1c2;
+  --text-faint:#5c6389;
+  --good:#3fe08a;
+  --good-soft: rgba(63,224,138,0.12);
+  --bad:#ff5c7a;
+  --bad-soft: rgba(255,92,122,0.12);
+  --warn:#ffb84d;
+  --font-display:'Space Grotesk', sans-serif;
+  --font-thai:'IBM Plex Sans Thai', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(139,107,255,0.16), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 100% 10%, rgba(47,227,214,0.10), transparent 55%),
+    var(--void);
+  color:var(--text);
+  font-family:var(--font-thai);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{ background:var(--violet); color:#fff; }
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--line-bright);border-radius:8px;}
+
+.scanlines{
+  position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.35;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+}
+#app{ position:relative; z-index:1; max-width:1160px; margin:0 auto; padding:28px 20px 80px; }
+
+/* ---------- Header ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:20px; margin-bottom:22px; border-bottom:1px solid var(--line);
+  flex-wrap:wrap; gap:12px;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:38px;height:38px; border-radius:9px; flex-shrink:0;
+  background:linear-gradient(135deg, var(--violet), var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-weight:700; color:#080a14; font-size:14px;
+  box-shadow:0 0 24px rgba(139,107,255,0.45);
+}
+.brand-text .t1{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--cyan-bright); text-transform:uppercase; }
+.brand-text .t2{ font-family:var(--font-display); font-size:19px; font-weight:700; letter-spacing:-0.01em; }
+.topbar-right{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim); }
+.pill{
+  padding:6px 12px; border-radius:100px; border:1px solid var(--line-bright);
+  background:var(--panel); display:flex; align-items:center; gap:6px;
+}
+.dot{ width:6px;height:6px;border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
+.timer-pill{ font-family:var(--font-mono); font-weight:700; color:var(--cyan-bright); letter-spacing:.03em; }
+.timer-pill.urgent{ color:var(--bad); border-color:rgba(255,92,122,0.45); background:var(--bad-soft); animation:pulse 1s infinite; }
+@keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.55;} }
+
+/* ---------- Cards / panels ---------- */
+.panel{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--line); border-radius:16px;
+}
+.glow-violet{ box-shadow: 0 0 0 1px rgba(139,107,255,0.08), 0 20px 60px -20px rgba(139,107,255,0.25); }
+.glow-cyan{ box-shadow: 0 0 0 1px rgba(47,227,214,0.08), 0 20px 60px -20px rgba(47,227,214,0.25); }
+
+/* ---------- Start Screen ---------- */
+.hero{ padding:44px 40px; text-align:left; margin-bottom:22px; position:relative; overflow:hidden; }
+.hero::before{
+  content:""; position:absolute; top:-60px; right:-60px; width:280px; height:280px; border-radius:50%;
+  background:radial-gradient(circle, rgba(139,107,255,0.25), transparent 70%); filter:blur(10px);
+}
+.hero-eyebrow{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.18em; color:var(--cyan-bright); text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px;}
+.hero h1{ font-family:var(--font-display); font-size:38px; line-height:1.15; margin:0 0 14px; font-weight:700; max-width:680px;}
+.hero h1 span{ background:linear-gradient(120deg, var(--violet-bright), var(--cyan-bright)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hero p{ color:var(--text-dim); font-size:15px; line-height:1.7; max-width:600px; margin:0 0 26px; }
+
+.domain-strip{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:28px; }
+.domain-chip{
+  padding:14px 14px; border-radius:12px; background:rgba(255,255,255,0.02); border:1px solid var(--line);
+  position:relative; overflow:hidden;
+}
+.domain-chip .dn{ font-family:var(--font-mono); font-size:10px; color:var(--text-faint); letter-spacing:0.08em;}
+.domain-chip .dname{ font-size:12.5px; font-weight:600; margin:5px 0 9px; line-height:1.35; min-height:32px;}
+.domain-chip .dbar{ height:4px; border-radius:3px; background:rgba(255,255,255,0.06); overflow:hidden; margin-bottom:7px;}
+.domain-chip .dbar i{ display:block; height:100%; border-radius:3px; background:linear-gradient(90deg, var(--violet), var(--cyan)); }
+.domain-chip .dpct{ font-family:var(--font-mono); font-size:13px; color:var(--cyan-bright); font-weight:700;}
+
+.mode-select{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.mode-card{
+  padding:24px; border-radius:14px; border:1px solid var(--line); cursor:pointer;
+  background:rgba(255,255,255,0.015); transition:all .18s ease; position:relative;
+}
+.mode-card:hover{ border-color:var(--violet); transform:translateY(-2px); background:var(--violet-soft); }
+.mode-card.active{ border-color:var(--cyan); background:var(--cyan-soft); }
+.mode-card .micon{ font-size:22px; margin-bottom:10px; display:block;}
+.mode-card h3{ font-family:var(--font-display); font-size:17px; margin:0 0 8px;}
+.mode-card p{ font-size:13px; color:var(--text-dim); line-height:1.6; margin:0; }
+.mode-card .tag{ display:inline-block; margin-top:12px; font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; padding:3px 9px; border-radius:100px; background:rgba(255,255,255,0.06); color:var(--text-dim);}
+
+.name-field{ margin-bottom:22px; }
+.name-field label{
+  display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+  color:var(--text-faint); margin-bottom:8px; text-transform:uppercase;
+}
+.name-field input{
+  width:100%; max-width:360px; padding:13px 15px; border-radius:10px;
+  border:1px solid var(--line-bright); background:rgba(255,255,255,0.03); color:var(--text);
+  font-family:var(--font-thai); font-size:14px; outline:none; transition:border-color .15s;
+}
+.name-field input:focus{ border-color:var(--cyan); }
+.name-field input::placeholder{ color:var(--text-faint); }
+.name-field input.invalid{ border-color:var(--bad); }
+.name-hint{
+  display:none; margin-top:8px; font-family:var(--font-mono); font-size:11.5px; color:var(--bad);
+}
+.name-hint.show{ display:block; }
+.sync-pill{
+  display:inline-flex; align-items:center; gap:6px; margin-top:16px; padding:6px 14px;
+  border-radius:100px; border:1px solid var(--line-bright); background:var(--panel);
+  font-family:var(--font-mono); font-size:11px; color:var(--text-dim);
+}
+.sync-pill.ok{ border-color:rgba(63,224,138,0.35); color:var(--good); }
+.sync-pill.warn{ border-color:rgba(255,184,77,0.35); color:var(--warn); }
+
+.start-btn{
+  margin-top:24px; width:100%; padding:16px; border:none; border-radius:12px; cursor:pointer;
+  background:linear-gradient(120deg, var(--violet), var(--cyan)); color:#070914; font-weight:700;
+  font-family:var(--font-thai); font-size:15px; letter-spacing:0.01em;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:filter .15s, transform .15s;
+}
+.start-btn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+.start-btn:active{ transform:translateY(0); }
+
+/* ---------- Exam layout ---------- */
+.exam-wrap{ display:grid; grid-template-columns:1fr 250px; gap:20px; align-items:start; }
+.exam-main{ min-width:0; }
+
+.progress-bar-outer{ height:8px; border-radius:6px; background:rgba(255,255,255,0.05); overflow:hidden; margin-bottom:18px; border:1px solid var(--line);}
+.progress-bar-inner{ height:100%; background:linear-gradient(90deg, var(--violet), var(--cyan)); border-radius:6px; transition:width .3s ease; }
+
+.status-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+.status-left{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);}
+.domain-tag{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; padding:4px 10px; border-radius:100px;
+  background:var(--violet-soft); color:var(--violet-bright); border:1px solid rgba(139,107,255,0.3);
+}
+.live-score{ font-family:var(--font-mono); font-size:12px; color:var(--text-dim); display:flex; gap:14px;}
+.live-score b{ color:var(--cyan-bright); }
+
+.qcard{ padding:30px 32px; margin-bottom:16px; }
+.qmeta{ font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); margin-bottom:10px; letter-spacing:.03em;}
+.qtext{ font-size:18px; line-height:1.65; font-weight:500; margin:0 0 24px; }
+
+.options{ display:flex; flex-direction:column; gap:11px; }
+.opt{
+  display:flex; align-items:flex-start; gap:14px; padding:15px 16px; border-radius:11px;
+  border:1px solid var(--line); background:rgba(255,255,255,0.015); cursor:pointer;
+  transition:all .14s ease; font-size:14.5px; line-height:1.55;
+}
+.opt:hover{ border-color:var(--violet-bright); background:var(--violet-soft); }
+.opt .oletter{
+  flex-shrink:0; width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.05);
+  display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12.5px; font-weight:700; color:var(--text-dim);
+  border:1px solid var(--line);
+}
+.opt.selected{ border-color:var(--cyan); background:var(--cyan-soft); }
+.opt.selected .oletter{ background:var(--cyan); color:#06231f; border-color:var(--cyan); }
+.opt.correct{ border-color:var(--good); background:var(--good-soft); }
+.opt.correct .oletter{ background:var(--good); color:#06231a; border-color:var(--good); }
+.opt.incorrect{ border-color:var(--bad); background:var(--bad-soft); }
+.opt.incorrect .oletter{ background:var(--bad); color:#2a0510; border-color:var(--bad); }
+.opt.disabled{ cursor:default; }
+.opt.disabled:hover{ background:rgba(255,255,255,0.015); border-color:var(--line); }
+.opt.correct:hover, .opt.incorrect:hover, .opt.selected:hover{ transform:none; }
+
+.feedback{
+  margin-top:18px; padding:16px 18px; border-radius:12px; border:1px solid var(--line);
+  font-size:14px; line-height:1.7; display:none;
+}
+.feedback.show{ display:block; animation:fadeIn .25s ease; }
+.feedback.ok{ background:var(--good-soft); border-color:rgba(63,224,138,0.35); }
+.feedback.bad{ background:var(--bad-soft); border-color:rgba(255,92,122,0.35); }
+.feedback .flabel{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; font-weight:700;}
+.feedback.ok .flabel{ color:var(--good); }
+.feedback.bad .flabel{ color:var(--bad); }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+
+.nav-row{ display:flex; justify-content:space-between; gap:12px; margin-top:4px;}
+.btn{
+  padding:12px 22px; border-radius:10px; border:1px solid var(--line-bright); background:var(--panel);
+  color:var(--text); font-family:var(--font-thai); font-size:14px; cursor:pointer; transition:all .14s;
+  font-weight:600;
+}
+.btn:hover{ border-color:var(--violet-bright); background:var(--violet-soft); }
+.btn:disabled{ opacity:0.35; cursor:not-allowed; }
+.btn.primary{ background:linear-gradient(120deg, var(--violet), var(--cyan)); color:#070914; border:none; }
+.btn.primary:hover{ filter:brightness(1.08); }
+.btn.ghost{ background:transparent; }
+
+/* ---------- Navigator sidebar ---------- */
+.sidebar{ position:sticky; top:20px; padding:18px; }
+.sidebar h4{ font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); margin:0 0 12px; }
+.navgrid{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-bottom:16px;}
+.navcell{
+  aspect-ratio:1; border-radius:6px; border:1px solid var(--line); background:rgba(255,255,255,0.02);
+  display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:10.5px;
+  color:var(--text-dim); cursor:pointer; transition:all .12s;
+}
+.navcell:hover{ border-color:var(--violet-bright); }
+.navcell.current{ border-color:var(--cyan); box-shadow:0 0 0 2px rgba(47,227,214,0.25); color:var(--cyan-bright); font-weight:700;}
+.navcell.answered{ background:rgba(139,107,255,0.16); color:var(--violet-bright); border-color:rgba(139,107,255,0.35);}
+.navcell.correct{ background:var(--good-soft); color:var(--good); border-color:rgba(63,224,138,0.35);}
+.navcell.incorrect{ background:var(--bad-soft); color:var(--bad); border-color:rgba(255,92,122,0.35);}
+.legend{ display:flex; flex-direction:column; gap:7px; font-size:11.5px; color:var(--text-dim);}
+.legend .lrow{ display:flex; align-items:center; gap:8px;}
+.legend .lsw{ width:10px;height:10px;border-radius:3px; flex-shrink:0;}
+
+/* ---------- Results ---------- */
+.results-hero{ padding:40px; text-align:center; margin-bottom:20px; position:relative; overflow:hidden;}
+.score-ring{ position:relative; width:180px; height:180px; margin:0 auto 20px; }
+.score-ring svg{ transform:rotate(-90deg); }
+.score-ring .ringtext{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.score-ring .num{ font-family:var(--font-display); font-size:40px; font-weight:700;}
+.score-ring .lbl{ font-family:var(--font-mono); font-size:10px; color:var(--text-dim); letter-spacing:.1em; margin-top:2px;}
+.verdict{ font-family:var(--font-display); font-size:24px; font-weight:700; margin:6px 0 8px;}
+.verdict.pass{ color:var(--good); }
+.verdict.fail{ color:var(--bad); }
+.verdict-sub{ color:var(--text-dim); font-size:14px; }
+
+.results-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;}
+.stat-card{ padding:18px; text-align:center; }
+.stat-card .sv{ font-family:var(--font-mono); font-size:24px; font-weight:700; color:var(--cyan-bright);}
+.stat-card .sl{ font-size:12px; color:var(--text-dim); margin-top:4px;}
+
+.domain-results{ padding:24px 28px; margin-bottom:20px; }
+.domain-results h3{ font-family:var(--font-display); font-size:16px; margin:0 0 18px;}
+.drow{ display:grid; grid-template-columns:170px 1fr 70px; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid var(--line);}
+.drow:last-child{ border-bottom:none; }
+.drow .dlabel{ font-size:13px; font-weight:600; }
+.drow .dsub{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint); margin-top:2px;}
+.drow .dtrack{ height:9px; border-radius:5px; background:rgba(255,255,255,0.05); overflow:hidden; position:relative;}
+.drow .dtrack i{ display:block; height:100%; border-radius:5px; }
+.drow .dpctnum{ font-family:var(--font-mono); font-size:13px; text-align:right; font-weight:700; }
+
+.review-section{ padding:24px 28px; }
+.review-section h3{ font-family:var(--font-display); font-size:16px; margin:0 0 6px;}
+.review-section .rsub{ color:var(--text-dim); font-size:13px; margin-bottom:18px;}
+.review-item{ padding:18px 0; border-bottom:1px solid var(--line);}
+.review-item:last-child{ border-bottom:none; }
+.review-item .rimeta{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-bottom:8px; display:flex; gap:10px; align-items:center;}
+.review-item .riq{ font-size:15px; font-weight:500; margin-bottom:12px; line-height:1.6;}
+.review-item .riopt{ font-size:13.5px; padding:9px 12px; border-radius:8px; margin-bottom:6px; display:flex; gap:8px; }
+.review-item .riopt.your-wrong{ background:var(--bad-soft); border:1px solid rgba(255,92,122,0.3);}
+.review-item .riopt.correct{ background:var(--good-soft); border:1px solid rgba(63,224,138,0.3);}
+.review-item .riexp{ margin-top:10px; font-size:13px; color:var(--text-dim); line-height:1.7; background:rgba(255,255,255,0.02); padding:12px 14px; border-radius:9px; border:1px solid var(--line);}
+.empty-review{ text-align:center; padding:30px; color:var(--text-dim); font-size:14px; }
+
+.results-actions{ display:flex; gap:12px; margin-top:6px; }
+
+.hidden{ display:none !important; }
+
+@media (max-width: 880px){
+  .domain-strip{ grid-template-columns:repeat(2,1fr);}
+  .mode-select{ grid-template-columns:1fr; }
+  .exam-wrap{ grid-template-columns:1fr; }
+  .sidebar{ position:static; }
+  .navgrid{ grid-template-columns:repeat(10,1fr); }
+  .results-grid{ grid-template-columns:1fr; }
+  .drow{ grid-template-columns:110px 1fr 50px; }
+  .hero h1{ font-size:28px; }
+  .qcard{ padding:22px 18px; }
+  .hero{ padding:30px 22px; }
+}
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<div id="app"></div>
+
+<script id="question-data" type="application/json">[{"d":1,"q":"องค์ประกอบใดไม่ใช่ส่วนหนึ่งของ CIA Triad?","o":["Confidentiality","Availability","Authentication","Integrity"],"a":2,"e":"CIA Triad ประกอบด้วย Confidentiality (การรักษาความลับ), Integrity (ความถูกต้องครบถ้วน) และ Availability (ความพร้อมใช้งาน) เท่านั้น ส่วน Authentication เป็นกลไกที่สนับสนุน CIA แต่ไม่ใช่หนึ่งในสามเสาหลัก"},{"d":1,"q":"การที่ข้อมูลถูกแก้ไขโดยไม่ได้รับอนุญาตระหว่างการส่ง ถือเป็นการละเมิดหลักการใด?","o":["Availability","Non-repudiation","Confidentiality","Integrity"],"a":3,"e":"Integrity หมายถึงความถูกต้องครบถ้วนของข้อมูล การแก้ไขข้อมูลโดยไม่ได้รับอนุญาตคือการละเมิด Integrity โดยตรง"},{"d":1,"q":"เซิร์ฟเวอร์ถูกโจมตีแบบ DDoS จนผู้ใช้ไม่สามารถเข้าถึงบริการได้ นี่คือการละเมิดหลักการใด?","o":["Availability","Confidentiality","Integrity","Accountability"],"a":0,"e":"DDoS ทำให้ระบบไม่สามารถให้บริการได้ตามปกติ จึงเป็นการละเมิดหลักการ Availability (ความพร้อมใช้งาน)"},{"d":1,"q":"IAAA ในบริบทความปลอดภัยสารสนเทศย่อมาจากอะไร?","o":["Identification, Authentication, Authorization, Accountability","Integrity, Access, Audit, Availability","Identification, Access, Audit, Authentication","Integration, Authentication, Authorization, Availability"],"a":0,"e":"IAAA คือแนวคิดพื้นฐานของการควบคุมการเข้าถึง ได้แก่ Identification (ระบุตัวตน), Authentication (ยืนยันตัวตน), Authorization (กำหนดสิทธิ์) และ Accountability (ความรับผิดชอบตรวจสอบย้อนกลับได้)"},{"d":1,"q":"ข้อใดคือคำอธิบายที่ถูกต้องของ 'Non-repudiation'?","o":["การเข้ารหัสข้อมูลระหว่างการส่ง","การป้องกันไม่ให้ผู้ส่งปฏิเสธว่าไม่ได้ส่งข้อความ","การจำกัดสิทธิ์การเข้าถึงตามบทบาท","การสำรองข้อมูลเพื่อความพร้อมใช้งาน"],"a":1,"e":"Non-repudiation คือคุณสมบัติที่ทำให้ผู้ส่งหรือผู้กระทำการไม่สามารถปฏิเสธการกระทำของตนได้ เช่น การใช้ลายเซ็นดิจิทัล"},{"d":1,"q":"การจัดประเภทควบคุมความปลอดภัยแบบ 'Preventive' มีวัตถุประสงค์เพื่ออะไร?","o":["ตรวจจับเหตุการณ์หลังเกิดขึ้น","หยุดยั้งเหตุการณ์ไม่พึงประสงค์ก่อนเกิดขึ้น","ฟื้นฟูระบบหลังเกิดเหตุ","ยับยั้งผู้โจมตีทางจิตวิทยา"],"a":1,"e":"Preventive control มีเป้าหมายเพื่อป้องกันไม่ให้เหตุการณ์ไม่พึงประสงค์เกิดขึ้นตั้งแต่แรก เช่น ไฟร์วอลล์ การเข้ารหัส"},{"d":1,"q":"กล้องวงจรปิด (CCTV) ที่ติดตั้งเพื่อบันทึกเหตุการณ์ผิดปกติ จัดเป็นการควบคุมประเภทใดเป็นหลัก?","o":["Corrective","Detective","Preventive","Compensating"],"a":1,"e":"CCTV ใช้สำหรับตรวจจับและบันทึกเหตุการณ์ที่เกิดขึ้น จึงจัดเป็น Detective control แม้บางครั้งอาจมีผลยับยั้งทางจิตวิทยาด้วย"},{"d":1,"q":"ป้ายเตือน 'พื้นที่มีกล้องวงจรปิด' ที่ติดไว้เพื่อไม่ให้ผู้ไม่หวังดีเข้ามา จัดเป็นการควบคุมประเภทใด?","o":["Deterrent","Detective","Corrective","Recovery"],"a":0,"e":"Deterrent control มีเป้าหมายเพื่อยับยั้งหรือทำให้ผู้ไม่หวังดีลังเลที่จะกระทำการ ไม่ใช่การป้องกันทางเทคนิคโดยตรง"},{"d":1,"q":"การกู้คืนระบบจากแบ็กอัพหลังถูกแรนซัมแวร์โจมตี จัดเป็นการควบคุมประเภทใด?","o":["Preventive","Detective","Corrective","Deterrent"],"a":2,"e":"Corrective control มีหน้าที่แก้ไขและฟื้นฟูระบบให้กลับสู่สภาวะปกติหลังเกิดเหตุการณ์ไม่พึงประสงค์"},{"d":1,"q":"นโยบายรักษาความปลอดภัย (Policy) แตกต่างจากขั้นตอนปฏิบัติ (Procedure) อย่างไร?","o":["Policy เป็นคำสั่งทางเทคนิคเฉพาะ ส่วน Procedure เป็นแนวคิดกว้าง","Policy กำหนดทิศทางระดับสูงและข้อบังคับ ส่วน Procedure ระบุขั้นตอนปฏิบัติโดยละเอียด","ทั้งสองอย่างเป็นเอกสารเดียวกัน ใช้แทนกันได้","Policy ใช้เฉพาะฝ่าย IT ส่วน Procedure ใช้ทั้งองค์กร"],"a":1,"e":"Policy คือเอกสารระดับสูงที่กำหนดเจตนารมณ์และข้อบังคับขององค์กร ส่วน Procedure คือคำแนะนำแบบเป็นขั้นตอนที่ละเอียดเพื่อให้บรรลุ Policy นั้น"},{"d":1,"q":"เอกสารประเภทใดที่ให้คำแนะนำแบบ 'ควรทำ' แต่ไม่ได้บังคับเหมือน Policy?","o":["Standard","Guideline","Procedure","Baseline"],"a":1,"e":"Guideline คือคำแนะนำที่ยืดหยุ่น ไม่บังคับเคร่งครัดเหมือน Standard หรือ Policy แต่ให้แนวทางปฏิบัติที่ดี"},{"d":1,"q":"'Standard' ในลำดับชั้นเอกสารด้านความปลอดภัยมีลักษณะอย่างไร?","o":["เป็นข้อกำหนดบังคับที่ระบุรายละเอียดเฉพาะเจาะจงเพื่อสนับสนุน Policy","เป็นแนวคิดกว้างระดับผู้บริหาร","เป็นคำแนะนำที่เลือกทำหรือไม่ทำก็ได้","เป็นบันทึกเหตุการณ์หลังเกิดปัญหา"],"a":0,"e":"Standard คือข้อกำหนดที่บังคับใช้และระบุรายละเอียดเฉพาะ เช่น ต้องใช้รหัสผ่านความยาวขั้นต่ำ 12 ตัวอักษร เพื่อให้สอดคล้องกับ Policy"},{"d":1,"q":"หลักการ 'Least Privilege' หมายถึงอะไร?","o":["ให้สิทธิ์ผู้ใช้ทุกคนเท่ากันหมด","ให้สิทธิ์เท่าที่จำเป็นต่อการปฏิบัติหน้าที่เท่านั้น","ให้สิทธิ์สูงสุดแก่ผู้ดูแลระบบทุกคน","จำกัดสิทธิ์เฉพาะช่วงเวลากลางวัน"],"a":1,"e":"Least Privilege คือการให้สิทธิ์การเข้าถึงเท่าที่จำเป็นต่อการทำงานเท่านั้น เพื่อลดความเสี่ยงหากบัญชีถูกโจมตีหรือใช้งานผิดวัตถุประสงค์"},{"d":1,"q":"หลักการ 'Separation of Duties' มีเป้าหมายหลักเพื่ออะไร?","o":["ลดต้นทุนการดำเนินงาน","ป้องกันการทุจริตโดยแบ่งงานสำคัญให้หลายคนรับผิดชอบ","เพิ่มความเร็วในการอนุมัติงาน","ให้พนักงานทำงานได้หลายหน้าที่พร้อมกัน"],"a":1,"e":"Separation of Duties แบ่งงานที่มีความเสี่ยงสูงหรือสำคัญออกเป็นหลายส่วนให้คนละคนรับผิดชอบ เพื่อไม่ให้บุคคลเดียวมีอำนาจควบคุมกระบวนการทั้งหมด ลดโอกาสทุจริตหรือความผิดพลาด"},{"d":1,"q":"'Defense in Depth' คือแนวคิดใด?","o":["การใช้มาตรการรักษาความปลอดภัยเพียงชั้นเดียวที่แข็งแกร่งที่สุด","การใช้มาตรการรักษาความปลอดภัยหลายชั้นซ้อนกันเพื่อสร้างความปลอดภัยแบบองค์รวม","การเข้ารหัสข้อมูลทุกประเภท","การจ้างบุคคลภายนอกดูแลความปลอดภัย"],"a":1,"e":"Defense in Depth คือการวางมาตรการป้องกันหลายชั้น (เช่น กายภาพ เทคนิค และการบริหารจัดการ) เพื่อไม่ให้ระบบล้มเหลวทั้งหมดหากชั้นใดชั้นหนึ่งถูกทะลุผ่าน"},{"d":1,"q":"'Risk' ในบริบทความปลอดภัยสารสนเทศ นิยามได้ดีที่สุดว่าอย่างไร?","o":["จุดอ่อนของระบบที่ยังไม่ได้แก้ไข","แหล่งที่มาของอันตรายที่อาจก่อความเสียหาย","ความน่าจะเป็นที่ภัยคุกคามจะใช้ประโยชน์จากช่องโหว่และก่อให้เกิดความเสียหาย","มาตรการที่ใช้ลดผลกระทบจากภัยคุกคาม"],"a":2,"e":"Risk คือการรวมกันของความน่าจะเป็น (Likelihood) ที่ Threat จะใช้ประโยชน์จาก Vulnerability และผลกระทบ (Impact) ที่อาจเกิดขึ้น"},{"d":1,"q":"'Vulnerability' หมายถึงอะไร?","o":["ผู้โจมตีที่มีเจตนาร้าย","จุดอ่อนหรือช่องโหว่ในระบบที่อาจถูกใช้ประโยชน์","ความเสียหายทางการเงินที่เกิดขึ้นแล้ว","มาตรการควบคุมที่ใช้ป้องกันภัยคุกคาม"],"a":1,"e":"Vulnerability คือจุดอ่อนหรือช่องโหว่ในระบบ กระบวนการ หรือการควบคุม ที่อาจถูก Threat ใช้ประโยชน์เพื่อก่อความเสียหาย"},{"d":1,"q":"แนวทางการจัดการความเสี่ยง (Risk Treatment) ข้อใด 'ไม่ใช่' หนึ่งในสี่แนวทางหลัก?","o":["Risk Avoidance","Risk Transfer","Risk Acceptance","Risk Elimination"],"a":3,"e":"แนวทางหลักในการจัดการความเสี่ยงมี 4 อย่างคือ Avoid (หลีกเลี่ยง), Transfer (โอนย้าย เช่น ทำประกัน), Mitigate (ลดความเสี่ยง) และ Accept (ยอมรับ) ส่วน 'Risk Elimination' ไม่ใช่คำศัพท์มาตรฐานเพราะไม่มีความเสี่ยงใดถูกกำจัดได้ 100%"},{"d":1,"q":"'Due Diligence' และ 'Due Care' แตกต่างกันอย่างไร?","o":["ทั้งสองคำมีความหมายเหมือนกันทุกประการ","Due Diligence คือการค้นคว้าและประเมินความเสี่ยงก่อนตัดสินใจ ส่วน Due Care คือการลงมือปฏิบัติตามมาตรฐานที่เหมาะสมอย่างต่อเนื่อง","Due Diligence ใช้เฉพาะด้านการเงิน ส่วน Due Care ใช้เฉพาะด้าน IT","Due Care เกิดขึ้นก่อน Due Diligence เสมอ"],"a":1,"e":"Due Diligence คือขั้นตอนการค้นคว้า วิเคราะห์ และประเมินความเสี่ยงก่อนตัดสินใจ ส่วน Due Care คือการปฏิบัติตามมาตรการที่สมเหตุสมผลอย่างต่อเนื่องเพื่อป้องกันความเสียหาย"},{"d":1,"q":"ตามหลัก (ISC)² Code of Ethics ข้อบังคับข้อแรกสุดที่สมาชิกต้องยึดถือคืออะไร?","o":["ปกป้องผลประโยชน์ของนายจ้างเป็นอันดับแรก","ปกป้องสังคม สาธารณประโยชน์ ความไว้วางใจของสาธารณะ และโครงสร้างพื้นฐาน","เพิ่มพูนความรู้ทางเทคนิคของตนเองอย่างต่อเนื่อง","รักษาความลับขององค์กรอย่างเคร่งครัด"],"a":1,"e":"Canon แรกของ (ISC)² Code of Ethics คือ 'Protect society, the common good, necessary public trust and confidence, and the infrastructure' ซึ่งถือเป็นลำดับความสำคัญสูงสุด"},{"d":1,"q":"หลักการ 'Zero Trust' มีแนวคิดพื้นฐานอย่างไร?","o":["เชื่อถือผู้ใช้ภายในเครือข่ายองค์กรโดยอัตโนมัติ","ไม่เชื่อถือสิ่งใดโดยปริยาย ต้องตรวจสอบยืนยันทุกครั้งไม่ว่าจะอยู่ในหรือนอกเครือข่าย","อนุญาตการเข้าถึงทั้งหมดหลังผ่านการล็อกอินครั้งแรก","ใช้เฉพาะกับอุปกรณ์ที่เชื่อมต่อ VPN เท่านั้น"],"a":1,"e":"Zero Trust ยึดหลัก 'Never trust, always verify' คือไม่ไว้วางใจผู้ใช้หรืออุปกรณ์ใดโดยอัตโนมัติ ต้องมีการยืนยันตัวตนและตรวจสอบสิทธิ์อย่างต่อเนื่องทุกครั้งที่มีการร้องขอเข้าถึงทรัพยากร"},{"d":1,"q":"การจัดประเภทข้อมูล (Data Classification) มีวัตถุประสงค์หลักเพื่ออะไร?","o":["เพิ่มความเร็วในการประมวลผลข้อมูล","กำหนดระดับการป้องกันที่เหมาะสมตามความสำคัญและความอ่อนไหวของข้อมูล","ลดขนาดไฟล์ข้อมูล","ทำให้ข้อมูลสามารถเข้าถึงได้จากทุกที่"],"a":1,"e":"การจัดประเภทข้อมูลช่วยให้องค์กรกำหนดมาตรการควบคุมที่เหมาะสม เช่น การเข้ารหัสหรือการจำกัดสิทธิ์ ตามระดับความอ่อนไหวของข้อมูล เช่น Public, Internal, Confidential, Restricted"},{"d":1,"q":"ข้อใดอธิบาย 'Insider Threat' ได้ถูกต้องที่สุด?","o":["ผู้โจมตีจากภายนอกที่ใช้มัลแวร์","บุคคลภายในองค์กร เช่น พนักงาน ที่อาจก่อความเสียหายโดยตั้งใจหรือไม่ตั้งใจ","ซอฟต์แวร์ที่ติดตั้งโดยไม่ได้รับอนุญาต","ช่องโหว่ที่ยังไม่มีแพตช์แก้ไข"],"a":1,"e":"Insider Threat คือภัยคุกคามที่มาจากบุคคลภายในองค์กรซึ่งมีสิทธิ์การเข้าถึงอยู่แล้ว อาจเกิดจากความประมาท ความไม่พอใจ หรือเจตนาร้าย"},{"d":1,"q":"'Governance' ในบริบทความปลอดภัยสารสนเทศหมายถึงอะไร?","o":["การเข้ารหัสข้อมูลทั้งหมดในองค์กร","กรอบการกำกับดูแล กำหนดทิศทาง นโยบาย และความรับผิดชอบเพื่อให้บรรลุเป้าหมายด้านความปลอดภัยขององค์กร","การติดตั้งซอฟต์แวร์ป้องกันไวรัส","กระบวนการสำรองข้อมูลรายวัน"],"a":1,"e":"Governance คือโครงสร้างการกำกับดูแลระดับสูงที่กำหนดนโยบาย ทิศทาง และความรับผิดชอบ เพื่อให้มั่นใจว่าองค์กรดำเนินงานสอดคล้องกับเป้าหมายและข้อกำหนดด้านความปลอดภัย"},{"d":1,"q":"ข้อใดคือตัวอย่างของ 'Administrative Control'?","o":["ไฟร์วอลล์","กล้องวงจรปิด","นโยบายและขั้นตอนปฏิบัติงานด้านความปลอดภัย","รั้วรอบอาคาร"],"a":2,"e":"Administrative control (หรือ Managerial control) คือมาตรการที่เกี่ยวข้องกับนโยบาย ขั้นตอน แนวทางปฏิบัติ และการฝึกอบรม ต่างจาก Technical control (เช่นไฟร์วอลล์) และ Physical control (เช่นรั้ว กล้อง)"},{"d":1,"q":"'Compensating Control' ถูกนำมาใช้ในสถานการณ์ใด?","o":["เมื่อไม่สามารถใช้มาตรการควบคุมหลักที่เหมาะสมได้ จึงใช้มาตรการทดแทนเพื่อลดความเสี่ยงในระดับที่ยอมรับได้","เมื่อองค์กรต้องการลดต้นทุนความปลอดภัยทั้งหมด","เมื่อไม่มีความเสี่ยงใดๆ ในระบบ","เมื่อต้องการยกเลิกมาตรการควบคุมเดิมทั้งหมด"],"a":0,"e":"Compensating control คือมาตรการทางเลือกที่ใช้แทนมาตรการควบคุมมาตรฐานเมื่อไม่สามารถนำมาตรการนั้นมาใช้ได้จริง เพื่อให้ยังคงบรรลุวัตถุประสงค์ด้านความปลอดภัยในระดับที่ยอมรับได้"},{"d":2,"q":"'RTO (Recovery Time Objective)' หมายถึงอะไร?","o":["ปริมาณข้อมูลสูงสุดที่ยอมรับได้ว่าจะสูญหาย","ระยะเวลาสูงสุดที่ยอมรับได้ในการกู้คืนระบบให้กลับมาใช้งานได้หลังเกิดเหตุขัดข้อง","ระยะเวลาที่ใช้ในการสำรองข้อมูลทั้งหมด","จำนวนพนักงานที่ต้องใช้ในการกู้คืนระบบ"],"a":1,"e":"RTO คือระยะเวลาสูงสุดที่องค์กรยอมรับได้ในการนำระบบหรือกระบวนการกลับมาให้บริการได้อีกครั้งหลังจากเกิดเหตุการณ์ขัดข้อง"},{"d":2,"q":"'RPO (Recovery Point Objective)' หมายถึงอะไร?","o":["ระยะเวลาสูงสุดในการกู้คืนระบบ","จุดเวลาย้อนหลังสูงสุดที่ยอมรับได้สำหรับข้อมูลที่อาจสูญหาย ซึ่งกำหนดความถี่ในการสำรองข้อมูล","จำนวนเซิร์ฟเวอร์สำรองที่ต้องมี","งบประมาณสำหรับแผนกู้คืนระบบ"],"a":1,"e":"RPO คือระยะเวลาย้อนหลังสูงสุดของข้อมูลที่องค์กรยอมรับได้ว่าจะสูญหาย เช่น หาก RPO คือ 4 ชั่วโมง หมายความว่าต้องสำรองข้อมูลอย่างน้อยทุก 4 ชั่วโมง"},{"d":2,"q":"แผน Business Continuity Plan (BCP) แตกต่างจาก Disaster Recovery Plan (DRP) อย่างไร?","o":["BCP มุ่งเน้นการฟื้นฟูระบบ IT เท่านั้น ส่วน DRP มุ่งเน้นกระบวนการทางธุรกิจโดยรวม","BCP มุ่งเน้นให้กระบวนการทางธุรกิจดำเนินต่อไปได้ในภาพรวม ส่วน DRP มุ่งเน้นการกู้คืนระบบ IT และโครงสร้างพื้นฐานเทคนิคโดยเฉพาะ","ทั้งสองแผนใช้แทนกันได้ทุกกรณี","DRP ใช้เฉพาะภัยธรรมชาติเท่านั้น"],"a":1,"e":"BCP เป็นแผนภาพรวมที่ครอบคลุมการดำเนินธุรกิจต่อเนื่องทุกด้าน ในขณะที่ DRP เป็นส่วนย่อยของ BCP ที่มุ่งเน้นเฉพาะการกู้คืนระบบเทคโนโลยีสารสนเทศและโครงสร้างพื้นฐาน"},{"d":2,"q":"Backup แบบใดที่สำรองเฉพาะข้อมูลที่เปลี่ยนแปลงนับตั้งแต่การทำ Full Backup ครั้งล่าสุด (ไม่สนใจ Incremental ก่อนหน้า)?","o":["Full Backup","Incremental Backup","Differential Backup","Mirror Backup"],"a":2,"e":"Differential Backup สำรองข้อมูลทั้งหมดที่เปลี่ยนแปลงนับจาก Full Backup ครั้งล่าสุด ต่างจาก Incremental ที่สำรองเฉพาะการเปลี่ยนแปลงตั้งแต่การสำรองครั้งก่อนหน้า (ไม่ว่าจะเป็น Full หรือ Incremental)"},{"d":2,"q":"ขั้นตอนแรกในวงจรการตอบสนองต่อเหตุการณ์ (Incident Response Lifecycle) ตามมาตรฐานทั่วไปคืออะไร?","o":["Eradication","Containment","Preparation","Recovery"],"a":2,"e":"วงจร Incident Response มาตรฐาน (เช่นของ NIST) ประกอบด้วย Preparation, Detection & Analysis, Containment, Eradication, Recovery และ Lessons Learned โดย Preparation คือขั้นตอนแรกที่ต้องเตรียมความพร้อมก่อนเกิดเหตุ"},{"d":2,"q":"ขั้นตอน 'Containment' ในการตอบสนองเหตุการณ์มีวัตถุประสงค์เพื่ออะไร?","o":["กำจัดสาเหตุของเหตุการณ์ออกจากระบบอย่างถาวร","จำกัดขอบเขตความเสียหายไม่ให้ลุกลามต่อไป","วิเคราะห์สาเหตุที่แท้จริงของเหตุการณ์","บันทึกบทเรียนหลังเหตุการณ์"],"a":1,"e":"Containment คือการจำกัดขอบเขตของเหตุการณ์ไม่ให้ลุกลามหรือสร้างความเสียหายเพิ่มเติม เช่น การตัดการเชื่อมต่อเครื่องที่ติดมัลแวร์ออกจากเครือข่าย"},{"d":2,"q":"ไซต์สำรองประเภทใดที่มีอุปกรณ์และระบบพร้อมใช้งานเกือบทันที เพียงแค่ซิงค์ข้อมูลล่าสุดก็สามารถเปิดใช้งานได้ภายในเวลาอันสั้น?","o":["Cold Site","Warm Site","Hot Site","Mobile Site"],"a":2,"e":"Hot Site คือไซต์สำรองที่มีฮาร์ดแวร์ ซอฟต์แวร์ และข้อมูลพร้อมใช้งานเกือบเรียลไทม์ ทำให้สามารถกู้คืนระบบได้รวดเร็วที่สุดเมื่อเทียบกับ Warm Site และ Cold Site แต่มีค่าใช้จ่ายสูงที่สุด"},{"d":2,"q":"'Tabletop Exercise' ในการทดสอบแผน BC/DR คืออะไร?","o":["การจำลองสถานการณ์จริงโดยหยุดระบบการทำงานจริง","การประชุมพูดคุยจำลองสถานการณ์บนโต๊ะโดยไม่ต้องหยุดระบบจริง เพื่อทบทวนขั้นตอนตามแผน","การทดสอบกู้คืนข้อมูลจากแบ็กอัพจริงทั้งหมด","การส่งพนักงานไปฝึกที่ไซต์สำรองจริง"],"a":1,"e":"Tabletop Exercise เป็นการทดสอบแผนแบบพูดคุยหารือระหว่างทีมงาน จำลองสถานการณ์สมมติโดยไม่กระทบระบบจริง ใช้เพื่อทบทวนความเข้าใจในบทบาทหน้าที่และขั้นตอนของแผน"},{"d":2,"q":"หลังจากเหตุการณ์ด้านความปลอดภัยสิ้นสุดลง ขั้นตอนใดที่ควรทำเพื่อป้องกันไม่ให้เกิดเหตุการณ์ซ้ำในอนาคต?","o":["Identification","Lessons Learned / Post-Incident Review","Detection","Containment"],"a":1,"e":"Lessons Learned (หรือ Post-Incident Review) เป็นขั้นตอนสุดท้ายที่ทีมงานทบทวนเหตุการณ์ที่เกิดขึ้น วิเคราะห์จุดบกพร่อง และปรับปรุงกระบวนการเพื่อป้องกันไม่ให้เกิดซ้ำ"},{"d":2,"q":"'Business Impact Analysis (BIA)' มีวัตถุประสงค์หลักเพื่ออะไร?","o":["ระบุและประเมินผลกระทบทางธุรกิจที่อาจเกิดขึ้นหากกระบวนการสำคัญหยุดชะงัก เพื่อกำหนดลำดับความสำคัญในการกู้คืน","เขียนโค้ดป้องกันมัลแวร์","ติดตั้งไฟร์วอลล์ใหม่","ฝึกอบรมพนักงานใหม่ทุกคน"],"a":0,"e":"BIA คือกระบวนการวิเคราะห์เพื่อระบุกระบวนการทางธุรกิจที่สำคัญ ประเมินผลกระทบหากหยุดชะงัก และใช้ผลลัพธ์นี้ในการกำหนด RTO/RPO และลำดับความสำคัญของแผน BC/DR"},{"d":3,"q":"ปัจจัยการยืนยันตัวตน (Authentication Factor) แบบ 'สิ่งที่คุณรู้' (Something you know) คือตัวอย่างใด?","o":["ลายนิ้วมือ","รหัสผ่าน (Password)","บัตรประจำตัวพนักงาน","ตำแหน่งที่ตั้งทางภูมิศาสตร์"],"a":1,"e":"'Something you know' คือปัจจัยความรู้ เช่น รหัสผ่าน PIN หรือคำถามเพื่อความปลอดภัย ต่างจาก 'Something you have' (บัตร โทเค็น) และ 'Something you are' (ไบโอเมตริกซ์)"},{"d":3,"q":"การใช้รหัสผ่านร่วมกับรหัส OTP ที่ส่งไปยังโทรศัพท์มือถือ เป็นตัวอย่างของแนวคิดใด?","o":["Single Factor Authentication","Multi-Factor Authentication (MFA)","Single Sign-On (SSO)","Role-Based Access Control"],"a":1,"e":"MFA คือการยืนยันตัวตนโดยใช้ปัจจัยมากกว่าหนึ่งประเภทร่วมกัน ในกรณีนี้คือ 'สิ่งที่คุณรู้' (รหัสผ่าน) และ 'สิ่งที่คุณมี' (โทรศัพท์ที่รับ OTP)"},{"d":3,"q":"โมเดลควบคุมการเข้าถึงแบบ Mandatory Access Control (MAC) มีลักษณะอย่างไร?","o":["เจ้าของทรัพยากรเป็นผู้กำหนดสิทธิ์การเข้าถึงเอง","การเข้าถึงถูกกำหนดโดยระบบส่วนกลางตามระดับชั้นความลับ (Classification/Clearance) ไม่สามารถเปลี่ยนแปลงได้โดยผู้ใช้ทั่วไป","การเข้าถึงถูกกำหนดตามบทบาทหน้าที่ของผู้ใช้","การเข้าถึงถูกกำหนดตามคุณลักษณะหลายอย่างแบบไดนามิก"],"a":1,"e":"MAC เป็นโมเดลที่การเข้าถึงถูกควบคุมโดยนโยบายส่วนกลาง (เช่น ระดับชั้นความลับของรัฐบาล) ผู้ใช้ไม่สามารถเปลี่ยนแปลงสิทธิ์ได้เอง มักใช้ในหน่วยงานที่ต้องการความปลอดภัยสูง เช่น หน่วยงานทหาร"},{"d":3,"q":"โมเดล Discretionary Access Control (DAC) มีลักษณะเด่นอย่างไร?","o":["ผู้ดูแลระบบกลางเป็นผู้กำหนดสิทธิ์ทั้งหมด","เจ้าของข้อมูล (Data Owner) สามารถกำหนดและมอบสิทธิ์การเข้าถึงให้ผู้อื่นได้ตามดุลยพินิจของตนเอง","สิทธิ์ถูกกำหนดตามบทบาทงานเท่านั้น","ใช้ Label ความลับเพื่อควบคุมการเข้าถึง"],"a":1,"e":"DAC ให้อำนาจเจ้าของทรัพยากรในการตัดสินใจว่าใครสามารถเข้าถึงทรัพยากรของตนได้บ้าง เช่น การแชร์ไฟล์ในระบบปฏิบัติการทั่วไป"},{"d":3,"q":"โมเดล Role-Based Access Control (RBAC) กำหนดสิทธิ์การเข้าถึงตามอะไรเป็นหลัก?","o":["คุณลักษณะของผู้ใช้ เช่น แผนก ตำแหน่ง เวลา","บทบาทหน้าที่ (Role) ของผู้ใช้ในองค์กร","ดุลยพินิจของเจ้าของข้อมูล","ระดับชั้นความลับของรัฐบาล"],"a":1,"e":"RBAC กำหนดสิทธิ์การเข้าถึงตามบทบาทที่ผู้ใช้ได้รับมอบหมาย เช่น บทบาท 'HR Manager' จะมีสิทธิ์เข้าถึงระบบที่แตกต่างจากบทบาท 'Finance Officer' ช่วยให้บริหารจัดการสิทธิ์ได้ง่ายในองค์กรขนาดใหญ่"},{"d":3,"q":"โมเดล Attribute-Based Access Control (ABAC) มีความยืดหยุ่นสูงเพราะเหตุใด?","o":["ใช้เฉพาะรหัสผ่านในการตัดสินใจ","พิจารณาจากคุณลักษณะหลายด้านร่วมกัน เช่น ผู้ใช้ อุปกรณ์ เวลา สถานที่ และบริบทแบบไดนามิก","ให้สิทธิ์ทุกคนเท่ากันเสมอ","ใช้เฉพาะระดับชั้นความลับเท่านั้น"],"a":1,"e":"ABAC ตัดสินใจให้สิทธิ์การเข้าถึงโดยประเมินจากคุณลักษณะ (Attributes) หลายมิติร่วมกันแบบไดนามิก เช่น บทบาทผู้ใช้ ประเภทอุปกรณ์ เวลา และตำแหน่งที่ตั้ง ทำให้มีความยืดหยุ่นและละเอียดกว่าโมเดลอื่น"},{"d":3,"q":"'Single Sign-On (SSO)' ให้ประโยชน์อะไรแก่ผู้ใช้เป็นหลัก?","o":["ต้องล็อกอินแยกกันในทุกระบบเพื่อความปลอดภัยสูงสุด","ล็อกอินเพียงครั้งเดียวแล้วสามารถเข้าถึงหลายระบบหรือแอปพลิเคชันที่เชื่อมโยงกันได้โดยไม่ต้องล็อกอินซ้ำ","เข้ารหัสข้อมูลทั้งหมดในระบบ","ป้องกันการโจมตีแบบ Brute Force เท่านั้น"],"a":1,"e":"SSO ช่วยให้ผู้ใช้ยืนยันตัวตนเพียงครั้งเดียวแล้วสามารถเข้าถึงระบบหรือแอปพลิเคชันอื่นๆ ที่เชื่อมโยงกันได้ทันที ช่วยเพิ่มความสะดวกและลดจำนวนรหัสผ่านที่ต้องจำ"},{"d":3,"q":"ข้อเสียที่อาจเกิดขึ้นจากการใช้ SSO คืออะไร?","o":["ผู้ใช้ต้องจำรหัสผ่านหลายชุด","หากบัญชี SSO ถูกโจมตีสำเร็จ ผู้โจมตีอาจเข้าถึงระบบที่เชื่อมโยงทั้งหมดได้ (Single Point of Failure)","ทำให้การล็อกอินช้าลงในทุกระบบ","ไม่สามารถใช้งานร่วมกับ MFA ได้"],"a":1,"e":"ความเสี่ยงหลักของ SSO คือหากบัญชีกลางถูกบุกรุก ผู้โจมตีจะสามารถเข้าถึงระบบที่เชื่อมโยงทั้งหมดได้ทันที จึงมักแนะนำให้ใช้ร่วมกับ MFA เพื่อเพิ่มความปลอดภัย"},{"d":3,"q":"'Federated Identity Management' ช่วยให้เกิดอะไร?","o":["ผู้ใช้สามารถใช้ข้อมูลประจำตัว (Identity) เดียวกันเพื่อเข้าถึงระบบข้ามองค์กรที่เชื่อถือกัน","ทุกองค์กรต้องมีฐานข้อมูลผู้ใช้แยกกันโดยเด็ดขาด","ยกเลิกการใช้รหัสผ่านทั้งหมด","จำกัดการเข้าถึงเฉพาะภายในองค์กรเดียว"],"a":0,"e":"Federated Identity Management ช่วยให้ผู้ใช้สามารถใช้ข้อมูลประจำตัวชุดเดียวเพื่อเข้าถึงทรัพยากรข้ามองค์กรหรือโดเมนที่มีความสัมพันธ์ไว้วางใจกัน (Trust Relationship) เช่น การล็อกอินด้วยบัญชี Google เพื่อเข้าใช้บริการภายนอก"},{"d":3,"q":"กระบวนการ 'Provisioning' และ 'Deprovisioning' บัญชีผู้ใช้เกี่ยวข้องกับอะไร?","o":["การสร้างและยกเลิกบัญชีผู้ใช้ตามวงจรชีวิตการจ้างงาน เช่น เมื่อรับพนักงานใหม่หรือพนักงานลาออก","การเข้ารหัสฐานข้อมูลผู้ใช้","การสำรองข้อมูลบัญชีผู้ใช้รายวัน","การตรวจจับการบุกรุกเครือข่าย"],"a":0,"e":"Provisioning คือการสร้างบัญชีและกำหนดสิทธิ์การเข้าถึงให้ผู้ใช้ใหม่ ส่วน Deprovisioning คือการยกเลิกหรือปิดบัญชีเมื่อผู้ใช้ไม่ต้องการสิทธิ์นั้นอีกต่อไป เช่น เมื่อพนักงานลาออก ซึ่งสำคัญมากเพื่อป้องกันบัญชีค้าง (Orphaned Account)"},{"d":3,"q":"'Accountability' ในบริบทการควบคุมการเข้าถึงหมายถึงอะไร?","o":["การให้สิทธิ์ผู้ใช้ตามบทบาท","ความสามารถในการติดตามและตรวจสอบย้อนกลับได้ว่าใครทำอะไร เมื่อใด ผ่านการบันทึก Log และ Audit Trail","การเข้ารหัสรหัสผ่าน","การยืนยันตัวตนด้วยไบโอเมตริกซ์"],"a":1,"e":"Accountability คือความสามารถในการตรวจสอบย้อนกลับถึงการกระทำของผู้ใช้แต่ละคนผ่านการบันทึกเหตุการณ์ (Logging) และ Audit Trail ซึ่งต้องอาศัย Identification และ Authentication ที่ถูกต้องเป็นพื้นฐาน"},{"d":3,"q":"'Something you are' ในปัจจัยการยืนยันตัวตนหมายถึงตัวอย่างใด?","o":["รหัส PIN","สแกนม่านตาหรือลายนิ้วมือ","กุญแจสำนักงาน","บัตรพนักงาน"],"a":1,"e":"'Something you are' คือปัจจัยทางชีวมิติ (Biometric) เช่น ลายนิ้วมือ ม่านตา หรือใบหน้า ซึ่งเป็นลักษณะเฉพาะตัวของบุคคล"},{"d":3,"q":"การควบคุมการเข้าถึงทางกายภาพ (Physical Access Control) ข้อใดเป็นตัวอย่างที่ถูกต้อง?","o":["Access Control List (ACL) บนไฟร์วอลล์","ระบบ Mantrap และบัตรผ่านประตูอิเล็กทรอนิกส์","การเข้ารหัสข้อมูล (Encryption)","นโยบายรหัสผ่าน"],"a":1,"e":"Mantrap (ห้องกักตัวสองประตู) และระบบบัตรผ่านประตูเป็นตัวอย่างของ Physical Access Control ที่ควบคุมการเข้าออกพื้นที่จริง แตกต่างจาก Logical Access Control ที่ควบคุมการเข้าถึงระบบดิจิทัล"},{"d":3,"q":"'Logical Access Control' หมายถึงอะไร?","o":["การควบคุมการเข้าออกอาคารด้วยยาม","การควบคุมการเข้าถึงระบบ ข้อมูล หรือทรัพยากรดิจิทัลผ่านกลไกทางซอฟต์แวร์ เช่น รหัสผ่านและ ACL","การติดตั้งกล้องวงจรปิด","การล็อกประตูด้วยกุญแจ"],"a":1,"e":"Logical Access Control (หรือ Technical Access Control) ควบคุมการเข้าถึงทรัพยากรดิจิทัลผ่านกลไกซอฟต์แวร์ เช่น รหัสผ่าน สิทธิ์ไฟล์ และ Access Control List ต่างจาก Physical Access Control ที่ควบคุมพื้นที่จริง"},{"d":3,"q":"เหตุใดการกำหนด 'Password Complexity Policy' จึงมีความสำคัญ?","o":["ทำให้ผู้ใช้จำรหัสผ่านได้ง่ายขึ้น","ลดโอกาสที่รหัสผ่านจะถูกคาดเดาหรือถูกโจมตีแบบ Brute Force / Dictionary Attack สำเร็จ","ทำให้ระบบทำงานเร็วขึ้น","ไม่มีผลต่อความปลอดภัยของระบบ"],"a":1,"e":"นโยบายความซับซ้อนของรหัสผ่าน (เช่น ความยาวขั้นต่ำ ตัวอักษรผสม) ช่วยลดโอกาสที่ผู้โจมตีจะคาดเดาหรือเดารหัสผ่านได้สำเร็จผ่านการโจมตีแบบ Brute Force หรือ Dictionary Attack"},{"d":3,"q":"'Privileged Access Management (PAM)' มีวัตถุประสงค์หลักเพื่ออะไร?","o":["จัดการและควบคุมบัญชีที่มีสิทธิ์สูง เช่น บัญชี Administrator อย่างเข้มงวดและตรวจสอบได้","ให้สิทธิ์ Administrator แก่ผู้ใช้ทุกคน","ลบบัญชีผู้ใช้ทั้งหมดในระบบ","จัดการเฉพาะรหัสผ่านของผู้ใช้ทั่วไป"],"a":0,"e":"PAM คือแนวทางและเครื่องมือในการควบคุม ตรวจสอบ และจำกัดการใช้งานบัญชีที่มีสิทธิ์สูง (Privileged Account) เพื่อลดความเสี่ยงจากการใช้สิทธิ์ในทางที่ผิดหรือถูกโจมตี"},{"d":3,"q":"ในการตรวจสอบสิทธิ์การเข้าถึงเป็นระยะ (Access Review/Recertification) มีเป้าหมายเพื่ออะไร?","o":["เพิ่มสิทธิ์ให้ผู้ใช้ทุกคนโดยอัตโนมัติ","ทบทวนและยืนยันว่าสิทธิ์การเข้าถึงของผู้ใช้ยังคงเหมาะสมและจำเป็นต่อหน้าที่ปัจจุบัน ลด Privilege Creep","ลบข้อมูล Log เก่าที่ไม่จำเป็น","เปลี่ยนรหัสผ่านผู้ใช้ทั้งหมด"],"a":1,"e":"การทบทวนสิทธิ์เป็นระยะช่วยตรวจจับและแก้ไข 'Privilege Creep' ซึ่งเกิดจากผู้ใช้สะสมสิทธิ์เกินความจำเป็นเมื่อเปลี่ยนตำแหน่งหรือหน้าที่งาน โดยไม่มีการเพิกถอนสิทธิ์เดิม"},{"d":3,"q":"'Kerberos' เป็นโปรโตคอลที่ใช้เพื่อวัตถุประสงค์ใดเป็นหลัก?","o":["การเข้ารหัสไฟล์","การยืนยันตัวตนแบบรวมศูนย์โดยใช้ตั๋ว (Ticket) ผ่าน Key Distribution Center","การกำหนดเส้นทางเครือข่าย","การสแกนหาช่องโหว่"],"a":1,"e":"Kerberos เป็นโปรโตคอลยืนยันตัวตนที่ใช้ระบบ Ticket ผ่าน Key Distribution Center (KDC) เพื่อให้ผู้ใช้สามารถเข้าถึงบริการต่างๆ ในเครือข่ายได้อย่างปลอดภัยโดยไม่ต้องส่งรหัสผ่านซ้ำๆ"},{"d":3,"q":"เหตุใดจึงควรปิดใช้งาน (Disable) บัญชีผู้ใช้ทันทีเมื่อพนักงานลาออก แทนที่จะรอลบภายหลัง?","o":["เพื่อประหยัดพื้นที่จัดเก็บข้อมูล","เพื่อป้องกันไม่ให้บัญชีที่ไม่มีเจ้าของ (Orphaned Account) ถูกนำไปใช้ในทางที่ผิดหรือถูกโจมตี","เพราะกฎหมายบังคับให้ลบทันที","เพื่อให้ระบบทำงานเร็วขึ้น"],"a":1,"e":"บัญชีที่ยังเปิดใช้งานอยู่หลังพนักงานลาออก (Orphaned Account) เป็นความเสี่ยงด้านความปลอดภัยสูง เพราะอาจถูกอดีตพนักงานหรือผู้โจมตีนำไปใช้เข้าถึงระบบโดยไม่ได้รับอนุญาต"},{"d":3,"q":"ข้อใดคือความแตกต่างระหว่าง 'Authentication' และ 'Authorization'?","o":["ทั้งสองคำมีความหมายเหมือนกัน","Authentication คือการยืนยันว่าผู้ใช้เป็นใคร ส่วน Authorization คือการกำหนดว่าผู้ใช้มีสิทธิ์ทำอะไรได้บ้าง","Authorization เกิดขึ้นก่อน Authentication เสมอ","Authentication ใช้เฉพาะกับระบบ Cloud เท่านั้น"],"a":1,"e":"Authentication คือกระบวนการยืนยันตัวตนของผู้ใช้ว่าเป็นบุคคลที่อ้างสิทธิ์จริงหรือไม่ ส่วน Authorization คือขั้นตอนถัดมาที่กำหนดว่าผู้ใช้ที่ยืนยันตัวตนแล้วมีสิทธิ์เข้าถึงหรือกระทำการใดได้บ้าง"},{"d":3,"q":"เหตุใด 'Biometric Authentication' จึงมีความเสี่ยงเฉพาะตัวที่แตกต่างจากรหัสผ่าน?","o":["ไบโอเมตริกซ์เปลี่ยนแปลงได้ง่ายเหมือนรหัสผ่านเมื่อรั่วไหล","หากข้อมูลไบโอเมตริกซ์รั่วไหล ผู้ใช้ไม่สามารถ 'เปลี่ยน' ลายนิ้วมือหรือม่านตาของตนได้เหมือนการเปลี่ยนรหัสผ่าน","ไบโอเมตริกซ์ไม่สามารถใช้ร่วมกับ MFA ได้","ไบโอเมตริกซ์มีต้นทุนต่ำกว่ารหัสผ่านเสมอ"],"a":1,"e":"ข้อมูลไบโอเมตริกซ์เป็นลักษณะเฉพาะตัวถาวรของบุคคล หากรั่วไหลจะไม่สามารถ 'รีเซ็ต' หรือเปลี่ยนใหม่ได้เหมือนรหัสผ่าน จึงต้องมีมาตรการปกป้องข้อมูลไบโอเมตริกซ์เป็นพิเศษ"},{"d":3,"q":"'Access Control List (ACL)' คืออะไร?","o":["รายการที่ระบุว่าผู้ใช้หรือกลุ่มใดมีสิทธิ์เข้าถึงทรัพยากรใดได้บ้างและในระดับใด","รายชื่อพนักงานทั้งหมดในองค์กร","บันทึกเหตุการณ์ความปลอดภัยทั้งหมด","แผนผังเครือข่ายขององค์กร"],"a":0,"e":"ACL คือรายการที่กำหนดสิทธิ์การเข้าถึงทรัพยากร เช่น ไฟล์ โฟลเดอร์ หรืออุปกรณ์เครือข่าย โดยระบุว่าผู้ใช้หรือกลุ่มใดสามารถอ่าน เขียน หรือดำเนินการใดได้บ้าง"},{"d":4,"q":"โมเดล OSI มีทั้งหมดกี่เลเยอร์?","o":["5","6","7","8"],"a":2,"e":"โมเดล OSI (Open Systems Interconnection) มี 7 เลเยอร์ ได้แก่ Physical, Data Link, Network, Transport, Session, Presentation และ Application"},{"d":4,"q":"เลเยอร์ใดใน OSI Model ที่ไฟร์วอลล์แบบ Packet Filtering ทำงานอยู่เป็นหลัก?","o":["Application Layer","Network Layer","Session Layer","Physical Layer"],"a":1,"e":"Packet Filtering Firewall ทำงานที่ Network Layer (Layer 3) โดยตรวจสอบข้อมูลใน Header เช่น IP Address และ Port เพื่อตัดสินใจอนุญาตหรือปฏิเสธการรับส่งข้อมูล"},{"d":4,"q":"อุปกรณ์ 'Switch' ทำงานหลักอยู่ที่เลเยอร์ใดของ OSI Model?","o":["Physical Layer (Layer 1)","Data Link Layer (Layer 2)","Network Layer (Layer 3)","Transport Layer (Layer 4)"],"a":1,"e":"Switch ทำงานที่ Data Link Layer (Layer 2) โดยใช้ MAC Address ในการส่งข้อมูลไปยังพอร์ตที่ถูกต้อง (บาง Layer 3 Switch สามารถทำงานที่ Network Layer ได้เช่นกัน แต่ Switch พื้นฐานทำงานที่ Layer 2)"},{"d":4,"q":"'Router' มีหน้าที่หลักคืออะไร?","o":["เข้ารหัสข้อมูลระหว่างการส่ง","กำหนดเส้นทาง (Route) การส่งข้อมูลระหว่างเครือข่ายที่แตกต่างกันโดยใช้ IP Address","สร้างที่อยู่ MAC Address ใหม่","สแกนหาช่องโหว่ในเครือข่าย"],"a":1,"e":"Router ทำงานที่ Network Layer (Layer 3) มีหน้าที่กำหนดเส้นทางการส่งข้อมูลระหว่างเครือข่ายต่างๆ โดยใช้ IP Address"},{"d":4,"q":"ไฟร์วอลล์ประเภท 'Stateful Inspection' แตกต่างจาก 'Packet Filtering' อย่างไร?","o":["Stateful ตรวจสอบเฉพาะ Source IP เท่านั้น","Stateful ติดตามสถานะของการเชื่อมต่อ (Connection State) เพื่อตัดสินใจอนุญาตทราฟฟิกที่เกี่ยวข้องกับ Session ที่ถูกต้อง ไม่ใช่แค่ตรวจสอบแพ็กเก็ตแบบแยกส่วน","Stateful ทำงานที่ Physical Layer เท่านั้น","ทั้งสองแบบทำงานเหมือนกันทุกประการ"],"a":1,"e":"Stateful Inspection Firewall จะติดตามสถานะของการเชื่อมต่อ (เช่น TCP handshake) และตัดสินใจอนุญาตทราฟฟิกโดยพิจารณาบริบทของ Session ทั้งหมด ต่างจาก Packet Filtering ที่ตรวจสอบแต่ละแพ็กเก็ตแยกกันโดยไม่มีบริบท"},{"d":4,"q":"'IDS (Intrusion Detection System)' และ 'IPS (Intrusion Prevention System)' แตกต่างกันอย่างไร?","o":["IDS ตรวจจับและแจ้งเตือนเหตุการณ์ผิดปกติเท่านั้น ส่วน IPS สามารถตรวจจับและบล็อกการโจมตีได้แบบเรียลไทม์","IDS และ IPS เป็นระบบเดียวกันทุกประการ","IDS ใช้เฉพาะในเครือข่ายไร้สาย","IPS ทำงานที่ Physical Layer เท่านั้น"],"a":0,"e":"IDS เป็นระบบตรวจจับ (Detective) ที่แจ้งเตือนเมื่อพบพฤติกรรมผิดปกติแต่ไม่บล็อก ส่วน IPS เป็นระบบป้องกัน (Preventive) ที่สามารถบล็อกหรือหยุดยั้งทราฟฟิกที่เป็นอันตรายได้ทันที"},{"d":4,"q":"VPN (Virtual Private Network) มีวัตถุประสงค์หลักเพื่ออะไร?","o":["เพิ่มความเร็วอินเทอร์เน็ต","สร้างช่องทางสื่อสารที่เข้ารหัสและปลอดภัยผ่านเครือข่ายสาธารณะ","แจกจ่าย IP Address ให้อุปกรณ์ในเครือข่าย","แปลงชื่อโดเมนเป็น IP Address"],"a":1,"e":"VPN สร้างอุโมงค์ (Tunnel) ที่เข้ารหัสข้อมูลเพื่อให้การสื่อสารระหว่างจุดสองจุดผ่านเครือข่ายสาธารณะ เช่น อินเทอร์เน็ต มีความปลอดภัยและเป็นส่วนตัวเสมือนอยู่ในเครือข่ายส่วนตัว"},{"d":4,"q":"'Network Segmentation' ช่วยเพิ่มความปลอดภัยได้อย่างไร?","o":["ทำให้ทุกอุปกรณ์อยู่ในเครือข่ายเดียวกันเพื่อความสะดวก","แบ่งเครือข่ายออกเป็นส่วนย่อยเพื่อจำกัดขอบเขตความเสียหายหากส่วนใดถูกโจมตี ไม่ให้ลุกลามไปทั้งเครือข่าย","เพิ่มความเร็วในการส่งข้อมูลเท่านั้น","ลดจำนวนอุปกรณ์เครือข่ายที่ต้องใช้"],"a":1,"e":"Network Segmentation แบ่งเครือข่ายออกเป็นโซนย่อยๆ (เช่น VLAN) เพื่อจำกัดการเคลื่อนที่ของผู้โจมตี (Lateral Movement) หากส่วนใดส่วนหนึ่งถูกบุกรุก ความเสียหายจะไม่ลุกลามไปยังทั้งเครือข่าย"},{"d":4,"q":"'DMZ (Demilitarized Zone)' ในสถาปัตยกรรมเครือข่ายมีวัตถุประสงค์อะไร?","o":["เป็นพื้นที่เก็บข้อมูลสำรองสำคัญที่สุด","เป็นเครือข่ายกันชนที่วางเซิร์ฟเวอร์ที่ต้องเข้าถึงได้จากอินเทอร์เน็ตภายนอก แยกออกจากเครือข่ายภายในที่สำคัญกว่า","เป็นเครือข่ายไร้สายสำหรับแขก","เป็นระบบเข้ารหัสข้อมูลหลัก"],"a":1,"e":"DMZ คือเครือข่ายกันชนที่วางระบบซึ่งจำเป็นต้องเปิดให้เข้าถึงจากภายนอก เช่น Web Server หรือ Mail Server เพื่อลดความเสี่ยงหากถูกโจมตี ไม่ให้ผู้โจมตีสามารถเข้าถึงเครือข่ายภายในที่สำคัญกว่าได้โดยตรง"},{"d":4,"q":"โปรโตคอลใดที่ใช้เข้ารหัสการสื่อสารเว็บไซต์แทน HTTP แบบไม่เข้ารหัส?","o":["FTP","HTTPS","Telnet","SNMP v1"],"a":1,"e":"HTTPS (HTTP Secure) ใช้ TLS/SSL ในการเข้ารหัสข้อมูลระหว่างเว็บเบราว์เซอร์กับเซิร์ฟเวอร์ ต่างจาก HTTP ที่ส่งข้อมูลแบบไม่เข้ารหัส"},{"d":4,"q":"โปรโตคอลใดต่อไปนี้ถือว่า 'ไม่ปลอดภัย' เนื่องจากส่งข้อมูล รวมถึงรหัสผ่าน แบบไม่เข้ารหัส (Plaintext)?","o":["SSH","Telnet","HTTPS","SFTP"],"a":1,"e":"Telnet ส่งข้อมูลทั้งหมดรวมถึงชื่อผู้ใช้และรหัสผ่านแบบ Plaintext ทำให้เสี่ยงต่อการดักฟัง (Sniffing) จึงควรใช้ SSH แทนสำหรับการเข้าถึงระยะไกลที่ปลอดภัย"},{"d":4,"q":"การโจมตีแบบ 'Man-in-the-Middle (MITM)' มีลักษณะอย่างไร?","o":["ผู้โจมตีส่งอีเมลหลอกลวงจำนวนมาก","ผู้โจมตีแทรกตัวอยู่ระหว่างการสื่อสารของสองฝ่ายเพื่อดักฟังหรือแก้ไขข้อมูลโดยที่ทั้งสองฝ่ายไม่รู้ตัว","ผู้โจมตีส่งทราฟฟิกจำนวนมากเพื่อทำให้ระบบล่ม","ผู้โจมตีเดารหัสผ่านซ้ำๆ"],"a":1,"e":"MITM คือการโจมตีที่ผู้โจมตีแทรกตัวอยู่ระหว่างการสื่อสารของสองฝ่าย สามารถดักฟัง แก้ไข หรือขโมยข้อมูลได้โดยที่เหยื่อไม่รู้ตัวว่ากำลังถูกโจมตี"},{"d":4,"q":"การโจมตีแบบ DoS (Denial of Service) มีเป้าหมายหลักเพื่ออะไร?","o":["ขโมยข้อมูลความลับ","ทำให้ระบบหรือบริการไม่สามารถให้บริการได้ตามปกติโดยการทำให้ทรัพยากรระบบหมดหรือล้น","แก้ไขข้อมูลในฐานข้อมูล","ยกระดับสิทธิ์ผู้ใช้"],"a":1,"e":"DoS มีเป้าหมายเพื่อทำให้ระบบ Availability ล้มเหลว โดยการส่งคำขอจำนวนมากเกินกว่าที่ระบบจะรองรับได้ ทำให้ผู้ใช้ที่ถูกต้องไม่สามารถเข้าใช้บริการได้"},{"d":4,"q":"'DDoS' แตกต่างจาก 'DoS' อย่างไร?","o":["DDoS ใช้เครื่องโจมตีเพียงเครื่องเดียว ส่วน DoS ใช้หลายเครื่อง","DDoS มาจากหลายแหล่งพร้อมกัน (Distributed) มักผ่านเครือข่าย Botnet ส่วน DoS มาจากแหล่งเดียว","ทั้งสองแบบเหมือนกันทุกประการ","DDoS ใช้เฉพาะกับเว็บไซต์เท่านั้น"],"a":1,"e":"DDoS (Distributed Denial of Service) คือการโจมตีที่มาจากหลายแหล่งพร้อมกัน มักผ่านเครือข่าย Botnet ทำให้ยากต่อการป้องกันมากกว่า DoS ทั่วไปที่มาจากแหล่งเดียว"},{"d":4,"q":"เครือข่ายไร้สาย (Wi-Fi) ควรใช้โปรโตคอลการเข้ารหัสใดที่ปลอดภัยที่สุดในปัจจุบัน?","o":["WEP","WPA","WPA2","WPA3"],"a":3,"e":"WPA3 เป็นมาตรฐานการเข้ารหัส Wi-Fi ล่าสุดที่ปลอดภัยที่สุดในปัจจุบัน ส่วน WEP ล้าสมัยและไม่ปลอดภัยอย่างมาก ในขณะที่ WPA และ WPA2 มีช่องโหว่ที่ถูกค้นพบในภายหลัง"},{"d":4,"q":"เหตุใด 'WEP (Wired Equivalent Privacy)' จึงถือว่าไม่ปลอดภัยและไม่ควรใช้งานในปัจจุบัน?","o":["WEP มีความเร็วช้าเกินไป","WEP มีช่องโหว่ในอัลกอริทึมการเข้ารหัสที่ทำให้สามารถถูกถอดรหัสได้ง่ายด้วยเครื่องมือทั่วไป","WEP ใช้ได้เฉพาะเครือข่ายแบบมีสายเท่านั้น","WEP ไม่รองรับอุปกรณ์มือถือ"],"a":1,"e":"WEP มีจุดอ่อนในการออกแบบอัลกอริทึมเข้ารหัส (RC4 กับ IV ที่สั้นเกินไป) ทำให้ผู้โจมตีสามารถถอดรหัสคีย์ได้ภายในเวลาอันสั้นด้วยเครื่องมือที่หาได้ทั่วไป จึงถูกแทนที่ด้วย WPA และ WPA2/3"},{"d":4,"q":"'Network Address Translation (NAT)' มีประโยชน์หลักอย่างไรต่อความปลอดภัย?","o":["เข้ารหัสข้อมูลทั้งหมดที่ส่งผ่านเครือข่าย","ซ่อน IP Address ภายในจากเครือข่ายภายนอก ทำให้ยากต่อการโจมตีโดยตรงจากอินเทอร์เน็ต","เพิ่มความเร็วอินเทอร์เน็ต","ป้องกันไวรัสในอีเมล"],"a":1,"e":"NAT แปลง IP Address ภายในองค์กรให้เป็น IP Address สาธารณะเมื่อสื่อสารกับอินเทอร์เน็ต ทำให้โครงสร้างเครือข่ายภายในถูกซ่อนจากภายนอก เพิ่มความยากในการโจมตีโดยตรง"},{"d":4,"q":"'VLAN (Virtual LAN)' ช่วยเพิ่มความปลอดภัยของเครือข่ายอย่างไร?","o":["แยกกลุ่มอุปกรณ์ทางตรรกะออกจากกันแม้จะเชื่อมต่อกับสวิตช์เดียวกัน ทำให้จำกัดการสื่อสารและ Broadcast Traffic ระหว่างกลุ่มที่ไม่เกี่ยวข้อง","เพิ่มความเร็วเครือข่ายเท่านั้น","เข้ารหัสข้อมูลทั้งหมดในเครือข่าย","ลบมัลแวร์อัตโนมัติ"],"a":0,"e":"VLAN แบ่งเครือข่ายทางตรรกะ (Logical) ออกเป็นกลุ่มย่อย แม้อุปกรณ์จะเชื่อมต่อกับสวิตช์ทางกายภาพเดียวกัน ช่วยจำกัดขอบเขตการสื่อสารและลด Broadcast Domain ทำให้เพิ่มความปลอดภัยและง่ายต่อการบริหารจัดการ"},{"d":4,"q":"'Cloud Computing' รูปแบบใดที่ผู้ให้บริการดูแลเฉพาะโครงสร้างพื้นฐาน (Infrastructure) ส่วนผู้ใช้ต้องจัดการระบบปฏิบัติการและแอปพลิเคชันเอง?","o":["SaaS (Software as a Service)","PaaS (Platform as a Service)","IaaS (Infrastructure as a Service)","DaaS (Desktop as a Service)"],"a":2,"e":"IaaS ให้บริการเฉพาะโครงสร้างพื้นฐาน เช่น เซิร์ฟเวอร์ สตอเรจ และเครือข่าย ส่วนผู้ใช้ต้องติดตั้งและจัดการระบบปฏิบัติการ มิดเดิลแวร์ และแอปพลิเคชันเอง ต่างจาก PaaS ที่มีแพลตฟอร์มพร้อมใช้ และ SaaS ที่มีซอฟต์แวร์พร้อมใช้งานครบถ้วน"},{"d":4,"q":"'Virtualization' ในบริบทความปลอดภัยเครือข่ายหมายถึงอะไร?","o":["การสร้างระบบคอมพิวเตอร์เสมือน (Virtual Machine) ที่ทำงานแยกจากกันบนฮาร์ดแวร์เดียวกัน ช่วยแยกสภาพแวดล้อมและจำกัดผลกระทบหากเครื่องใดถูกโจมตี","การเข้ารหัสข้อมูลบนคลาวด์","การสำรองข้อมูลอัตโนมัติ","การตรวจจับมัลแวร์แบบเรียลไทม์"],"a":0,"e":"Virtualization ช่วยให้สามารถรัน Virtual Machine หลายเครื่องแยกกันบนฮาร์ดแวร์กายภาพเดียว ซึ่งช่วยแยกสภาพแวดล้อม (Isolation) และจำกัดผลกระทบหาก VM ใดเครื่องหนึ่งถูกโจมตีไม่ให้ลามไปยังเครื่องอื่น"},{"d":4,"q":"'Port Security' บนสวิตช์มีจุดประสงค์อะไร?","o":["เพิ่มความเร็วของพอร์ตเครือข่าย","จำกัดหรือควบคุมอุปกรณ์ที่สามารถเชื่อมต่อกับพอร์ตนั้นๆ โดยอิงจาก MAC Address เพื่อป้องกันอุปกรณ์ที่ไม่ได้รับอนุญาต","เข้ารหัสข้อมูลที่ส่งผ่านพอร์ต","ปิดพอร์ตทั้งหมดโดยอัตโนมัติ"],"a":1,"e":"Port Security ช่วยจำกัดจำนวนหรือระบุ MAC Address ของอุปกรณ์ที่ได้รับอนุญาตให้เชื่อมต่อกับพอร์ตสวิตช์แต่ละพอร์ต เพื่อป้องกันอุปกรณ์แปลกปลอมเชื่อมต่อเข้าเครือข่ายโดยไม่ได้รับอนุญาต"},{"d":4,"q":"'Proxy Server' ทำหน้าที่อะไรในเครือข่าย?","o":["เข้ารหัสข้อมูลระหว่างสองฝ่ายเท่านั้น","ทำหน้าที่เป็นตัวกลางรับส่งคำขอระหว่างไคลเอนต์กับเซิร์ฟเวอร์ปลายทาง สามารถกรองเนื้อหา ซ่อน IP และแคชข้อมูลได้","แจกจ่าย IP Address ให้อุปกรณ์","สร้าง VLAN อัตโนมัติ"],"a":1,"e":"Proxy Server ทำหน้าที่เป็นตัวกลาง (Intermediary) ระหว่างผู้ใช้และเซิร์ฟเวอร์ปลายทาง สามารถใช้กรองเนื้อหา บันทึก Log ซ่อน IP Address ของผู้ใช้จริง และช่วยเพิ่มความเร็วผ่านการแคช"},{"d":4,"q":"การโจมตีแบบ 'ARP Spoofing' มีผลกระทบอย่างไรต่อเครือข่าย?","o":["ทำให้เว็บไซต์ล่มจากทราฟฟิกมหาศาล","ผู้โจมตีปลอมแปลง MAC Address เพื่อดักจับหรือเปลี่ยนเส้นทางทราฟฟิกในเครือข่ายท้องถิ่น ซึ่งมักนำไปสู่การโจมตีแบบ MITM","เข้ารหัสไฟล์ทั้งหมดในเครื่อง","ขโมยรหัสผ่านผ่านอีเมลหลอกลวง"],"a":1,"e":"ARP Spoofing คือการปลอมแปลงข้อความ ARP เพื่อเชื่อมโยง MAC Address ของผู้โจมตีเข้ากับ IP Address ของเป้าหมาย ทำให้ทราฟฟิกถูกส่งผ่านเครื่องผู้โจมตี ซึ่งมักถูกใช้เป็นขั้นตอนหนึ่งในการโจมตีแบบ Man-in-the-Middle บนเครือข่ายท้องถิ่น"},{"d":4,"q":"'Segmentation' ระหว่างเครือข่าย IT (Information Technology) และ OT (Operational Technology) ในระบบอุตสาหกรรมมีความสำคัญอย่างไร?","o":["ไม่มีความจำเป็นเพราะทั้งสองระบบเหมือนกัน","ป้องกันไม่ให้การโจมตีจากเครือข่าย IT ลุกลามไปยังระบบควบคุมการผลิตหรือโครงสร้างพื้นฐานสำคัญที่อาจก่อความเสียหายทางกายภาพ","เพิ่มความเร็วอินเทอร์เน็ตของโรงงาน","ลดต้นทุนไฟฟ้า"],"a":1,"e":"การแยกเครือข่าย IT และ OT ช่วยป้องกันไม่ให้ภัยคุกคามที่แพร่กระจายในเครือข่าย IT (เช่น มัลแวร์) ลุกลามไปยังระบบควบคุมอุตสาหกรรม (ICS/SCADA) ซึ่งอาจก่อให้เกิดความเสียหายทางกายภาพที่ร้ายแรงกว่า"},{"d":5,"q":"'SIEM (Security Information and Event Management)' มีหน้าที่หลักคืออะไร?","o":["เข้ารหัสข้อมูลในฐานข้อมูล","รวบรวม วิเคราะห์ และเชื่อมโยง Log จากหลายแหล่งในองค์กรเพื่อตรวจจับเหตุการณ์ผิดปกติแบบรวมศูนย์","สำรองข้อมูลอัตโนมัติ","จัดการบัญชีผู้ใช้"],"a":1,"e":"SIEM รวบรวมและวิเคราะห์ข้อมูล Log จากอุปกรณ์และระบบต่างๆ ทั่วองค์กรแบบรวมศูนย์ ช่วยให้ทีมความปลอดภัยตรวจจับ เชื่อมโยง และตอบสนองต่อเหตุการณ์ผิดปกติได้อย่างมีประสิทธิภาพ"},{"d":5,"q":"เหตุใดการเก็บบันทึก Log (Logging) จึงมีความสำคัญต่อการดำเนินงานด้านความปลอดภัย?","o":["ทำให้ระบบทำงานเร็วขึ้น","ช่วยในการตรวจสอบย้อนกลับ วิเคราะห์เหตุการณ์ และเป็นหลักฐานสำหรับการสืบสวนเมื่อเกิดเหตุการณ์ผิดปกติ","ลดการใช้พื้นที่จัดเก็บข้อมูล","ไม่มีความจำเป็นหากมีไฟร์วอลล์แล้ว"],"a":1,"e":"การบันทึก Log ช่วยให้สามารถตรวจสอบย้อนกลับ (Accountability) วิเคราะห์เหตุการณ์ที่เกิดขึ้น และใช้เป็นหลักฐานทางนิติวิทยาศาสตร์ดิจิทัล (Digital Forensics) เมื่อเกิดเหตุการณ์ด้านความปลอดภัย"},{"d":5,"q":"'Patch Management' คือกระบวนการใด?","o":["การสำรองข้อมูลเป็นประจำ","กระบวนการจัดการติดตั้งการอัปเดตซอฟต์แวร์เพื่อแก้ไขช่องโหว่และปัญหาด้านความปลอดภัยอย่างเป็นระบบ","การสร้างบัญชีผู้ใช้ใหม่","การเข้ารหัสฮาร์ดดิสก์"],"a":1,"e":"Patch Management คือกระบวนการติดตาม ทดสอบ และติดตั้งแพตช์หรืออัปเดตซอฟต์แวร์อย่างเป็นระบบ เพื่อปิดช่องโหว่ด้านความปลอดภัยและรักษาเสถียรภาพของระบบ"},{"d":5,"q":"'Vulnerability Management' แตกต่างจาก 'Patch Management' อย่างไร?","o":["ทั้งสองคำมีความหมายเหมือนกันทุกประการ","Vulnerability Management เป็นกระบวนการที่กว้างกว่า ครอบคลุมการค้นหา ประเมิน และจัดลำดับความสำคัญของช่องโหว่ทั้งหมด ส่วน Patch Management เป็นหนึ่งในมาตรการแก้ไขที่ใช้จัดการช่องโหว่นั้น","Patch Management ใช้เฉพาะฮาร์ดแวร์เท่านั้น","Vulnerability Management ไม่เกี่ยวข้องกับซอฟต์แวร์"],"a":1,"e":"Vulnerability Management เป็นวงจรกว้างที่รวมการสแกนหา ประเมินความเสี่ยง จัดลำดับความสำคัญ และแก้ไขช่องโหว่ ในขณะที่ Patch Management เป็นหนึ่งในวิธีการแก้ไข (Remediation) ที่ใช้ปิดช่องโหว่ที่พบ"},{"d":5,"q":"'Change Management' มีวัตถุประสงค์หลักเพื่ออะไร?","o":["ป้องกันการเปลี่ยนแปลงใดๆ ในระบบโดยเด็ดขาด","ควบคุมและติดตามการเปลี่ยนแปลงในระบบ IT อย่างเป็นระบบผ่านกระบวนการอนุมัติ เพื่อลดความเสี่ยงจากการเปลี่ยนแปลงที่ไม่ได้วางแผน","ลบข้อมูล Log เก่า","สำรองข้อมูลรายวัน"],"a":1,"e":"Change Management คือกระบวนการที่มีโครงสร้างในการวางแผน ทดสอบ อนุมัติ และบันทึกการเปลี่ยนแปลงในระบบ IT เพื่อลดความเสี่ยงจากการเปลี่ยนแปลงที่ไม่ได้รับอนุญาตหรือไม่ได้วางแผนซึ่งอาจก่อให้เกิดปัญหา"},{"d":5,"q":"'Configuration Management' และการใช้ 'Baseline' ช่วยด้านความปลอดภัยอย่างไร?","o":["กำหนดค่ามาตรฐานที่ปลอดภัยของระบบไว้เป็นข้อมูลอ้างอิง ช่วยตรวจจับการเปลี่ยนแปลงที่ผิดปกติหรือไม่ได้รับอนุญาต","เพิ่มความเร็วของระบบเท่านั้น","ลบมัลแวร์อัตโนมัติ","ไม่มีผลต่อความปลอดภัย"],"a":0,"e":"Baseline คือค่ากำหนดมาตรฐานที่ปลอดภัยของระบบ (Secure Configuration) ที่ใช้เป็นข้อมูลอ้างอิง เมื่อระบบเบี่ยงเบนจาก Baseline จะสามารถตรวจจับการเปลี่ยนแปลงที่ผิดปกติหรือไม่ได้รับอนุญาตได้ทันที"},{"d":5,"q":"ข้อใดคือคำอธิบายที่ถูกต้องของ 'Encryption at Rest'?","o":["การเข้ารหัสข้อมูลขณะส่งผ่านเครือข่าย","การเข้ารหัสข้อมูลที่จัดเก็บอยู่บนอุปกรณ์จัดเก็บข้อมูล เช่น ฮาร์ดดิสก์หรือฐานข้อมูล","การเข้ารหัสรหัสผ่านเท่านั้น","การเข้ารหัสอีเมลขาออก"],"a":1,"e":"Encryption at Rest คือการเข้ารหัสข้อมูลที่ถูกจัดเก็บไว้ (ไม่ได้เคลื่อนที่) เช่น บนฮาร์ดดิสก์หรือในฐานข้อมูล เพื่อป้องกันการเข้าถึงข้อมูลหากอุปกรณ์จัดเก็บถูกขโมยหรือเข้าถึงโดยไม่ได้รับอนุญาต"},{"d":5,"q":"'Encryption in Transit' หมายถึงอะไร?","o":["การเข้ารหัสข้อมูลที่จัดเก็บบนดิสก์","การเข้ารหัสข้อมูลขณะกำลังถูกส่งผ่านเครือข่ายจากจุดหนึ่งไปยังอีกจุดหนึ่ง เช่น ผ่าน TLS/SSL","การเข้ารหัสข้อมูลสำรอง","การเข้ารหัสรหัสผ่านในฐานข้อมูล"],"a":1,"e":"Encryption in Transit คือการเข้ารหัสข้อมูลขณะกำลังเดินทางผ่านเครือข่าย เช่น การใช้ HTTPS/TLS เพื่อป้องกันการดักฟังหรือแก้ไขข้อมูลระหว่างการส่ง"},{"d":5,"q":"ความแตกต่างระหว่าง 'Symmetric Encryption' และ 'Asymmetric Encryption' คืออะไร?","o":["Symmetric ใช้กุญแจเดียวกันทั้งเข้ารหัสและถอดรหัส ส่วน Asymmetric ใช้กุญแจคู่ (Public/Private Key)","Symmetric ใช้กุญแจคู่ ส่วน Asymmetric ใช้กุญแจเดียว","ทั้งสองแบบไม่มีความแตกต่างกัน","Asymmetric เร็วกว่า Symmetric เสมอ"],"a":0,"e":"Symmetric Encryption ใช้กุญแจลับเดียวกันทั้งการเข้ารหัสและถอดรหัส (เช่น AES) ซึ่งเร็วกว่าแต่ต้องแชร์กุญแจอย่างปลอดภัย ส่วน Asymmetric Encryption ใช้กุญแจคู่ Public Key และ Private Key (เช่น RSA) ซึ่งช้ากว่าแต่ไม่ต้องแชร์กุญแจลับ"},{"d":5,"q":"'Hashing' แตกต่างจาก 'Encryption' อย่างไร?","o":["Hashing เป็นกระบวนการทางเดียว (One-way) ที่ไม่สามารถถอดกลับเป็นข้อมูลเดิมได้ ใช้เพื่อตรวจสอบความถูกต้อง ส่วน Encryption สามารถถอดรหัสกลับเป็นข้อมูลเดิมได้หากมีกุญแจที่ถูกต้อง","ทั้งสองแบบเหมือนกันทุกประการและใช้แทนกันได้เสมอ","Hashing ใช้เฉพาะกับรูปภาพเท่านั้น","Encryption ไม่สามารถถอดรหัสกลับได้เลย"],"a":0,"e":"Hashing เป็นฟังก์ชันทางเดียวที่แปลงข้อมูลเป็นค่าความยาวคงที่ (Hash Value) เพื่อตรวจสอบความถูกต้องครบถ้วนของข้อมูล ไม่สามารถย้อนกลับเป็นข้อมูลต้นฉบับได้ ต่างจาก Encryption ที่ออกแบบมาให้ถอดรหัสกลับได้เมื่อมีกุญแจที่ถูกต้อง"},{"d":5,"q":"'Security Awareness Training' ควรครอบคลุมหัวข้อใดเป็นสำคัญเพื่อลดความเสี่ยงจาก Social Engineering?","o":["การเขียนโปรแกรมขั้นสูง","การรู้จักและระวังภัยฟิชชิ่ง (Phishing) และกลลวงทางวิศวกรรมสังคมรูปแบบต่างๆ","การซ่อมแซมฮาร์ดแวร์คอมพิวเตอร์","การบริหารจัดการโครงการ"],"a":1,"e":"เนื่องจากฟิชชิ่งและ Social Engineering เป็นช่องทางโจมตีที่พบบ่อยที่สุด การฝึกอบรมจึงควรเน้นให้พนักงานรู้จักสังเกตสัญญาณของอีเมลหรือข้อความหลอกลวง เพื่อลดความเสี่ยงจากการถูกหลอกให้เปิดเผยข้อมูลสำคัญ"},{"d":5,"q":"'Data Retention Policy' มีความสำคัญอย่างไรต่อการดำเนินงานด้านความปลอดภัย?","o":["กำหนดระยะเวลาที่ต้องเก็บรักษาข้อมูลประเภทต่างๆ และวิธีการทำลายข้อมูลเมื่อหมดความจำเป็น เพื่อให้สอดคล้องกับกฎหมายและลดความเสี่ยง","เพิ่มพื้นที่จัดเก็บข้อมูลไม่จำกัด","ทำให้ข้อมูลเข้าถึงได้เร็วขึ้น","ไม่มีผลต่อการปฏิบัติตามกฎหมาย"],"a":0,"e":"Data Retention Policy กำหนดระยะเวลาที่องค์กรต้องเก็บรักษาข้อมูลแต่ละประเภท และวิธีการทำลายข้อมูลอย่างปลอดภัยเมื่อหมดความจำเป็น เพื่อให้สอดคล้องกับข้อกำหนดทางกฎหมายและลดความเสี่ยงจากการเก็บข้อมูลเกินความจำเป็น"},{"d":5,"q":"'Media Sanitization' หรือการทำลายสื่อบันทึกข้อมูลอย่างปลอดภัย มีวัตถุประสงค์เพื่ออะไร?","o":["เพิ่มความจุของฮาร์ดดิสก์","ทำให้ข้อมูลที่จัดเก็บไว้ในสื่อไม่สามารถกู้คืนได้ ก่อนนำสื่อไปกำจัดทิ้งหรือนำกลับมาใช้ใหม่","เพิ่มความเร็วในการอ่านข้อมูล","สำรองข้อมูลก่อนทำลาย"],"a":1,"e":"Media Sanitization คือกระบวนการลบหรือทำลายข้อมูลบนสื่อบันทึกข้อมูล (เช่น การ Degauss หรือ Physical Destruction) เพื่อป้องกันไม่ให้ข้อมูลที่อ่อนไหวถูกกู้คืนได้เมื่อสื่อนั้นถูกนำไปทิ้งหรือนำกลับมาใช้ใหม่"},{"d":5,"q":"'Monitoring' และการตรวจสอบ Log อย่างต่อเนื่อง (Continuous Monitoring) มีประโยชน์อย่างไร?","o":["ช่วยตรวจจับพฤติกรรมผิดปกติหรือสัญญาณการโจมตีได้อย่างรวดเร็ว ลดระยะเวลาระหว่างการเกิดเหตุการณ์กับการตรวจพบ","เพิ่มความเร็วของเครือข่าย","ลดจำนวนพนักงานที่ต้องใช้ทั้งหมด","ไม่มีผลต่อความปลอดภัยโดยตรง"],"a":0,"e":"การตรวจสอบอย่างต่อเนื่องช่วยให้ทีมความปลอดภัยตรวจพบพฤติกรรมผิดปกติหรือสัญญาณบ่งชี้การโจมตีได้อย่างรวดเร็ว ลดเวลาที่เรียกว่า 'Dwell Time' หรือช่วงเวลาที่ผู้โจมตีอยู่ในระบบโดยไม่ถูกตรวจพบ"},{"d":5,"q":"'Job Rotation' เป็นมาตรการด้านความปลอดภัยที่ช่วยอะไร?","o":["เพิ่มเงินเดือนพนักงาน","ลดความเสี่ยงจากการทุจริตหรือการกระทำผิดที่ซ่อนเร้น โดยการหมุนเวียนหน้าที่ทำให้ผู้อื่นมีโอกาสตรวจพบความผิดปกติ","ลดจำนวนพนักงานที่ต้องจ้าง","เพิ่มความเร็วในการประมวลผลข้อมูล"],"a":1,"e":"Job Rotation คือการหมุนเวียนพนักงานให้ทำหน้าที่ต่างๆ เป็นระยะ ซึ่งช่วยลดความเสี่ยงที่บุคคลใดบุคคลหนึ่งจะควบคุมกระบวนการสำคัญไว้คนเดียวเป็นเวลานาน และเพิ่มโอกาสตรวจพบการทุจริตหรือข้อผิดพลาดที่ซ่อนเร้น"},{"d":5,"q":"'Mandatory Vacation' เป็นมาตรการควบคุมประเภทใดและมีประโยชน์อย่างไร?","o":["เป็นมาตรการด้านสวัสดิการเท่านั้น ไม่เกี่ยวข้องกับความปลอดภัย","เป็นมาตรการควบคุมที่บังคับให้พนักงานลาพักร้อนต่อเนื่อง เพื่อเปิดโอกาสให้ผู้อื่นตรวจพบการทุจริตหรือความผิดปกติที่พนักงานอาจปกปิดไว้","ใช้เพื่อลดต้นทุนแรงงานเท่านั้น","ใช้แทนการทำ Background Check"],"a":1,"e":"Mandatory Vacation บังคับให้พนักงานลาพักร้อนต่อเนื่องเป็นระยะเวลาหนึ่ง ในช่วงนั้นบุคคลอื่นจะเข้ามาทำหน้าที่แทน ซึ่งเปิดโอกาสให้ตรวจพบการทุจริตหรือความผิดปกติที่พนักงานคนเดิมอาจปกปิดไว้ระหว่างปฏิบัติงาน"},{"d":5,"q":"'Vulnerability Scanning' แตกต่างจาก 'Penetration Testing' อย่างไร?","o":["Vulnerability Scanning เป็นการสแกนหาช่องโหว่ที่ทราบอยู่แล้วโดยอัตโนมัติ ส่วน Penetration Testing เป็นการจำลองการโจมตีจริงเพื่อพิสูจน์ว่าช่องโหว่นั้นสามารถถูกใช้ประโยชน์ได้จริงหรือไม่","ทั้งสองแบบเหมือนกันทุกประการ","Vulnerability Scanning ทำได้เฉพาะผู้เชี่ยวชาญระดับสูงเท่านั้น","Penetration Testing ใช้เครื่องมืออัตโนมัติเพียงอย่างเดียว"],"a":0,"e":"Vulnerability Scanning ใช้เครื่องมืออัตโนมัติสแกนหาช่องโหว่ที่ทราบอยู่แล้วในระบบ ในขณะที่ Penetration Testing เป็นการทดสอบเชิงลึกที่จำลองการโจมตีจริงโดยผู้เชี่ยวชาญ เพื่อพิสูจน์ว่าช่องโหว่ที่พบสามารถถูกใช้ประโยชน์ (Exploit) ได้จริงหรือไม่ และประเมินผลกระทบที่แท้จริง"},{"d":5,"q":"เหตุใดการทดสอบ (Testing) แผนสำรองข้อมูล (Backup) เป็นระยะจึงมีความสำคัญ?","o":["เพื่อให้แน่ใจว่าไฟล์แบ็กอัพสามารถกู้คืนได้จริงและข้อมูลไม่เสียหาย ไม่ใช่แค่มีไฟล์แบ็กอัพอยู่เท่านั้น","เพื่อลดขนาดไฟล์แบ็กอัพ","เพื่อเพิ่มความเร็วในการสำรองข้อมูล","ไม่มีความจำเป็นหากมีการสำรองข้อมูลเป็นประจำ"],"a":0,"e":"การมีไฟล์แบ็กอัพไม่ได้รับประกันว่าจะสามารถกู้คืนข้อมูลได้สำเร็จ การทดสอบกู้คืน (Restore Testing) เป็นระยะช่วยยืนยันว่ากระบวนการสำรองข้อมูลทำงานถูกต้องและข้อมูลไม่เสียหาย ก่อนที่จะเกิดเหตุการณ์จริงที่ต้องพึ่งพาแบ็กอัพนั้น"}]</script>
+<script>
+const RAW_QUESTIONS = JSON.parse(document.getElementById('question-data').textContent);
+const DOMAIN_NAMES = {
+  1:"Security Principles",
+  2:"BC/DR/Incident Response",
+  3:"Access Controls",
+  4:"Network Security",
+  5:"Security Operations"
+};
+const DOMAIN_TH = {
+  1:"หลักการความปลอดภัย",
+  2:"BC/DR และการรับมือเหตุการณ์",
+  3:"การควบคุมการเข้าถึง",
+  4:"ความปลอดภัยเครือข่าย",
+  5:"การปฏิบัติการด้านความปลอดภัย"
+};
+const DOMAIN_WEIGHTS = {1:26,2:10,3:22,4:24,5:18};
+const PASS_THRESHOLD = 70;
+const EXAM_DURATION_MS = 120 * 60 * 1000; // Exam Mode time limit: 120 minutes
+
+// ── Countdown timer (Exam Mode only) ───────────────────────────────
+let examTimerInterval = null;
+
+function clearExamTimer(){
+  if(examTimerInterval){ clearInterval(examTimerInterval); examTimerInterval = null; }
+}
+
+function formatDuration(ms){
+  if(ms < 0) ms = 0;
+  const totalSec = Math.floor(ms/1000);
+  const h = Math.floor(totalSec/3600);
+  const m = Math.floor((totalSec%3600)/60);
+  const s = totalSec%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+function startExamTimer(){
+  clearExamTimer();
+  examTimerInterval = setInterval(()=>{
+    const remaining = STATE.examEndTime - Date.now();
+    if(remaining <= 0){
+      clearExamTimer();
+      STATE.timeExpired = true;
+      STATE.screen = 'results';
+      render();
+      return;
+    }
+    const timerEl = document.getElementById('exam-timer');
+    if(timerEl){
+      timerEl.textContent = formatDuration(remaining);
+      const wrapEl = document.getElementById('exam-timer-wrap');
+      if(wrapEl) wrapEl.classList.toggle('urgent', remaining < 5*60*1000);
+    }
+  }, 1000);
+}
+
+// ── Google Sheet sync ──────────────────────────────────────────────
+// Paste your Google Apps Script Web App URL here (ends in /exec).
+// Leave as-is to disable syncing — the quiz still works fully offline.
+const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxj7npbwFLWtqItfQoiWlBnYiBeBUVBiCkKmxWsg4pena4bzGn25bjL-PZPqCTChmkC/exec";
+
+function submitResultsToSheet(payload){
+  if(!SHEET_WEBAPP_URL || SHEET_WEBAPP_URL.indexOf('PASTE_YOUR') !== -1){
+    return Promise.resolve(false);
+  }
+  return fetch(SHEET_WEBAPP_URL, {
+    method:'POST',
+    mode:'no-cors', // Apps Script doesn't return CORS headers; response is opaque
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  }).then(()=>true).catch(()=>false);
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// Build session questions: shuffle question order within their natural set AND shuffle options per question
+function buildSession(){
+  return shuffle(RAW_QUESTIONS).map((q, idx)=>{
+    const optIdx = [0,1,2,3];
+    const shuffledIdx = shuffle(optIdx);
+    const options = shuffledIdx.map(i=>q.o[i]);
+    const correct = shuffledIdx.indexOf(q.a);
+    return {
+      id: idx,
+      domain: q.d,
+      question: q.q,
+      options: options,
+      correct: correct,
+      explanation: q.e,
+      userAnswer: null
+    };
+  });
+}
+
+let STATE = {
+  screen: 'start',      // start | quiz | results
+  mode: null,            // practice | exam
+  session: [],
+  current: 0,
+  playerName: '',
+  submitted: false,     // guards against double-posting results to the Sheet
+  examEndTime: null,    // Date.now() timestamp when Exam Mode should auto-finish
+  timeExpired: false,   // true if the exam ended because the 120-minute timer ran out
+};
+
+function el(html){
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  if(STATE.screen === 'start') app.appendChild(renderStart());
+  else if(STATE.screen === 'quiz') app.appendChild(renderQuiz());
+  else if(STATE.screen === 'results') app.appendChild(renderResults());
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function renderTopbar(rightHtml){
+  return `
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">CC</div>
+      <div class="brand-text">
+        <div class="t1">ISC2 · Certified in Cybersecurity</div>
+        <div class="t2">Exam Simulator</div>
+      </div>
+    </div>
+    <div class="topbar-right">${rightHtml||''}</div>
+  </div>`;
+}
+
+function renderStart(){
+  const wrap = el(`<div></div>`);
+  wrap.innerHTML = `
+    ${renderTopbar(`<div class="pill"><span class="dot"></span> 100 ข้อ พร้อมใช้งาน</div>`)}
+    <div class="panel glow-violet hero">
+      <div class="hero-eyebrow">◆ CC EXAM PREP · 5 DOMAINS</div>
+      <h1>ฝึกฝนก่อนสอบ <span>ISC2 CC</span><br/>ด้วยข้อสอบจำลอง 100 ข้อ</h1>
+      <p>ครอบคลุมครบทั้ง 5 โดเมนตามสัดส่วนน้ำหนักข้อสอบจริง ตัวเลือกคำตอบสลับตำแหน่งแบบสุ่มทุกครั้ง เลือกโหมด Practice เพื่อเรียนรู้ทีละข้อ หรือโหมด Exam เพื่อจำลองบรรยากาศสอบจริง</p>
+      <div class="name-field">
+        <label>ชื่อผู้เข้าสอบ (Your name) <span style="color:var(--bad);">*</span></label>
+        <input type="text" id="player-name" placeholder="กรอกชื่อของคุณ..." required>
+        <div class="name-hint" id="name-hint">กรุณากรอกชื่อก่อนเริ่มทำข้อสอบ</div>
+      </div>
+      <div class="domain-strip" id="domain-strip"></div>
+      <div class="mode-select">
+        <div class="mode-card" data-mode="practice">
+          <span class="micon">🧪</span>
+          <h3>Practice Mode</h3>
+          <p>เลือกคำตอบแล้วเห็นผลทันที พร้อมคำอธิบายภาษาไทยว่าทำไมข้อนั้นถูก เหมาะสำหรับการเรียนรู้ทีละข้อ</p>
+          <span class="tag">FEEDBACK แบบทันที</span>
+        </div>
+        <div class="mode-card" data-mode="exam">
+          <span class="micon">⏱</span>
+          <h3>Exam Mode</h3>
+          <p>ตอบให้ครบทุกข้อก่อน แล้วดูผลคะแนนตอนจบ จำลองบรรยากาศเหมือนสอบจริง พร้อมผล domain breakdown</p>
+          <span class="tag">จำลองสอบจริง</span>
+        </div>
+      </div>
+      <button class="start-btn" id="start-btn" disabled>กรอกชื่อและเลือกโหมดเพื่อเริ่มทำข้อสอบ</button>
+    </div>
+  `;
+
+  const strip = wrap.querySelector('#domain-strip');
+  for(let d=1; d<=5; d++){
+    const count = RAW_QUESTIONS.filter(q=>q.d===d).length;
+    strip.appendChild(el(`
+      <div class="domain-chip">
+        <div class="dn">DOMAIN ${d}</div>
+        <div class="dname">${DOMAIN_TH[d]}</div>
+        <div class="dbar"><i style="width:${DOMAIN_WEIGHTS[d]*3}%"></i></div>
+        <div class="dpct">${DOMAIN_WEIGHTS[d]}% <span style="color:var(--text-faint); font-weight:400;">· ${count} ข้อ</span></div>
+      </div>
+    `));
+  }
+
+  let chosenMode = null;
+  const cards = wrap.querySelectorAll('.mode-card');
+  const startBtn = wrap.querySelector('#start-btn');
+  const nameInput = wrap.querySelector('#player-name');
+  const nameHint = wrap.querySelector('#name-hint');
+
+  function hasName(){ return nameInput.value.trim().length > 0; }
+
+  function refreshStartButton(){
+    const nameOk = hasName();
+    if(nameOk) nameInput.classList.remove('invalid');
+    if(nameOk && chosenMode){
+      startBtn.disabled = false;
+      startBtn.textContent = chosenMode === 'practice' ? 'เริ่ม Practice Mode →' : 'เริ่ม Exam Mode →';
+    } else if(!nameOk && chosenMode){
+      startBtn.disabled = true;
+      startBtn.textContent = 'กรอกชื่อของคุณก่อนเริ่มทำข้อสอบ';
+    } else if(nameOk && !chosenMode){
+      startBtn.disabled = true;
+      startBtn.textContent = 'เลือกโหมดเพื่อเริ่มทำข้อสอบ →';
+    } else {
+      startBtn.disabled = true;
+      startBtn.textContent = 'กรอกชื่อและเลือกโหมดเพื่อเริ่มทำข้อสอบ';
+    }
+  }
+
+  cards.forEach(c=>{
+    c.addEventListener('click', ()=>{
+      cards.forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      chosenMode = c.dataset.mode;
+      refreshStartButton();
+    });
+  });
+  nameInput.addEventListener('input', ()=>{
+    nameHint.classList.remove('show');
+    refreshStartButton();
+  });
+  startBtn.addEventListener('click', ()=>{
+    if(!hasName()){
+      nameInput.classList.add('invalid');
+      nameHint.classList.add('show');
+      nameInput.focus();
+      return;
+    }
+    if(!chosenMode) return;
+    STATE.playerName = nameInput.value.trim();
+    STATE.mode = chosenMode;
+    STATE.session = buildSession();
+    STATE.current = 0;
+    STATE.submitted = false;
+    STATE.timeExpired = false;
+    if(chosenMode === 'exam'){
+      STATE.examEndTime = Date.now() + EXAM_DURATION_MS;
+      startExamTimer();
+    } else {
+      STATE.examEndTime = null;
+      clearExamTimer();
+    }
+    STATE.screen = 'quiz';
+    render();
+  });
+
+  return wrap;
+}
+
+function scoreSoFar(){
+  const answered = STATE.session.filter(q=>q.userAnswer!==null);
+  const correct = answered.filter(q=>q.userAnswer===q.correct);
+  return {answeredCount: answered.length, correctCount: correct.length};
+}
+
+function renderQuiz(){
+  const wrap = el(`<div></div>`);
+  const total = STATE.session.length;
+  const q = STATE.session[STATE.current];
+  const answeredTotal = STATE.session.filter(x=>x.userAnswer!==null).length;
+  const {correctCount} = scoreSoFar();
+  const pct = Math.round((STATE.current)/total*100);
+
+  const modeLabel = STATE.mode==='practice' ? 'PRACTICE MODE' : 'EXAM MODE';
+
+  wrap.innerHTML = `
+    ${renderTopbar(`<div class="pill"><span class="dot"></span> ${modeLabel}</div><div class="pill">${STATE.playerName}</div>${STATE.mode==='exam' ? `<div class="pill timer-pill" id="exam-timer-wrap">⏱ <span id="exam-timer">${formatDuration(STATE.examEndTime - Date.now())}</span></div>` : ''}`)}
+    <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+    <div class="exam-wrap">
+      <div class="exam-main">
+        <div class="status-row">
+          <div class="status-left">
+            <span>ข้อ ${STATE.current+1} / ${total}</span>
+            <span class="domain-tag">Domain ${q.domain} · ${DOMAIN_TH[q.domain]}</span>
+          </div>
+          <div class="live-score">
+            ${STATE.mode==='practice' ? `<span>ตอบถูก <b>${correctCount}</b> / ${answeredTotal||0}</span>` : `<span>ตอบแล้ว <b>${answeredTotal}</b> / ${total}</span>`}
+          </div>
+        </div>
+        <div class="panel glow-cyan qcard">
+          <div class="qmeta">QUESTION_ID://${String(q.id+1).padStart(3,'0')} — DOMAIN ${q.domain}</div>
+          <p class="qtext">${q.question}</p>
+          <div class="options" id="options"></div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+        <div class="nav-row">
+          <button class="btn" id="prev-btn" ${STATE.current===0?'disabled':''}>← ข้อก่อนหน้า</button>
+          <button class="btn primary" id="next-btn">${STATE.current===total-1 ? 'ดูผลคะแนน →' : 'ข้อถัดไป →'}</button>
+        </div>
+      </div>
+      <div class="sidebar panel" id="sidebar"></div>
+    </div>
+  `;
+
+  const optionsEl = wrap.querySelector('#options');
+  const feedbackEl = wrap.querySelector('#feedback');
+  const nextBtn = wrap.querySelector('#next-btn');
+  const prevBtn = wrap.querySelector('#prev-btn');
+  const letters = ['A','B','C','D'];
+
+  function paintOptions(revealed){
+    optionsEl.innerHTML='';
+    q.options.forEach((optText, i)=>{
+      const isSelected = q.userAnswer===i;
+      let cls = 'opt';
+      if(revealed){
+        cls += ' disabled';
+        if(i===q.correct) cls += ' correct';
+        else if(isSelected && i!==q.correct) cls += ' incorrect';
+      } else if(isSelected){
+        cls += ' selected';
+      }
+      const o = el(`<div class="${cls}" data-i="${i}"><span class="oletter">${letters[i]}</span><span>${optText}</span></div>`);
+      if(!revealed){
+        o.addEventListener('click', ()=>selectAnswer(i));
+      }
+      optionsEl.appendChild(o);
+    });
+  }
+
+  function selectAnswer(i){
+    q.userAnswer = i;
+    if(STATE.mode === 'practice'){
+      paintOptions(true);
+      const isCorrect = i===q.correct;
+      feedbackEl.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+      feedbackEl.innerHTML = `<div class="flabel">${isCorrect ? '✓ ถูกต้อง' : '✗ ไม่ถูกต้อง — คำตอบที่ถูกคือ ' + letters[q.correct]}</div>${q.explanation}`;
+    } else {
+      paintOptions(false);
+    }
+    updateSidebar();
+  }
+
+  const revealedAlready = STATE.mode==='practice' && q.userAnswer!==null;
+  paintOptions(revealedAlready);
+  if(revealedAlready){
+    const isCorrect = q.userAnswer===q.correct;
+    feedbackEl.className = 'feedback show ' + (isCorrect ? 'ok' : 'bad');
+    feedbackEl.innerHTML = `<div class="flabel">${isCorrect ? '✓ ถูกต้อง' : '✗ ไม่ถูกต้อง — คำตอบที่ถูกคือ ' + letters[q.correct]}</div>${q.explanation}`;
+  }
+
+  prevBtn.addEventListener('click', ()=>{
+    if(STATE.current>0){ STATE.current--; render(); }
+  });
+  nextBtn.addEventListener('click', ()=>{
+    if(STATE.current < total-1){ STATE.current++; render(); }
+    else {
+      if(STATE.mode==='exam'){
+        const unanswered = STATE.session.filter(x=>x.userAnswer===null).length;
+        if(unanswered>0){
+          const ok = confirm(`คุณยังไม่ได้ตอบ ${unanswered} ข้อ ต้องการดูผลคะแนนเลยหรือไม่?`);
+          if(!ok) return;
+        }
+      }
+      STATE.screen='results'; clearExamTimer(); render();
+    }
+  });
+
+  function updateSidebar(){
+    const sb = wrap.querySelector('#sidebar');
+    sb.innerHTML = `
+      <h4>Question Navigator</h4>
+      <div class="navgrid" id="navgrid"></div>
+      <div class="legend">
+        <div class="lrow"><span class="lsw" style="background:var(--cyan);"></span> ข้อปัจจุบัน</div>
+        ${STATE.mode==='practice' ? `
+        <div class="lrow"><span class="lsw" style="background:var(--good);"></span> ตอบถูก</div>
+        <div class="lrow"><span class="lsw" style="background:var(--bad);"></span> ตอบผิด</div>
+        ` : `
+        <div class="lrow"><span class="lsw" style="background:var(--violet-soft); border:1px solid var(--violet-bright);"></span> ตอบแล้ว</div>
+        `}
+        <div class="lrow"><span class="lsw" style="background:rgba(255,255,255,0.05); border:1px solid var(--line);"></span> ยังไม่ตอบ</div>
+      </div>
+    `;
+    const grid = sb.querySelector('#navgrid');
+    STATE.session.forEach((sq, i)=>{
+      let cls = 'navcell';
+      if(i===STATE.current) cls += ' current';
+      else if(sq.userAnswer!==null){
+        if(STATE.mode==='practice'){
+          cls += sq.userAnswer===sq.correct ? ' correct' : ' incorrect';
+        } else {
+          cls += ' answered';
+        }
+      }
+      const cell = el(`<div class="${cls}">${i+1}</div>`);
+      cell.addEventListener('click', ()=>{ STATE.current=i; render(); });
+      grid.appendChild(cell);
+    });
+  }
+  updateSidebar();
+
+  return wrap;
+}
+
+function renderResults(){
+  const wrap = el(`<div></div>`);
+  const total = STATE.session.length;
+  const correct = STATE.session.filter(q=>q.userAnswer===q.correct).length;
+  const answered = STATE.session.filter(q=>q.userAnswer!==null).length;
+  const pct = Math.round((correct/total)*100);
+  const passed = pct >= PASS_THRESHOLD;
+  const circumference = 2*Math.PI*78;
+  const dash = circumference * (pct/100);
+
+  const domainStats = {};
+  for(let d=1; d<=5; d++) domainStats[d] = {correct:0,total:0};
+  STATE.session.forEach(q=>{
+    domainStats[q.domain].total++;
+    if(q.userAnswer===q.correct) domainStats[q.domain].correct++;
+  });
+
+  if(!STATE.submitted){
+    STATE.submitted = true;
+    const payload = {
+      name: STATE.playerName || 'Anonymous',
+      mode: STATE.mode,
+      score: pct,
+      correct: correct,
+      total: total,
+      answered: answered,
+      passed: passed,
+      timeExpired: STATE.timeExpired,
+      domain1: `${domainStats[1].correct}/${domainStats[1].total}`,
+      domain2: `${domainStats[2].correct}/${domainStats[2].total}`,
+      domain3: `${domainStats[3].correct}/${domainStats[3].total}`,
+      domain4: `${domainStats[4].correct}/${domainStats[4].total}`,
+      domain5: `${domainStats[5].correct}/${domainStats[5].total}`,
+      timestamp: new Date().toISOString()
+    };
+    submitResultsToSheet(payload).then(ok=>{
+      const badge = document.getElementById('sync-status');
+      if(!badge) return;
+      if(ok){
+        badge.className = 'sync-pill ok';
+        badge.textContent = '✓ บันทึกผลไปยัง Google Sheet แล้ว';
+      } else {
+        badge.className = 'sync-pill warn';
+        badge.textContent = '⚠ ยังไม่ได้เชื่อมต่อ Google Sheet (ใส่ URL ใน SHEET_WEBAPP_URL)';
+      }
+    });
+  }
+
+  wrap.innerHTML = `
+    ${renderTopbar(`<div class="pill"><span class="dot" style="background:${passed?'var(--good)':'var(--bad)'}; box-shadow:0 0 8px ${passed?'var(--good)':'var(--bad)'};"></span> ผลสอบพร้อมแล้ว</div>`)}
+    <div class="panel glow-violet results-hero">
+      <div class="score-ring">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="78" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="90" cy="90" r="78" fill="none" stroke="url(#grad)" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${circumference-dash}"/>
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${passed?'#3fe08a':'#ff5c7a'}"/>
+              <stop offset="100%" stop-color="${passed?'#2fe3d6':'#ff8b5c'}"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="ringtext">
+          <div class="num">${pct}%</div>
+          <div class="lbl">SCORE</div>
+        </div>
+      </div>
+      <div class="verdict ${passed?'pass':'fail'}">${passed ? '✓ ผ่านเกณฑ์' : '✗ ยังไม่ผ่านเกณฑ์'}</div>
+      <div class="verdict-sub">${STATE.playerName} · ตอบถูก ${correct} จาก ${total} ข้อ · เกณฑ์ผ่าน ${PASS_THRESHOLD}%${answered<total ? ` · ตอบแล้ว ${answered}/${total} ข้อ` : ''}${STATE.timeExpired ? ' · ⏱ หมดเวลา 120 นาที ระบบจบการสอบให้อัตโนมัติ' : ''}</div>
+      <div class="sync-pill" id="sync-status">⏳ กำลังบันทึกผล...</div>
+    </div>
+
+    <div class="results-grid">
+      <div class="panel stat-card"><div class="sv">${correct}</div><div class="sl">ข้อที่ตอบถูก</div></div>
+      <div class="panel stat-card"><div class="sv">${total-correct}</div><div class="sl">ข้อที่ตอบผิด/ไม่ตอบ</div></div>
+      <div class="panel stat-card"><div class="sv">${pct}%</div><div class="sl">คะแนนรวม</div></div>
+    </div>
+
+    <div class="panel domain-results">
+      <h3>คะแนนแยกตามโดเมน (Domain Breakdown)</h3>
+      <div id="drows"></div>
+    </div>
+
+    <div class="panel review-section">
+      <h3>ทบทวนข้อที่ตอบผิด</h3>
+      <div class="rsub">รายการข้อที่ตอบผิดหรือยังไม่ได้ตอบ พร้อมคำอธิบายเพื่อการทบทวน</div>
+      <div id="review-list"></div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn primary" id="retry-btn">↻ ทำข้อสอบใหม่</button>
+      <button class="btn ghost" id="review-btn">↑ ไปที่รายการทบทวน</button>
+    </div>
+  `;
+
+  const drows = wrap.querySelector('#drows');
+  for(let d=1; d<=5; d++){
+    const s = domainStats[d];
+    const dpct = s.total ? Math.round((s.correct/s.total)*100) : 0;
+    const color = dpct>=70 ? 'var(--good)' : dpct>=50 ? 'var(--warn)' : 'var(--bad)';
+    drows.appendChild(el(`
+      <div class="drow">
+        <div>
+          <div class="dlabel">Domain ${d} · ${DOMAIN_TH[d]}</div>
+          <div class="dsub">น้ำหนัก ${DOMAIN_WEIGHTS[d]}% · ${s.total} ข้อ</div>
+        </div>
+        <div class="dtrack"><i style="width:${dpct}%; background:${color};"></i></div>
+        <div class="dpctnum" style="color:${color};">${s.correct}/${s.total}</div>
+      </div>
+    `));
+  }
+
+  const reviewList = wrap.querySelector('#review-list');
+  const wrongItems = STATE.session.filter(q=>q.userAnswer!==q.correct);
+  const letters=['A','B','C','D'];
+  if(wrongItems.length===0){
+    reviewList.appendChild(el(`<div class="empty-review">🎉 ยอดเยี่ยม! ไม่มีข้อที่ตอบผิดเลย</div>`));
+  } else {
+    wrongItems.forEach(q=>{
+      const item = el(`
+        <div class="review-item">
+          <div class="rimeta"><span class="domain-tag">Domain ${q.domain}</span> <span>QUESTION_ID://${String(q.id+1).padStart(3,'0')}</span></div>
+          <div class="riq">${q.question}</div>
+          <div id="ropts-${q.id}"></div>
+          <div class="riexp"><b style="color:var(--cyan-bright);">คำอธิบาย:</b> ${q.explanation}</div>
+        </div>
+      `);
+      const roptsWrap = item.querySelector(`#ropts-${q.id}`);
+      if(q.userAnswer!==null && q.userAnswer!==q.correct){
+        roptsWrap.appendChild(el(`<div class="riopt your-wrong">✗ คำตอบของคุณ: ${letters[q.userAnswer]}. ${q.options[q.userAnswer]}</div>`));
+      } else if(q.userAnswer===null){
+        roptsWrap.appendChild(el(`<div class="riopt your-wrong">✗ ไม่ได้ตอบข้อนี้</div>`));
+      }
+      roptsWrap.appendChild(el(`<div class="riopt correct">✓ คำตอบที่ถูก: ${letters[q.correct]}. ${q.options[q.correct]}</div>`));
+      reviewList.appendChild(item);
+    });
+  }
+
+  wrap.querySelector('#retry-btn').addEventListener('click', ()=>{
+    clearExamTimer();
+    STATE = {screen:'start', mode:null, session:[], current:0, playerName:'', submitted:false, examEndTime:null, timeExpired:false};
+    render();
+  });
+  wrap.querySelector('#review-btn').addEventListener('click', ()=>{
+    wrap.querySelector('.review-section').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  return wrap;
+}
+
+render();
+</script>
+</body>
+</html>
